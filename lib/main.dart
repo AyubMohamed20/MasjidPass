@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/loginscreen.dart';
-
+// Hello yash
 void main() {
   runApp(const MyApp());
 }
