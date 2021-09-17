@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class InfoPage extends StatefulWidget {
   const InfoPage({Key? key, required this.title}) : super(key: key);
 
@@ -18,11 +17,8 @@ class _InfoPageState extends State<InfoPage> {
       appBar: AppBar(
           title: Text('Info Page'),
           centerTitle: true,
-          backgroundColor: Colors.transparent
-      ),
-      body: Center(
-
-      ),
+          backgroundColor: Colors.transparent),
+      body: Center(),
     );
   }
 }

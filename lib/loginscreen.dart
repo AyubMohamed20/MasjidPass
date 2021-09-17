@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/main.dart';
 import 'package:masjid_pass/settingspage.dart';
-import 'package:flutter_login/flutter_login.dart';
-
 
 //sourced from https://flutterawesome.com/a-simple-login-example-using-only-textfields-and-texteditingcontrollers/
 
@@ -12,13 +9,9 @@ class LoginPage extends StatefulWidget {
 }
 
 // Used for controlling whether the user is loggin or creating an account
-enum FormType {
-  login,
-  register
-}
+enum FormType { login, register }
 
 class _LoginPageState extends State<LoginPage> {
-
   final TextEditingController _emailFilter = new TextEditingController();
   final TextEditingController _passwordFilter = new TextEditingController();
   String _email = "";
@@ -58,20 +51,20 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  _navigateToSettings()async{
+  _navigateToSettings() async {
     await Future.delayed(Duration(milliseconds: 500));
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context)=> SettingsPage(
-              title: "Settings Page",
-            )));
+            builder: (context) => SettingsPage(
+                  title: "Settings Page",
+                )));
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        backgroundColor: Color.fromRGBO(116, 178, 196, 1),
+      backgroundColor: Color.fromRGBO(116, 178, 196, 1),
       //appBar: _buildBar(context),
       body: new Container(
         padding: EdgeInsets.all(16.0),
@@ -99,17 +92,13 @@ class _LoginPageState extends State<LoginPage> {
           new Container(
             child: new TextField(
               controller: _emailFilter,
-              decoration: new InputDecoration(
-                  labelText: 'Email'
-              ),
+              decoration: new InputDecoration(labelText: 'Email'),
             ),
           ),
           new Container(
             child: new TextField(
               controller: _passwordFilter,
-              decoration: new InputDecoration(
-                  labelText: 'Password'
-              ),
+              decoration: new InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
           )
