@@ -8,7 +8,7 @@ class InfoBanner extends StatelessWidget {
         child: ListView(
           children: [
             DrawerHeader(
-              child: Center(child: Text('dose of coffee')),
+              child: Center(child: Text('MasjidPass')),
               padding: EdgeInsets.fromLTRB(0.0,0.0,0.0,0.0),
             ),
             ListTile(
