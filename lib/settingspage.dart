@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:masjid_pass/scannerscreen.dart';
+
+import 'infoslideover.dart';
 
 //source from https://github.com/iamshaunjp/flutter-beginners-tutorial/blob/lesson-9/myapp/lib/main.dart
 
@@ -12,12 +15,25 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String dropdownValueEntrance = 'Select Entrance';
-  String dropdownValueDirection = 'Select Direction';
-  final ButtonStyle style =
-      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
-
   @override
+  _navigateToScannerPage() async {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ScannerPage(
+                  title: "Scanner Page",
+                )));
+  }
+
+  _navigateToInfoPage() async {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => InfoPage(
+                  title: "Info Page",
+                )));
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(116, 178, 196, 1),
@@ -25,83 +41,39 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Text('Settings Page'),
           centerTitle: true,
           backgroundColor: Colors.transparent),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Center(
-                child: DropdownButton<String>(
-                  value: dropdownValueEntrance,
-                  icon: const Icon(Icons.arrow_downward),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
-                  ),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValueEntrance = newValue!;
-                    });
-                  },
-                  items: <String>[
-                    "Select Entrance",
-                    "Mens",
-                    "Womans",
-                    "Basement",
-                    "Gym"
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
+      body: Center(
+        child: new Column(
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {
+                _navigateToInfoPage();
+              },
+              icon: Icon(Icons.info),
+              label: Text('Info'),
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.black87),
               ),
-              Center(
-                child: DropdownButton<String>(
-                  value: dropdownValueDirection,
-                  icon: const Icon(Icons.arrow_downward),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
-                  ),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValueDirection = newValue!;
-                    });
-                  },
-                  items: <String>["Select Direction", "Entering", "Exiting"]
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _navigateToScannerPage();
+              },
+              child: Text('Scanner Page'),
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.black87),
               ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Center(
-                child: ElevatedButton(
-                  style: style,
-                  onPressed: () {},
-                  child: const Text('Select Event'),
-                ),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
+//  FlatButton(
+//    onPressed: () {},
+//    child: Text('click me again'),
+//    color: Colors.amber
+//  ),

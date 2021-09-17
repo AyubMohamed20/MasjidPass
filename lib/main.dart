@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/settingspage.dart';
+import 'package:masjid_pass/loginscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home : const SettingsPage(title: 'Ayub',),
+      home: new LoginPage(),
     );
   }
 }
