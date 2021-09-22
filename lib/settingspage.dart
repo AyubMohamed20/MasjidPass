@@ -140,6 +140,24 @@ class _SettingsPageState extends State<SettingsPage> {
                     margin: EdgeInsets.all(10),
                     child: Row(children: <Widget>[
                       Expanded(child: Text("Select Direction")),
+                      Container(
+                          child: Switch(
+                        value: isSwitched,
+                        onChanged: (value) {
+                          setState(() {
+                            isSwitched = value;
+                            print(isSwitched);
+                          });
+                        },
+                        activeTrackColor: Colors.blue,
+                        activeColor: Colors.blueAccent,
+                      ))
+                    ]),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    child: Row(children: <Widget>[
+                      Expanded(child: Text("Select Direction")),
                       Column(
                         children: [
                           Container(
