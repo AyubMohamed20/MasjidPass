@@ -17,6 +17,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   String dropdownValueEntrance = 'Mens';
   String OrganizationName = 'Organization Name';
+  String switchText = "OUT";
   bool isSwitched = false;
 
   final ButtonStyle style =
@@ -39,6 +40,20 @@ class _SettingsPageState extends State<SettingsPage> {
             builder: (context) => InfoPage(
                   title: "Info Page",
                 )));
+  }
+
+  void toggleSwitch(bool value) {
+    if (isSwitched == false) {
+      setState(() {
+        isSwitched = true;
+        switchText = 'IN';
+      });
+    } else {
+      setState(() {
+        isSwitched = false;
+        switchText = 'OUT';
+      });
+    }
   }
 
   Widget build(BuildContext context) {
@@ -125,18 +140,21 @@ class _SettingsPageState extends State<SettingsPage> {
                     margin: EdgeInsets.all(10),
                     child: Row(children: <Widget>[
                       Expanded(child: Text("Select Direction")),
-                      Container(
-                          child: Switch(
-                        value: isSwitched,
-                        onChanged: (value) {
-                          setState(() {
-                            isSwitched = value;
-                            print(isSwitched);
-                          });
-                        },
-                        activeTrackColor: Colors.blue,
-                        activeColor: Colors.blueAccent,
-                      ))
+                      Column(
+                        children: [
+                          Container(
+                              child: Switch(
+                            onChanged: (toggleSwitch),
+                            value: isSwitched,
+                            activeTrackColor: Colors.blue,
+                            activeColor: Colors.blueAccent,
+                          )),
+                          Text(
+                            switchText,
+                            style: TextStyle(fontSize: 10),
+                          ),
+                        ],
+                      )
                     ]),
                   ),
                   Container(
