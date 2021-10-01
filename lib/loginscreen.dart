@@ -1,55 +1,23 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/settingspage.dart';
 
-//sourced from https://flutterawesome.com/a-simple-login-example-using-only-textfields-and-texteditingcontrollers/
-
-class LoginPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => new _LoginPageState();
+void main() {
+  runApp(MaterialApp(
+    home: LoginPage(),
+  ));
 }
 
-// Used for controlling whether the user is loggin or creating an account
-enum FormType { login, register }
+// ignore: use_key_in_widget_constructors
+class LoginPage extends StatefulWidget {
+  @override
+  _State createState() => _State();
+}
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailFilter = new TextEditingController();
-  final TextEditingController _passwordFilter = new TextEditingController();
-  String _email = "";
-  String _password = "";
-  FormType _form = FormType
-      .login; // our default setting is to login, and we should switch to creating an account when the user chooses to
-
-  _LoginPageState() {
-    _emailFilter.addListener(_emailListen);
-    _passwordFilter.addListener(_passwordListen);
-  }
-
-  void _emailListen() {
-    if (_emailFilter.text.isEmpty) {
-      _email = "";
-    } else {
-      _email = _emailFilter.text;
-    }
-  }
-
-  void _passwordListen() {
-    if (_passwordFilter.text.isEmpty) {
-      _password = "";
-    } else {
-      _password = _passwordFilter.text;
-    }
-  }
-
-  // Swap in between our two forms, registering and logging in
-  void _formChange() async {
-    setState(() {
-      if (_form == FormType.register) {
-        _form = FormType.login;
-      } else {
-        _form = FormType.register;
-      }
-    });
-  }
+class _State extends State<LoginPage> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   _navigateToSettings() async {
     await Future.delayed(Duration(milliseconds: 500));
@@ -63,109 +31,90 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      backgroundColor: Color.fromRGBO(116, 178, 196, 1),
-      //appBar: _buildBar(context),
-      body: new Container(
-        padding: EdgeInsets.all(16.0),
-        child: new Column(
-          children: <Widget>[
-            _buildTextFields(),
-            _buildButtons(),
-          ],
+    return Scaffold(
+        appBar: AppBar(
+          // ignore: prefer_const_constructors
+          title: Text('MasjidPass App'),
         ),
-      ),
-    );
+        body: Padding(
+            // ignore: prefer_const_constructors
+            padding: EdgeInsets.all(10),
+            child: ListView(
+              children: <Widget>[
+                // ignore: duplicate_ignore
+                Container(
+                    alignment: Alignment.center,
+                    // ignore: prefer_const_constructors
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'MasjidPass',
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 30),
+                    )),
+                Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Sign in',
+                      style: TextStyle(fontSize: 20),
+                    )),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'User Name',
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  child: TextField(
+                    obscureText: true,
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Password',
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    //forgot password screen
+                  },
+                  child: Text('Forgot Password'),
+                ),
+                Container(
+                    height: 50,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: ElevatedButton(
+                      child: Text('Login'),
+                      onPressed: _loginPressed,
+                    )),
+                Container(
+                    child: Row(
+                  children: <Widget>[
+                    Text('Does not have account?'),
+                    TextButton(
+                      child: Text(
+                        'Sign in',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      onPressed: () {
+                        //signup screen
+                      },
+                    )
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ))
+              ],
+            )));
   }
-
-  Widget _buildBar(BuildContext context) {
-    return new AppBar(
-      title: new Text("Simple Login Example"),
-      centerTitle: true,
-    );
-  }
-
-  Widget _buildTextFields() {
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          new Container(
-            child: new TextField(
-              controller: _emailFilter,
-              decoration: new InputDecoration(labelText: 'Email'),
-            ),
-          ),
-          new Container(
-            child: new TextField(
-              controller: _passwordFilter,
-              decoration: new InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildButtons() {
-    if (_form == FormType.login) {
-      return new Container(
-        child: new Column(
-          children: <Widget>[
-            new ElevatedButton(
-              child: new Text('Login'),
-              onPressed: _loginPressed,
-            ),
-            new TextButton(
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-              ),
-              child: new Text('Dont have an account? Tap here to register.'),
-              onPressed: _formChange,
-            ),
-            new TextButton(
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-              ),
-              child: new Text('Forgot Password?'),
-              onPressed: _passwordReset,
-            )
-          ],
-        ),
-      );
-    } else {
-      return new Container(
-        child: new Column(
-          children: <Widget>[
-            new ElevatedButton(
-              child: new Text('Create an Account'),
-              onPressed: _createAccountPressed,
-            ),
-            new TextButton(
-              style: TextButton.styleFrom(
-                primary: Colors.white,
-              ),
-              child: new Text('Have an account? Click here to login.'),
-              onPressed: _formChange,
-            )
-          ],
-        ),
-      );
-    }
-  }
-
-  // These functions can self contain any user auth logic required, they all have access to _email and _password
 
   void _loginPressed() {
-    print('The user wants to login with $_email and $_password');
     _navigateToSettings();
-  }
-
-  void _createAccountPressed() {
-    print('The user wants to create an accoutn with $_email and $_password');
-  }
-
-  void _passwordReset() {
-    print("The user wants a password reset request sent to $_email");
   }
 }
