@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/scannerscreen.dart';
-import 'package:masjid_pass/loginscreen.dart';
 
 //source from https://github.com/iamshaunjp/flutter-beginners-tutorial/blob/lesson-9/myapp/lib/main.dart
 
@@ -14,14 +13,17 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  List<String> OrganizationEntrances = ["Mens", "Womans", "Basement", "Gym"];
   String dropdownValueEntrance = 'Mens';
-  String OrganizationName = 'Organization Name';
+  String OrganizationName = "Organization Name";
   String switchText = "OUT";
+  Color switchTextColor = Colors.red;
   bool isSwitched = false;
 
   final ButtonStyle style =
-      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+  ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
 
   @override
@@ -29,9 +31,9 @@ class _SettingsPageState extends State<SettingsPage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ScannerPage(
-                  title: "Scanner Page",
-                )));
+            builder: (context) => const ScannerPage(
+              title: "Scanner Page",
+            )));
   }
 
   void toggleSwitch(bool value) {
@@ -39,120 +41,71 @@ class _SettingsPageState extends State<SettingsPage> {
       setState(() {
         isSwitched = true;
         switchText = 'IN';
+        switchTextColor = Colors.green;
       });
     } else {
       setState(() {
         isSwitched = false;
         switchText = 'OUT';
+        switchTextColor = Colors.red;
       });
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        backgroundColor: Color.fromRGBO(116, 178, 196, 1),
-        appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: Text('Settings Page'),
-            centerTitle: true,
-            backgroundColor: Colors.transparent),
+        backgroundColor: Colors.white,
+        appBar: null,
         drawerEnableOpenDragGesture: false,
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              ListTile(
-                title: Center(
-                  child: Text(
-                    'MasjidPass',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                  ),
-                ),
-                onTap: () => null,
-              ),
-              ListTile(
-                title: Center(
-                  child: Text(
-                    'System Information',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              ListTile(
-                title: Text(
-                  'Device ID',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text('f774690826290hd832'),
-                onTap: () => null,
-              ),
-              Divider(
-                thickness: 2,
-              ),
-              ListTile(
-                title: Text(
-                  'Scanner Version',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text('2.8'),
-                onTap: () => null,
-              ),
-              Divider(
-                thickness: 2,
-              ),
-              ListTile(
-                title: Text(
-                  'Authentication API Version',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text('1.0'),
-                onTap: () => null,
-              ),
-              Divider(
-                thickness: 2,
-              ),
-              ListTile(
-                title: Text(
-                  'Backend API Version',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text('1.0'),
-                onTap: () => null,
-              ),
-              Divider(
-                thickness: 2,
-              ),
-            ], //children
-          ),
-        ),
+        drawer: InfoSideBannner(),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
-              flex: 10,
+              flex: 2,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Container(
+                  SizedBox(
+                    width: MediaQuery.of(context).size.height / 8,
+                    height: MediaQuery.of(context).size.height / 18,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: const Text('Logout'),
+                      child: Text('Logout',
+                          style: TextStyle(
+                              fontSize:
+                              MediaQuery.of(context).size.height / 50)),
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.red),
+                        MaterialStateProperty.all<Color>(Colors.red),
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width -
+                        ((MediaQuery.of(context).size.height / 8) * 2) -
+                        60,
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.height / 8,
+                    height: MediaQuery.of(context).size.height / 18,
                     child: ElevatedButton.icon(
                       onPressed: () {
                         _scaffoldKey.currentState!.openDrawer();
                       },
-                      icon: Icon(Icons.info),
-                      label: Text('Info'),
+                      icon: Icon(
+                        Icons.info,
+                        size: MediaQuery.of(context).size.height / 50,
+                      ),
+                      label: Text('Info',
+                          style: TextStyle(
+                              fontSize:
+                              MediaQuery.of(context).size.height / 50)),
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.black),
+                        MaterialStateProperty.all<Color>(Colors.black),
                       ),
                     ),
                   )
@@ -160,72 +113,111 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             Expanded(
-              flex: 100,
+              flex: 10,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    child: Text(OrganizationName),
+                    margin: const EdgeInsets.only(right: 10, left: 10),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(OrganizationName,
+                          style: TextStyle(
+                              color: Colors.lightBlue,
+                              fontSize:
+                              MediaQuery.of(context).size.height / 30)),
+                    ),
                   ),
                   Container(
-                    margin: EdgeInsets.all(10),
+                    margin: const EdgeInsets.only(
+                        top: 10, left: 20, right: 20, bottom: 10),
                     child: Row(children: <Widget>[
-                      Expanded(child: Text("Select Door")),
-                      Container(
-                        child: DropdownButton<String>(
-                          value: dropdownValueEntrance,
-                          icon: const Icon(Icons.arrow_downward),
-                          iconSize: 24,
-                          elevation: 16,
-                          style: const TextStyle(color: Colors.blue),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.blueAccent,
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              dropdownValueEntrance = newValue!;
-                            });
-                          },
-                          items: <String>["Mens", "Womans", "Basement", "Gym"]
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
+                      Expanded(
+                          child: Text("Select Door",
+                              style: TextStyle(
+                                  fontSize: MediaQuery.of(context).size.height /
+                                      45))),
+                      DropdownButton<String>(
+                        value: dropdownValueEntrance,
+                        icon: Icon(Icons.arrow_downward,
+                            size: MediaQuery.of(context).size.height / 30),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: const TextStyle(color: Colors.black),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.black,
                         ),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownValueEntrance = newValue!;
+                          });
+                        },
+                        items:
+                        OrganizationEntrances.map<DropdownMenuItem<String>>(
+                                (String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value,
+                                    style: TextStyle(
+                                        fontSize:
+                                        MediaQuery.of(context).size.height /
+                                            45)),
+                              );
+                            }).toList(),
                       )
                     ]),
                   ),
                   Container(
-                    margin: EdgeInsets.all(10),
+                    margin: EdgeInsets.only(
+                        top: 10,
+                        left: 20,
+                        right: MediaQuery.of(context).size.height / 20,
+                        bottom: 10),
                     child: Row(children: <Widget>[
-                      Expanded(child: Text("Select Direction")),
+                      Expanded(
+                          child: Text("Select Direction",
+                              style: TextStyle(
+                                  fontSize: MediaQuery.of(context).size.height /
+                                      45))),
                       Column(
                         children: [
-                          Container(
+                          SizedBox(
+                            child: Transform.scale(
+                              scale: MediaQuery.of(context).size.height / 500,
                               child: Switch(
-                            onChanged: (toggleSwitch),
-                            value: isSwitched,
-                            activeTrackColor: Colors.blue,
-                            activeColor: Colors.blueAccent,
-                          )),
+                                onChanged: (toggleSwitch),
+                                value: isSwitched,
+                                activeTrackColor: Colors.blue,
+                                activeColor: Colors.blueAccent,
+                              ),
+                            ),
+                          ),
                           Text(
                             switchText,
-                            style: TextStyle(fontSize: 10),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: switchTextColor,
+                                fontSize:
+                                MediaQuery.of(context).size.height / 50),
                           ),
                         ],
                       )
                     ]),
                   ),
-                  Container(
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 20,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: const Text('Select Event'),
+                      child: Text(
+                        'Select Event',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.height / 40),
+                      ),
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.blue),
+                        MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                     ),
                   ),
@@ -233,25 +225,100 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             Expanded(
-              flex: 10,
+              flex: 1,
               child: Container(
-                margin: EdgeInsets.all(10),
+                margin: const EdgeInsets.all(10),
                 child: Row(
                   children: [
                     Expanded(
                         child: ElevatedButton(
-                      onPressed: () {_navigateToScannerPage();},
-                      child: const Text('Scan'),
-                      style: ButtonStyle(
-                        backgroundColor:
+                          onPressed: () {},
+                          child: Text(
+                            'Scan',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.height / 40),
+                          ),
+                          style: ButtonStyle(
+                            backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.blue),
-                      ),
-                    )),
+                          ),
+                        )),
                   ],
                 ),
               ),
             )
           ],
         ));
+  }
+
+  Widget InfoSideBannner() {
+    return Drawer(
+      child: ListView(
+        children: [
+          ListTile(
+            title: const Center(
+              child: Text(
+                'MasjidPass',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              ),
+            ),
+            onTap: () => null,
+          ),
+          const ListTile(
+            title: Center(
+              child: Text(
+                'System Information',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          ListTile(
+            title: const Text(
+              'Device ID',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text('f774690826290hd832'),
+            onTap: () => null,
+          ),
+          const Divider(
+            thickness: 2,
+          ),
+          ListTile(
+            title: const Text(
+              'Scanner Version',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text('2.8'),
+            onTap: () => null,
+          ),
+          const Divider(
+            thickness: 2,
+          ),
+          ListTile(
+            title: const Text(
+              'Authentication API Version',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text('1.0'),
+            onTap: () => null,
+          ),
+          const Divider(
+            thickness: 2,
+          ),
+          ListTile(
+            title: const Text(
+              'Backend API Version',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text('1.0'),
+            onTap: () => null,
+          ),
+          const Divider(
+            thickness: 2,
+          ),
+        ], //children
+      ),
+    );
   }
 }
