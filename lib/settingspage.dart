@@ -231,7 +231,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _navigateToScannerPage();
+                          },
                           child: Text(
                             'Scan',
                             style: TextStyle(
