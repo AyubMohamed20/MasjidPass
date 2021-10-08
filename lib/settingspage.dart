@@ -23,7 +23,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isSwitched = false;
 
   final ButtonStyle style =
-  ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
   @override
   _navigateToScannerPage() async {
@@ -31,8 +31,8 @@ class _SettingsPageState extends State<SettingsPage> {
         context,
         MaterialPageRoute(
             builder: (context) => const ScannerPage(
-              title: "Scanner Page",
-            )));
+                  title: "Scanner Page",
+                )));
   }
 
   void toggleSwitch(bool value) {
@@ -70,23 +70,42 @@ class _SettingsPageState extends State<SettingsPage> {
                   SizedBox(
                     width: MediaQuery.of(context).size.height / 8,
                     height: MediaQuery.of(context).size.height / 18,
+
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Confirmation'),
+                          content: const Text('Are you sure you want to logout?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Logout'),
+                              child: const Text('Logout'),
+                            ),
+                          ],
+                        ),
+                      ),
                       child: Text('Logout',
                           style: TextStyle(
                               fontSize:
-                              MediaQuery.of(context).size.height / 50)),
+                                  MediaQuery.of(context).size.height / 50)),
                       style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
+                            MaterialStateProperty.all<Color>(Colors.red),
                       ),
                     ),
                   ),
+
                   SizedBox(
                     width: MediaQuery.of(context).size.width -
                         ((MediaQuery.of(context).size.height / 8) * 2) -
                         60,
                   ),
+
                   SizedBox(
                     width: MediaQuery.of(context).size.height / 8,
                     height: MediaQuery.of(context).size.height / 18,
@@ -101,16 +120,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       label: Text('Info',
                           style: TextStyle(
                               fontSize:
-                              MediaQuery.of(context).size.height / 50)),
+                                  MediaQuery.of(context).size.height / 50)),
                       style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
+                            MaterialStateProperty.all<Color>(Colors.black),
                       ),
                     ),
                   )
                 ],
               ),
             ),
+
             Expanded(
               flex: 10,
               child: Column(
@@ -124,13 +144,15 @@ class _SettingsPageState extends State<SettingsPage> {
                           style: TextStyle(
                               color: Colors.lightBlue,
                               fontSize:
-                              MediaQuery.of(context).size.height / 30)),
+                                  MediaQuery.of(context).size.height / 30)),
                     ),
                   ),
+
                   Container(
                     margin: const EdgeInsets.only(
                         top: 10, left: 20, right: 20, bottom: 10),
                     child: Row(children: <Widget>[
+
                       Expanded(
                           child: Text("Select Door",
                               style: TextStyle(
@@ -153,17 +175,17 @@ class _SettingsPageState extends State<SettingsPage> {
                           });
                         },
                         items:
-                        OrganizationEntrances.map<DropdownMenuItem<String>>(
+                            OrganizationEntrances.map<DropdownMenuItem<String>>(
                                 (String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value,
-                                    style: TextStyle(
-                                        fontSize:
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value,
+                                style: TextStyle(
+                                    fontSize:
                                         MediaQuery.of(context).size.height /
                                             45)),
-                              );
-                            }).toList(),
+                          );
+                        }).toList(),
                       )
                     ]),
                   ),
@@ -198,7 +220,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 fontWeight: FontWeight.bold,
                                 color: switchTextColor,
                                 fontSize:
-                                MediaQuery.of(context).size.height / 50),
+                                    MediaQuery.of(context).size.height / 50),
                           ),
                         ],
                       )
@@ -216,7 +238,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
+                            MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                     ),
                   ),
@@ -231,18 +253,18 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Scan',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: MediaQuery.of(context).size.height / 40),
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor:
+                      onPressed: () {},
+                      child: Text(
+                        'Scan',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.height / 40),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.blue),
-                          ),
-                        )),
+                      ),
+                    )),
                   ],
                 ),
               ),
@@ -318,6 +340,31 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ], //children
       ),
+    );
+  }
+}
+
+class LogoutDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('AlertDialog Title'),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: const <Widget>[
+            Text('This is a demo alert dialog.'),
+            Text('Would you like to approve of this message?'),
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('Approve'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
     );
   }
 }
