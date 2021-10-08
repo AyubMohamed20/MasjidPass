@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/main.dart';
-import 'package:masjid_pass/settingspage.dart';
+import 'package:masjid_pass/models/user.dart';
+import 'package:masjid_pass/db/masjid_database.dart';
 
 import 'loginscreen.dart';
 
@@ -12,11 +13,58 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  late List<User> users;
+
+
+
+
   @override
   void initState(){
     super.initState();
+   //deleteUser();
+   // addUser();
+    //refreshUsers();
+    //updateUser();
+   refreshUsers();
     _navigateToSettings();
   }
+
+  Future deleteUser() async{
+    int i =16;
+    await MasjidDatabase.instance.delete(i);
+  }
+  Future deleteAll() async{
+
+    await MasjidDatabase.instance.deleteAll();
+  }
+
+  Future updateUser() async{
+    final note = User(
+      id: 9,
+      username: 'changed username',
+      password: 'changed password',
+
+    );
+
+    await MasjidDatabase.instance.update(note);
+  }
+
+  Future addUser() async{
+    final testUser = User(
+      username: 'testname',
+      password: 'testpassword',
+    );
+
+    await MasjidDatabase.instance.create(testUser);
+  }
+
+  Future refreshUsers() async{
+
+    users = await MasjidDatabase.instance.readAllUsers();
+    print(users);
+  }
+
+
 
   _navigateToSettings()async{
     await Future.delayed(Duration(milliseconds: 4000));
