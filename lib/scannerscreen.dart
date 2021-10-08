@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:masjid_pass/settingspage.dart';
 
-//hello
 class ScannerPage extends StatefulWidget {
   const ScannerPage({Key? key, required this.title}) : super(key: key);
 
@@ -15,41 +14,29 @@ class ScannerPage extends StatefulWidget {
 
 class _ScannerPageState extends State<ScannerPage>
     with SingleTickerProviderStateMixin {
+  List<Widget> criticalErrorMessagesBubbles = [SizedBox(height: 20,)];
+
   String messageText = "Initial Text";
-
-  List<Widget> criticalErrorMessagesBubbles = [];
-
   String uploadPercentageText = "100%";
   String savedVisitLogsNumberText = "30/50";
 
-  int numCase = 0;
-
   bool hasMessage = false;
   bool hasCriticalErrorMessage = false;
-  bool hasIndicator = false;
+  bool visitLogUploadTimeoutMessage = false;
 
+  bool hasIndicator = false;
   bool errorIndicator = false;
   bool warningIndicator = false;
   bool offlineSuccessIndicator = false;
   bool successIndicator = false;
-  bool visitLogUploadTimeoutMessage = false;
 
-  bool flag = false;
+  bool scanHistoryFlag = false;
   int currentState = 0;
+  int numCase = 0;
 
   // Temporary for showcasing All messages and Indicator
   bool hasProgressIndicator = false;
   bool hasSavedScansIndicator = false;
-
-  final Icon _icon_up = const Icon(
-    Icons.keyboard_arrow_up,
-    size: 13.0,
-  );
-
-  final Icon _icon_down = const Icon(
-    Icons.keyboard_arrow_down,
-    size: 13.0,
-  );
 
   _navigateToSettingsPage() async {
     Navigator.push(
@@ -68,7 +55,6 @@ class _ScannerPageState extends State<ScannerPage>
         body: Stack(
           children: [
             QRScanner(),
-            SettingPageNavigationButton(),
             ScanHistory(),
             if (hasIndicator ||
                 hasMessage ||
@@ -117,97 +103,97 @@ class _ScannerPageState extends State<ScannerPage>
       margin: const BubbleEdges.all(10),
       child: Text(
         messageText,
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.white,fontSize: MediaQuery.of(context).size.width / 28 ),
         textAlign: TextAlign.center,
       ),
     );
   }
 
   Widget SettingPageNavigationButton() {
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            color: Colors.white,
-            height: MediaQuery.of(context).size.height / 10,
-          ),
+    return Container(
+      width: double.infinity,
+      height: 40,
+      margin: const EdgeInsets.all(10),
+      child: ElevatedButton(
+        onPressed: () {
+          _navigateToSettingsPage();
+        },
+        child: Text('SETTINGS',
+            style:
+                TextStyle(fontSize: MediaQuery.of(context).size.height / 50)),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            width: double.infinity,
-            height: 40,
-            margin: const EdgeInsets.all(10),
-            child: ElevatedButton(
-              onPressed: () {
-                _navigateToSettingsPage();
-              },
-              child: const Text('SETTINGS'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
   Widget ScanHistory() {
-    return Column(children: <Widget>[
-      SizedBox(
-        height: MediaQuery.of(context).size.height / 1.65,
-      ),
-      Expanded(
-        child: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            if (hasCriticalErrorMessage) CriticalErrorMessage(),
-            AnimatedPositioned(
-              width: MediaQuery.of(context).size.width,
-              height: flag ? 200 : 40,
-              top: flag ? 40 : 200.0,
-              duration: const Duration(seconds: 1),
-              curve: Curves.fastOutSlowIn,
-              child: Container(
-                color: Colors.blueGrey,
-                child: ListView.builder(
-                  itemCount: criticalErrorMessagesBubbles.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return criticalErrorMessagesBubbles[index];
+
+    double drawerHeight = MediaQuery.of(context).size.height / 3.7;
+
+    Widget _icon_up = Icon(Icons.keyboard_arrow_up,
+        size: MediaQuery.of(context).size.height / 30);
+    Widget _icon_down = Icon(Icons.keyboard_arrow_down,
+        size: MediaQuery.of(context).size.height / 30);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height/ 3.1,
+          child: Stack(
+            children: <Widget>[
+              if (hasCriticalErrorMessage) CriticalErrorMessage(),
+              AnimatedPositioned(
+                width: MediaQuery.of(context).size.width,
+                height: scanHistoryFlag ? drawerHeight : 40,
+                top: scanHistoryFlag ? 40 : drawerHeight,
+                duration: const Duration(seconds: 1),
+                curve: Curves.fastOutSlowIn,
+                child: Container(
+                  color: Colors.blueGrey,
+                  child: ListView.builder(
+                    itemCount: criticalErrorMessagesBubbles.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return criticalErrorMessagesBubbles[index];
+                    },
+                  ),
+                ),
+              ),
+              AnimatedPositioned(
+                width: MediaQuery.of(context).size.width,
+                height: 40,
+                top: scanHistoryFlag ? 40 : drawerHeight,
+                duration: const Duration(seconds: 1),
+                curve: Curves.fastOutSlowIn,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      scanHistoryFlag = !scanHistoryFlag;
+                    });
                   },
+                  label: Text(
+                    'SCAN HISTORY',
+                    style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.height / 50),
+                  ),
+                  icon: scanHistoryFlag ? _icon_down : _icon_up,
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.lightBlue),
+                    alignment: Alignment.centerLeft,
+                  ),
                 ),
               ),
-            ),
-            AnimatedPositioned(
-              width: MediaQuery.of(context).size.width,
-              height: 40,
-              top: flag ? 40 : 200.0,
-              duration: const Duration(seconds: 1),
-              curve: Curves.fastOutSlowIn,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  setState(() {
-                    flag = !flag;
-                  });
-                },
-                label: const Text(
-                  'SCAN HISTORY',
-                  style: TextStyle(fontSize: 13.0),
-                ),
-                icon: flag ? _icon_down : _icon_up,
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.lightBlue),
-                  alignment: Alignment.centerLeft,
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ]);
+        SettingPageNavigationButton()
+      ],
+    );
   }
 
   Widget showMessage() {
@@ -400,10 +386,10 @@ class _ScannerPageState extends State<ScannerPage>
       criticalErrorMessagesBubbles.add(Bubble(
         alignment: Alignment.center,
         color: Colors.red,
-        margin: const BubbleEdges.only(top: 20, bottom: 5),
+        margin: const BubbleEdges.only(top: 7.5, bottom: 7.5),
         child: Text(
           messageText,
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white, fontSize: MediaQuery.of(context).size.width / 29),
           textAlign: TextAlign.center,
         ),
       ));
@@ -411,6 +397,7 @@ class _ScannerPageState extends State<ScannerPage>
   }
 
   // Code to showcase all the messages and Indicators
+
 
   Widget showcaseIndicators() {
     return Column(
