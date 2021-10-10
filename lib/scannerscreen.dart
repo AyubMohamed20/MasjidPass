@@ -394,6 +394,8 @@ class _ScannerPageState extends State<ScannerPage>
   }
 
   void initializeCriticalErrorMessagesBubbles() {
+    // This function adds all critical error message bubbles to a list(criticalErrorMessagesBubbles), which will show in the scanner history.
+
     if (criticalErrorMessagesBubbles.isEmpty) {
       criticalErrorMessagesBubbles.add(SizedBox(
         height: MediaQuery.of(context).size.height / 25,
