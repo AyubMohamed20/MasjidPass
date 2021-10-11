@@ -12,6 +12,22 @@ class ScannerPage extends StatefulWidget {
   State<ScannerPage> createState() => _ScannerPageState();
 }
 
+class SizeConfig {
+  static MediaQueryData _mediaQueryData = 0 as MediaQueryData;
+  static double screenWidth = 0;
+  static double screenHeight = 0;
+  static double blockSizeHorizontal = 0;
+  static double blockSizeVertical = 0;
+
+  void init(BuildContext context) {
+    _mediaQueryData = MediaQuery.of(context);
+    screenWidth = _mediaQueryData.size.width;
+    screenHeight = _mediaQueryData.size.height;
+    blockSizeHorizontal = screenWidth / 100;
+    blockSizeVertical = screenHeight / 100;
+  }
+}
+
 class _ScannerPageState extends State<ScannerPage>
     with SingleTickerProviderStateMixin {
   List<Widget> criticalErrorMessagesBubbles = [];
@@ -42,12 +58,13 @@ class _ScannerPageState extends State<ScannerPage>
         context,
         MaterialPageRoute(
             builder: (context) => const SettingsPage(
-                  title: "Settings Page",
-                )));
+              title: "Settings Page",
+            )));
   }
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
         backgroundColor: const Color.fromRGBO(116, 178, 196, 1),
         appBar: null,
@@ -60,26 +77,26 @@ class _ScannerPageState extends State<ScannerPage>
                 hasProgressIndicator ||
                 hasSavedScansIndicator)
               Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
+                width: SizeConfig.screenWidth,
+                height: SizeConfig.screenHeight,
                 color: const Color(0x00000000).withOpacity(.8),
                 child: Column(
                   children: [
                     SizedBox(
-                      height: MediaQuery.of(context).size.height / 30,
+                      height: SizeConfig.blockSizeVertical * 3.5,
                     ),
                     if (hasMessage) showMessage(),
                     Center(
                       child: Column(
                         children: [
-                          const SizedBox(
-                            height: 100,
+                          SizedBox(
+                            height: SizeConfig.blockSizeVertical * 15,
                           ),
                           if (hasIndicator) outcomeIndicator(),
                           if (hasProgressIndicator) progressIndicator(),
                           if (hasSavedScansIndicator) savedScansIndicator(),
-                          const SizedBox(
-                            height: 50,
+                          SizedBox(
+                            height: SizeConfig.blockSizeVertical * 6,
                           ),
                           if ((errorIndicator || warningIndicator) &&
                               hasIndicator)
@@ -97,20 +114,21 @@ class _ScannerPageState extends State<ScannerPage>
 
   Widget qrScanner() {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+      width: SizeConfig.screenWidth,
+      height: SizeConfig.screenHeight,
       color: Colors.blueGrey,
       child: const FittedBox(child: Icon(Icons.qr_code_scanner)),
     );
   }
 
   Widget scanHistory() {
-    double drawerHeight = MediaQuery.of(context).size.height / 3.2;
+    double drawerHeightMax = SizeConfig.blockSizeVertical * 31;
+    double drawerHeightMin = SizeConfig.blockSizeVertical * 6;
 
-    Widget iconUp = Icon(Icons.keyboard_arrow_up,
-        size: MediaQuery.of(context).size.height / 30);
-    Widget iconDown = Icon(Icons.keyboard_arrow_down,
-        size: MediaQuery.of(context).size.height / 30);
+    Widget iconUp =
+    Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
+    Widget iconDown =
+    Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -118,14 +136,14 @@ class _ScannerPageState extends State<ScannerPage>
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height / 2.7,
+          height: SizeConfig.blockSizeVertical * 37,
           child: Stack(
             children: <Widget>[
               if (hasCriticalErrorMessage) criticalErrorMessage(),
               AnimatedPositioned(
-                width: MediaQuery.of(context).size.width,
-                height: scanHistoryFlag ? drawerHeight : 40,
-                top: scanHistoryFlag ? 40 : drawerHeight,
+                width: SizeConfig.screenWidth,
+                height: scanHistoryFlag ? drawerHeightMax : drawerHeightMin,
+                top: scanHistoryFlag ? drawerHeightMin : drawerHeightMax,
                 duration: const Duration(seconds: 1),
                 curve: Curves.fastOutSlowIn,
                 child: Container(
@@ -139,9 +157,9 @@ class _ScannerPageState extends State<ScannerPage>
                 ),
               ),
               AnimatedPositioned(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 17,
-                top: scanHistoryFlag ? 40 : drawerHeight,
+                width: SizeConfig.screenWidth,
+                height: SizeConfig.blockSizeVertical * 6,
+                top: scanHistoryFlag ? drawerHeightMin : drawerHeightMax,
                 duration: const Duration(seconds: 1),
                 curve: Curves.fastOutSlowIn,
                 child: ElevatedButton.icon(
@@ -152,13 +170,13 @@ class _ScannerPageState extends State<ScannerPage>
                   },
                   label: Text(
                     'SCAN HISTORY',
-                    style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height / 50),
+                    style:
+                    TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
                   ),
                   icon: scanHistoryFlag ? iconDown : iconUp,
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.lightBlue),
+                    MaterialStateProperty.all<Color>(Colors.lightBlue),
                     alignment: Alignment.centerLeft,
                   ),
                 ),
@@ -175,7 +193,7 @@ class _ScannerPageState extends State<ScannerPage>
     return Column(
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height / 5,
+          height: SizeConfig.blockSizeVertical * 20,
         ),
         Bubble(
           alignment: Alignment.center,
@@ -185,7 +203,7 @@ class _ScannerPageState extends State<ScannerPage>
             messageText,
             style: TextStyle(
                 color: Colors.white,
-                fontSize: MediaQuery.of(context).size.width / 28),
+                fontSize: SizeConfig.blockSizeHorizontal * 3.5),
             textAlign: TextAlign.center,
           ),
         ),
@@ -216,7 +234,7 @@ class _ScannerPageState extends State<ScannerPage>
             child: Icon(
               Icons.priority_high_rounded,
               color: Colors.white,
-              size: MediaQuery.of(context).size.height / 30,
+              size: SizeConfig.blockSizeVertical * 3,
             ),
           ),
           Flexible(
@@ -225,7 +243,7 @@ class _ScannerPageState extends State<ScannerPage>
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: MediaQuery.of(context).size.height / 50)))
+                      fontSize: SizeConfig.blockSizeVertical * 2)))
         ],
       ),
     );
@@ -240,8 +258,8 @@ class _ScannerPageState extends State<ScannerPage>
         ),
         border: Border.all(color: Colors.black),
       ),
-      width: MediaQuery.of(context).size.height / 4,
-      height: MediaQuery.of(context).size.height / 4,
+      width: SizeConfig.blockSizeVertical * 25,
+      height: SizeConfig.blockSizeVertical * 25,
       child: Container(
           color: Colors.white,
           margin: const EdgeInsets.all(50),
@@ -258,8 +276,8 @@ class _ScannerPageState extends State<ScannerPage>
           ),
           border: Border.all(color: Colors.black),
         ),
-        width: MediaQuery.of(context).size.height / 2.5,
-        height: MediaQuery.of(context).size.height / 4,
+        width: SizeConfig.blockSizeVertical * 40,
+        height: SizeConfig.blockSizeVertical * 25,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -267,9 +285,9 @@ class _ScannerPageState extends State<ScannerPage>
             const LinearProgressIndicator(
               semanticsLabel: 'Linear progress indicator',
             ),
-            const SizedBox(
-              height: 10,
-              width: 10,
+            SizedBox(
+              height: SizeConfig.blockSizeVertical * 2,
+              width: SizeConfig.blockSizeVertical * 2,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -278,26 +296,26 @@ class _ScannerPageState extends State<ScannerPage>
                     style: TextStyle(
                         color: Colors.lightBlue,
                         fontWeight: FontWeight.bold,
-                        fontSize: MediaQuery.of(context).size.height / 50)),
+                        fontSize: SizeConfig.blockSizeVertical * 2)),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width / 4,
+                  width: SizeConfig.blockSizeHorizontal * 25,
                 ),
                 Text(savedVisitLogsNumberText,
                     style: TextStyle(
                         color: Colors.lightBlue,
                         fontWeight: FontWeight.bold,
-                        fontSize: MediaQuery.of(context).size.height / 50))
+                        fontSize: SizeConfig.blockSizeVertical * 2))
               ],
             ),
-            const SizedBox(
-              height: 10,
-              width: 10,
+            SizedBox(
+              height: SizeConfig.blockSizeVertical * 2,
+              width: SizeConfig.blockSizeVertical * 2,
             ),
             Text('Uploading Saved Visit Logs...',
                 style: TextStyle(
                     color: Colors.lightBlue,
                     fontWeight: FontWeight.bold,
-                    fontSize: MediaQuery.of(context).size.height / 50))
+                    fontSize: SizeConfig.blockSizeVertical * 2))
           ],
         ));
   }
@@ -311,7 +329,7 @@ class _ScannerPageState extends State<ScannerPage>
     } else if (successIndicator) {
       indicatorColor = Colors.green;
       indicatorIcon =
-          const Icon(Icons.check_circle_outline, color: Colors.white);
+      const Icon(Icons.check_circle_outline, color: Colors.white);
     } else if (warningIndicator) {
       indicatorColor = Colors.amberAccent;
       indicatorIcon = const Icon(Icons.error_outline, color: Colors.white);
@@ -327,16 +345,16 @@ class _ScannerPageState extends State<ScannerPage>
         ),
         border: Border.all(color: Colors.black),
       ),
-      width: MediaQuery.of(context).size.height / 3,
-      height: MediaQuery.of(context).size.height / 3,
+      width: SizeConfig.blockSizeVertical * 33,
+      height: SizeConfig.blockSizeVertical * 33,
       child: FittedBox(child: indicatorIcon),
     );
   }
 
   Widget overrideButton() {
     return SizedBox(
-      height: MediaQuery.of(context).size.height / 14,
-      width: MediaQuery.of(context).size.height / 4,
+      height: SizeConfig.blockSizeVertical * 7,
+      width: SizeConfig.blockSizeVertical * 25,
       child: ElevatedButton(
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
@@ -350,10 +368,10 @@ class _ScannerPageState extends State<ScannerPage>
           Text(
             'OVERRIDE',
             style: TextStyle(
-              fontSize: MediaQuery.of(context).size.height / 35,
+              fontSize: SizeConfig.blockSizeVertical * 2.85,
               foreground: Paint()
                 ..style = PaintingStyle.stroke
-                ..strokeWidth = 1
+                ..strokeWidth = SizeConfig.blockSizeVertical * 0.2
                 ..color = Colors.black,
             ),
           ),
@@ -361,7 +379,7 @@ class _ScannerPageState extends State<ScannerPage>
           Text(
             'OVERRIDE',
             style: TextStyle(
-              fontSize: MediaQuery.of(context).size.height / 35,
+              fontSize: SizeConfig.blockSizeVertical * 2.85,
               color: Colors.white,
             ),
           ),
@@ -375,15 +393,15 @@ class _ScannerPageState extends State<ScannerPage>
       children: [
         Container(
           width: double.infinity,
-          height: MediaQuery.of(context).size.height / 17,
-          margin: EdgeInsets.all(MediaQuery.of(context).size.height / 60),
+          height: SizeConfig.blockSizeVertical * 5.9,
+          margin: EdgeInsets.all(SizeConfig.blockSizeVertical * 1.67),
           child: ElevatedButton(
             onPressed: () {
               _navigateToSettingsPage();
             },
             child: Text('SETTINGS',
                 style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.height / 50)),
+                    fontSize: SizeConfig.blockSizeVertical * 2)),
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
             ),
@@ -398,19 +416,19 @@ class _ScannerPageState extends State<ScannerPage>
 
     if (criticalErrorMessagesBubbles.isEmpty) {
       criticalErrorMessagesBubbles.add(SizedBox(
-        height: MediaQuery.of(context).size.height / 25,
+        height:  SizeConfig.blockSizeHorizontal * 6,
       ));
     }
     if (criticalErrorMessagesBubbles.length < 10) {
       criticalErrorMessagesBubbles.add(Bubble(
         alignment: Alignment.center,
         color: Colors.red,
-        margin: const BubbleEdges.only(top: 7.5, bottom: 7.5),
+        margin: BubbleEdges.only(top: SizeConfig.blockSizeHorizontal * 2, bottom: SizeConfig.blockSizeHorizontal * 2),
         child: Text(
           messageText,
           style: TextStyle(
               color: Colors.white,
-              fontSize: MediaQuery.of(context).size.width / 29),
+              fontSize:  SizeConfig.blockSizeHorizontal * 3.4),
           textAlign: TextAlign.center,
         ),
       ));
@@ -423,8 +441,8 @@ class _ScannerPageState extends State<ScannerPage>
     return Column(
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height / 10,
-          width: MediaQuery.of(context).size.width,
+          height: SizeConfig.blockSizeVertical * 10,
+          width: SizeConfig.screenWidth,
         ),
         ElevatedButton(
           onPressed: () {
@@ -499,7 +517,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 7:
                 {
                   messageText =
-                      "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
+                  "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
                   trueToFalse();
                   initializeCriticalErrorMessagesBubbles();
                   hasCriticalErrorMessage = true;
