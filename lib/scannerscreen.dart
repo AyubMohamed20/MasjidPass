@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:masjid_pass/scanner.dart';
+
+
+import 'main.dart';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({Key? key, required this.title}) : super(key: key);
@@ -11,14 +15,22 @@ class ScannerPage extends StatefulWidget {
 
 class _ScannerPageState extends State<ScannerPage> {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(116, 178, 196, 1),
-      appBar: AppBar(
-          title: Text('Scanner Page'),
-          centerTitle: true,
-          backgroundColor: Colors.transparent),
-      body: Center(),
-    );
-  }
+
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      title: Text(MyApp.title),
+    ),
+    body: Center(
+      child: ElevatedButton(
+          child: const Text('Scan'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Scanner()),
+            );
+          }),
+    ),
+
+  );
+
 }
