@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/scannerscreen.dart';
 
+import 'user_shared_preferences.dart';
+
 //source from https://github.com/iamshaunjp/flutter-beginners-tutorial/blob/lesson-9/myapp/lib/main.dart
 
 class SettingsPage extends StatefulWidget {
@@ -16,23 +18,29 @@ class _SettingsPageState extends State<SettingsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<String> OrganizationEntrances = ["Mens", "Womans", "Basement", "Gym"];
-  String dropdownValueEntrance = 'Mens';
+  String entrance = 'Mens';
   String OrganizationName = "Organization Name";
   String switchText = "OUT";
   Color switchTextColor = Colors.red;
   bool isSwitched = false;
 
   final ButtonStyle style =
-  ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
+  @override
+  void initState() {
+    super.initState();
+    isSwitched =  UserSharedPreferences.getSwitch() ?? false;
+    entrance = UserSharedPreferences.getEntrance() ?? 'Mens';
+  }
   @override
   _navigateToScannerPage() async {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => const ScannerPage(
-              title: "Scanner Page",
-            )));
+                  title: "Scanner Page",
+                )));
   }
 
   void toggleSwitch(bool value) {
@@ -75,10 +83,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: Text('Logout',
                           style: TextStyle(
                               fontSize:
-                              MediaQuery.of(context).size.height / 50)),
+                                  MediaQuery.of(context).size.height / 50)),
                       style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
+                            MaterialStateProperty.all<Color>(Colors.red),
                       ),
                     ),
                   ),
@@ -101,10 +109,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       label: Text('Info',
                           style: TextStyle(
                               fontSize:
-                              MediaQuery.of(context).size.height / 50)),
+                                  MediaQuery.of(context).size.height / 50)),
                       style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
+                            MaterialStateProperty.all<Color>(Colors.black),
                       ),
                     ),
                   )
@@ -124,7 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           style: TextStyle(
                               color: Colors.lightBlue,
                               fontSize:
-                              MediaQuery.of(context).size.height / 30)),
+                                  MediaQuery.of(context).size.height / 30)),
                     ),
                   ),
                   Container(
@@ -137,7 +145,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   fontSize: MediaQuery.of(context).size.height /
                                       45))),
                       DropdownButton<String>(
-                        value: dropdownValueEntrance,
+                        value: entrance,
                         icon: Icon(Icons.arrow_downward,
                             size: MediaQuery.of(context).size.height / 30),
                         iconSize: 24,
@@ -149,21 +157,21 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         onChanged: (String? newValue) {
                           setState(() {
-                            dropdownValueEntrance = newValue!;
+                            entrance = newValue!;
                           });
                         },
                         items:
-                        OrganizationEntrances.map<DropdownMenuItem<String>>(
+                            OrganizationEntrances.map<DropdownMenuItem<String>>(
                                 (String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value,
-                                    style: TextStyle(
-                                        fontSize:
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value,
+                                style: TextStyle(
+                                    fontSize:
                                         MediaQuery.of(context).size.height /
                                             45)),
-                              );
-                            }).toList(),
+                          );
+                        }).toList(),
                       )
                     ]),
                   ),
@@ -198,7 +206,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 fontWeight: FontWeight.bold,
                                 color: switchTextColor,
                                 fontSize:
-                                MediaQuery.of(context).size.height / 50),
+                                    MediaQuery.of(context).size.height / 50),
                           ),
                         ],
                       )
@@ -216,7 +224,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
+                            MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                     ),
                   ),
@@ -231,18 +239,22 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Scan',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: MediaQuery.of(context).size.height / 40),
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor:
+                      onPressed: () async {
+                         await UserSharedPreferences.setSwitch(isSwitched);
+                         await UserSharedPreferences.setEntrance(entrance);
+                        _navigateToScannerPage();
+                      },
+                      child: Text(
+                        'Scan',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.height / 40),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.blue),
-                          ),
-                        )),
+                      ),
+                    )),
                   ],
                 ),
               ),

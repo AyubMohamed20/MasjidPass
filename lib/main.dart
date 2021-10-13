@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/loginscreen.dart';
 import 'package:masjid_pass/splashscreen.dart';
+import 'user_shared_preferences.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await UserSharedPreferences.init();
   runApp(const MyApp());
 }
 
