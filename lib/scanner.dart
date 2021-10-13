@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class Scanner extends StatefulWidget {
   const Scanner({Key? key}) : super(key: key);
 
@@ -28,43 +27,45 @@ class _ScannerState extends State<Scanner> {
         title: const Text("Scanner"),
       ),
       body: Stack(
-        children: [
-          Column(
-            children: <Widget>[
-              Expanded(
-                flex: 5,
-                child: Stack(
-                  children: [
-                    QRView(
-                      key: qrKey,
-                      onQRViewCreated: _onQRViewCreated,
-                    ),
-                    Center(
-                      child: Container(
-                        width: 300,
-                        height: 300,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.red,
-                            width: 4,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+        children: [_qrScannerView()],
+      ),
+    );
+  }
+
+  Widget _qrScannerView() {
+    return Column(
+      children: <Widget>[
+        Expanded(
+          flex: 5,
+          child: Stack(
+            children: [
+              QRView(
+                key: qrKey,
+                onQRViewCreated: _onQRViewCreated,
               ),
-              const Expanded(
-                flex: 1,
-                child: Center(
-                  child: Text('Scan a code'),
+              Center(
+                child: Container(
+                  width: 300,
+                  height: 300,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.red,
+                      width: 4,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               )
             ],
           ),
-        ],
-      ),
+        ),
+        const Expanded(
+          flex: 1,
+          child: Center(
+            child: Text('Scan a code'),
+          ),
+        )
+      ],
     );
   }
 
@@ -75,7 +76,7 @@ class _ScannerState extends State<Scanner> {
       if (await canLaunch(scanData.code)) {
         await launch(scanData.code);
         controller.resumeCamera();
-      }else{
+      } else {
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -101,7 +102,6 @@ class _ScannerState extends State<Scanner> {
           },
         ).then((value) => controller.resumeCamera());
       }
-
     });
   }
 }

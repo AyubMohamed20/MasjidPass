@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/scanner.dart';
 
-
 import 'main.dart';
 
 class ScannerPage extends StatefulWidget {
@@ -15,22 +14,19 @@ class ScannerPage extends StatefulWidget {
 
 class _ScannerPageState extends State<ScannerPage> {
   @override
-
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: Text(MyApp.title),
-    ),
-    body: Center(
-      child: ElevatedButton(
-          child: const Text('Scan'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Scanner()),
-            );
-          }),
-    ),
-
-  );
-
+        appBar: AppBar(
+          title: Text(MyApp.title),
+        ),
+        body: Center(
+          child: ElevatedButton(
+              child: const Text('Scan'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Scanner()),
+                );
+              }),
+        ),
+      );
 }
