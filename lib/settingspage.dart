@@ -25,7 +25,6 @@ class _SettingsPageState extends State<SettingsPage> {
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
-
   @override
   _navigateToScannerPage() async {
     Navigator.push(
@@ -59,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: Colors.white,
         appBar: null,
         drawerEnableOpenDragGesture: false,
-        drawer: InfoSideBannner(),
+        drawer: infoSideBanner(),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -71,42 +70,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   SizedBox(
                     width: MediaQuery.of(context).size.height / 8,
                     height: MediaQuery.of(context).size.height / 18,
-
-                    child: ElevatedButton(
-                      onPressed: () => showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: const Text('Confirmation'),
-                          content: const Text('Are you sure you want to logout?'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, 'Cancel'),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, 'Logout'),
-                              child: const Text('Logout'),
-                            ),
-                          ],
-                        ),
-                      ),
-                      child: Text('Logout',
-                          style: TextStyle(
-                              fontSize:
-                                  MediaQuery.of(context).size.height / 50)),
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.red),
-                      ),
-                    ),
+                    child: logoutButton(),
                   ),
-
                   SizedBox(
                     width: MediaQuery.of(context).size.width -
                         ((MediaQuery.of(context).size.height / 8) * 2) -
                         60,
                   ),
-
                   SizedBox(
                     width: MediaQuery.of(context).size.height / 8,
                     height: MediaQuery.of(context).size.height / 18,
@@ -131,7 +101,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 ],
               ),
             ),
-
             Expanded(
               flex: 10,
               child: Column(
@@ -148,12 +117,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                   MediaQuery.of(context).size.height / 30)),
                     ),
                   ),
-
                   Container(
                     margin: const EdgeInsets.only(
                         top: 10, left: 20, right: 20, bottom: 10),
                     child: Row(children: <Widget>[
-
                       Expanded(
                           child: Text("Select Door",
                               style: TextStyle(
@@ -254,17 +221,17 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            _navigateToScannerPage();
-                          },
-                          child: Text(
-                            'Scan',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: MediaQuery.of(context).size.height / 40),
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor:
+                      onPressed: () {
+                        _navigateToScannerPage();
+                      },
+                      child: Text(
+                        'Scan',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.height / 40),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                     )),
@@ -276,7 +243,34 @@ class _SettingsPageState extends State<SettingsPage> {
         ));
   }
 
-  Widget InfoSideBannner() {
+  Widget logoutButton() {
+    return ElevatedButton(
+      onPressed: () => showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Confirmation'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancel'),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Logout'),
+              child: const Text('Logout'),
+            ),
+          ],
+        ),
+      ),
+      child: Text('Logout',
+          style: TextStyle(fontSize: MediaQuery.of(context).size.height / 50)),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+      ),
+    );
+  }
+
+  Widget infoSideBanner() {
     return Drawer(
       child: ListView(
         children: [
@@ -343,31 +337,6 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ], //children
       ),
-    );
-  }
-}
-
-class LogoutDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('AlertDialog Title'),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: const <Widget>[
-            Text('This is a demo alert dialog.'),
-            Text('Would you like to approve of this message?'),
-          ],
-        ),
-      ),
-      actions: <Widget>[
-        TextButton(
-          child: const Text('Approve'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
     );
   }
 }
