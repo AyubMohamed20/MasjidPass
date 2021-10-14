@@ -23,7 +23,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isSwitched = false;
 
   final ButtonStyle style =
-  ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
   @override
   _navigateToScannerPage() async {
@@ -31,8 +31,8 @@ class _SettingsPageState extends State<SettingsPage> {
         context,
         MaterialPageRoute(
             builder: (context) => const ScannerPage(
-              title: "Scanner Page",
-            )));
+                  title: "Scanner Page",
+                )));
   }
 
   void toggleSwitch(bool value) {
@@ -58,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: Colors.white,
         appBar: null,
         drawerEnableOpenDragGesture: false,
-        drawer: InfoSideBannner(),
+        drawer: infoSideBanner(),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -70,17 +70,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   SizedBox(
                     width: MediaQuery.of(context).size.height / 8,
                     height: MediaQuery.of(context).size.height / 18,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text('Logout',
-                          style: TextStyle(
-                              fontSize:
-                              MediaQuery.of(context).size.height / 50)),
-                      style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.red),
-                      ),
-                    ),
+                    child: logoutButton(),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width -
@@ -101,10 +91,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       label: Text('Info',
                           style: TextStyle(
                               fontSize:
-                              MediaQuery.of(context).size.height / 50)),
+                                  MediaQuery.of(context).size.height / 50)),
                       style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
+                            MaterialStateProperty.all<Color>(Colors.black),
                       ),
                     ),
                   )
@@ -124,7 +114,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           style: TextStyle(
                               color: Colors.lightBlue,
                               fontSize:
-                              MediaQuery.of(context).size.height / 30)),
+                                  MediaQuery.of(context).size.height / 30)),
                     ),
                   ),
                   Container(
@@ -153,17 +143,17 @@ class _SettingsPageState extends State<SettingsPage> {
                           });
                         },
                         items:
-                        OrganizationEntrances.map<DropdownMenuItem<String>>(
+                            OrganizationEntrances.map<DropdownMenuItem<String>>(
                                 (String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value,
-                                    style: TextStyle(
-                                        fontSize:
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value,
+                                style: TextStyle(
+                                    fontSize:
                                         MediaQuery.of(context).size.height /
                                             45)),
-                              );
-                            }).toList(),
+                          );
+                        }).toList(),
                       )
                     ]),
                   ),
@@ -198,7 +188,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 fontWeight: FontWeight.bold,
                                 color: switchTextColor,
                                 fontSize:
-                                MediaQuery.of(context).size.height / 50),
+                                    MediaQuery.of(context).size.height / 50),
                           ),
                         ],
                       )
@@ -216,7 +206,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
+                            MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                     ),
                   ),
@@ -231,20 +221,20 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            _navigateToScannerPage();
-                          },
-                          child: Text(
-                            'Scan',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: MediaQuery.of(context).size.height / 40),
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor:
+                      onPressed: () {
+                        _navigateToScannerPage();
+                      },
+                      child: Text(
+                        'Scan',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.height / 40),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.blue),
-                          ),
-                        )),
+                      ),
+                    )),
                   ],
                 ),
               ),
@@ -253,7 +243,34 @@ class _SettingsPageState extends State<SettingsPage> {
         ));
   }
 
-  Widget InfoSideBannner() {
+  Widget logoutButton() {
+    return ElevatedButton(
+      onPressed: () => showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Confirmation'),
+          content: const Text('Are you sure you want to logout?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancel'),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Logout'),
+              child: const Text('Logout'),
+            ),
+          ],
+        ),
+      ),
+      child: Text('Logout',
+          style: TextStyle(fontSize: MediaQuery.of(context).size.height / 50)),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+      ),
+    );
+  }
+
+  Widget infoSideBanner() {
     return Drawer(
       child: ListView(
         children: [
