@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/views/scannerscreen.dart';
-import 'package:masjid_pass/views/loginscreen.dart';
+import 'package:masjid_pass/scannerscreen.dart';
+import 'package:masjid_pass/loginscreen.dart';
 
 //source from https://github.com/iamshaunjp/flutter-beginners-tutorial/blob/lesson-9/myapp/lib/main.dart
 

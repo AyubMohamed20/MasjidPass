@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/views/splashscreen.dart';
+import 'package:masjid_pass/splashscreen.dart';
 
 void main() {
   runApp(const MyApp());

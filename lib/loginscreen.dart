@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/views/settingspage.dart';
+import 'package:masjid_pass/settingspage.dart';
 
 //sourced from https://flutterawesome.com/a-simple-login-example-using-only-textfields-and-texteditingcontrollers/
 
