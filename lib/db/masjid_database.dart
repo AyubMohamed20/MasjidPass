@@ -4,6 +4,8 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:masjid_pass/models/user.dart';
+import 'package:masjid_pass/models/event.dart';
+import 'package:masjid_pass/models/visitor.dart';
 
 class MasjidDatabase{
   static final MasjidDatabase instance = MasjidDatabase._init();
@@ -34,6 +36,8 @@ class MasjidDatabase{
   Future _createDB(Database db, int version) async {
     final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     final textType = 'TEXT NOT NULL';
+    final boolType = 'BOOLEAN NOT NULL';
+    final integerType = 'INTEGER NOT NULL';
 
     ///create DB tables
     await db.execute('''
@@ -44,6 +48,30 @@ class MasjidDatabase{
     )
     ''');
 
+    await db.execute('''
+    CREATE TABLE $tableEvents (
+    ${EventFields.id} $idType ,
+    ${EventFields.organizationId} $integerType,
+    ${EventFields.eventDateTime} $textType,
+    ${EventFields.hall} $textType,
+    ${EventFields.capacity} $integerType,
+    ${EventFields.isPrivate} $boolType
+    )
+    ''');
+
+    await db.execute('''
+    CREATE TABLE $tableVisitors (
+    ${VisitorFields.id} $idType ,
+    ${VisitorFields.registrationId} $integerType,
+    ${VisitorFields.firstName} $textType
+    ${VisitorFields.lastName} $textType,
+    ${VisitorFields.email} $textType,
+    ${VisitorFields.phoneNumber} $textType,
+    ${VisitorFields.address} $textType,
+    ${VisitorFields.isMale} $boolType,
+    ${VisitorFields.registrationTime} $textType,
+    )
+    ''');
   }
 
   ///The function that closes the db
