@@ -25,6 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
+
   @override
   _navigateToScannerPage() async {
     Navigator.push(
@@ -253,15 +254,17 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Scan',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: MediaQuery.of(context).size.height / 40),
-                      ),
-                      style: ButtonStyle(
-                        backgroundColor:
+                          onPressed: () {
+                            _navigateToScannerPage();
+                          },
+                          child: Text(
+                            'Scan',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.height / 40),
+                          ),
+                          style: ButtonStyle(
+                            backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                     )),
