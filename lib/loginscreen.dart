@@ -16,6 +16,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _State extends State<LoginPage> {
+  GlobalKey<FormState> form = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -29,50 +30,89 @@ class _State extends State<LoginPage> {
                 )));
   }
 
+  void validate() {
+    if (form.currentState!.validate()) {
+      //  validate ()=>logingPressed();
+    } else {
+      print("Not validated");
+    }
+  }
+
+  String validation(value) {
+    if (value!.isEmpty) {
+      return "Required";
+    } else {
+      return "";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-            // ignore: prefer_const_constructors
-            padding: EdgeInsets.all(60),
-            child: ListView(
+      body: Padding(
+        padding: EdgeInsets.all(30),
+        child: Center(
+          child: Form(
+            autovalidateMode: AutovalidateMode.always,
+            key: form,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                // ignore: duplicate_ignore
-                Container(
-                  child: Image(
-                    image: AssetImage('assets/mosqueicon.png'),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    10,
+                    10,
+                    0,
+                    0,
                   ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  // ignore: prefer_const_constructors
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    'MasjidPass',
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 30),
-                  ),
-                ),
-
-                Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Sign in',
-                      style: TextStyle(fontSize: 20),
-                    )),
-                Container(
-                  height: 60.0,
-                  padding: EdgeInsets.all(10),
-                  child: TextField(
-                    controller: nameController,
+                  child: TextFormField(
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
-                    ),
+                        border: OutlineInputBorder(), labelText: 'User Name'),
+                    validator: validation,
                   ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    10,
+                    10,
+                    0,
+                    0,
+                  ),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(), labelText: 'Password'),
+                    validator: validation,
+                  ),
+                ),
+                Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      10,
+                      10,
+                      0,
+                      0,
+                    ),
+                    child: ElevatedButton(
+                      onPressed: validate,
+                      child: Text('Login'),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /* Container(
+                  height: 50.0,
+                  padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                  child: Form(
+                      child: Column(children: <Widget>[
+                    TextFormField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'User Name'))
+                  ])),
                 ),
                 Container(
                   height: 50.0,
@@ -88,97 +128,16 @@ class _State extends State<LoginPage> {
                 ),
                 Container(
                     height: 50,
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
                     child: ElevatedButton(
                       child: Text('Login'),
                       onPressed: _loginPressed,
                     )),
-              ],
+                             ],
             )));
-  }
-
+       
+  }*/
   void _loginPressed() {
     _navigateToSettings();
   }
 }
-
-/*
-import 'package:flutter/material.dart';
-
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    
-
-    return MaterialApp(
-      title: appTitle,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(appTitle),
-        ),
-        body: const MyCustomForm(),
-      ),
-    );
-  }
-}
-
-// Create a Form widget.
-class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({Key? key}) : super(key: key);
-
-  @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
-  }
-}
-
-
-class MyCustomFormState extends State<MyCustomForm> {
- 
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextFormField(
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              if (value  || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate()) {
-                  //NEED DATABASE FOR THIS//
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')),
-                  );
-                }
-              },
-              child: const Text('Submit'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-*/
