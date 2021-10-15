@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/scannerscreen.dart';
 
-import 'user_shared_preferences.dart';
+import 'shared_preferences/user_shared_preferences.dart';
 
 //source from https://github.com/iamshaunjp/flutter-beginners-tutorial/blob/lesson-9/myapp/lib/main.dart
 
