@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/settingspage.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -58,26 +59,31 @@ class _State extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    10,
-                    10,
-                    0,
-                    0,
+                Container(
+                  child: Text(
+                    "Masjid Check-in Scanner",
+                    textAlign: TextAlign.center,
+                    textScaleFactor: 2.0,
+                    style: TextStyle(color: Colors.blue),
                   ),
+                ),
+                Container(
+                  child: Icon(
+                    Icons.qr_code_scanner,
+                    color: Colors.blue,
+                    size: 100.0,
+                  ),
+                ),
+                Flexible(
+                  flex: 2,
                   child: TextFormField(
                     decoration: InputDecoration(
                         border: OutlineInputBorder(), labelText: 'User Name'),
                     validator: validation,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    10,
-                    10,
-                    0,
-                    0,
-                  ),
+                Flexible(
+                  flex: 2,
                   child: TextFormField(
                     decoration: InputDecoration(
                         border: OutlineInputBorder(), labelText: 'Password'),
@@ -92,7 +98,8 @@ class _State extends State<LoginPage> {
                       0,
                     ),
                     child: ElevatedButton(
-                      onPressed: validate,
+                      onPressed:
+                          showAlertDialog(context), //validate,//loginPressed,
                       child: Text('Login'),
                     )),
               ],
@@ -103,40 +110,45 @@ class _State extends State<LoginPage> {
     );
   }
 
-  /* Container(
-                  height: 50.0,
-                  padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                  child: Form(
-                      child: Column(children: <Widget>[
-                    TextFormField(
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'User Name'))
-                  ])),
-                ),
-                Container(
-                  height: 50.0,
-                  padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                  child: TextField(
-                    obscureText: true,
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                    ),
-                  ),
-                ),
-                Container(
-                    height: 50,
-                    padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                    child: ElevatedButton(
-                      child: Text('Login'),
-                      onPressed: _loginPressed,
-                    )),
-                             ],
-            )));
-       
-  }*/
+  showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget remindButton = TextButton(
+      child: Text("While using the App"),
+      onPressed: () {},
+    );
+    Widget cancelButton = TextButton(
+      child: Text("Only this time"),
+      onPressed: () {},
+    );
+    Widget launchButton = TextButton(
+      child: Text("Deny"),
+      onPressed: () {},
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(""),
+      content: Text(
+          "Allow Masjid Pass Check-in Scanner to access this device's location ? "),
+      actions: [
+        remindButton,
+        cancelButton,
+        launchButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  void progressIndicator() {
+    CircularProgressIndicator();
+    Future.delayed(const Duration(seconds: 20));
+  }
+
   void _loginPressed() {
     _navigateToSettings();
   }
