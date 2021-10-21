@@ -37,6 +37,9 @@ dependencies:
   flutter_login: ^2.2.1
   bubble: ^1.2.1
 
+  #database
+  sqflite: ^2.0.0+3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
