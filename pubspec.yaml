@@ -38,6 +38,9 @@ dependencies:
   bubble: ^1.2.1
   shared_preferences: ^2.0.8
 
+  #database
+  sqflite: ^2.0.0+3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

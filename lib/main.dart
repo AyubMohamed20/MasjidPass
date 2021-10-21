@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/loginscreen.dart';
 import 'package:masjid_pass/splashscreen.dart';
 import 'shared_preferences/user_shared_preferences.dart';
 
