@@ -17,7 +17,7 @@ class MasjidDatabase{
   Future<Database> get database async {
     if (_database != null) return _database!;
 
-    _database = await _initDB('masjidTestData.db');
+    _database = await _initDB('masjidTestingData.db');
     return _database!;
 
   }

@@ -28,8 +28,8 @@ class _SplashScreenState extends State<SplashScreen> {
     //addUser();
     //addEvent();
     //updateUser();
-    //refreshUsers();
-    //refreshEvents();
+    //displayUsers();
+    //displayEvents();
     //deleteUser();
     //deleteEvent();
     _navigateToSettings();
@@ -69,13 +69,13 @@ class _SplashScreenState extends State<SplashScreen> {
     await MasjidDatabase.instance.create(testUser);
   }
 
-  Future refreshUsers() async{
+  Future displayUsers() async{
 
     users = await MasjidDatabase.instance.readAllUsers();
     print(users);
   }
 
-  Future refreshEvents() async{
+  Future displayEvents() async{
 
     events = await MasjidDatabase.instance.readAllEvents();
     print(events);
