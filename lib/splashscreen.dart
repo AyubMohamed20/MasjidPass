@@ -15,6 +15,22 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
+class SizeConfig {
+  static MediaQueryData _mediaQueryData = 0 as MediaQueryData;
+  static double screenWidth = 0;
+  static double screenHeight = 0;
+  static double blockSizeHorizontal = 0;
+  static double blockSizeVertical = 0;
+
+  void init(BuildContext context) {
+    _mediaQueryData = MediaQuery.of(context);
+    screenWidth = _mediaQueryData.size.width;
+    screenHeight = _mediaQueryData.size.height;
+    blockSizeHorizontal = screenWidth / 100;
+    blockSizeVertical = screenHeight / 100;
+  }
+}
+
 class _SplashScreenState extends State<SplashScreen> {
   //holds the objects from each table
   late List<User> users;
@@ -110,6 +126,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
