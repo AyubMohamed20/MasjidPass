@@ -60,18 +60,18 @@ class _State extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
+                  child: Icon(
+                    Icons.qr_code_scanner,
+                    color: Colors.blue,
+                    size: 100.0,
+                  ),
+                ),
+                Container(
                   child: Text(
                     "Masjid Check-in Scanner",
                     textAlign: TextAlign.center,
                     textScaleFactor: 2.0,
                     style: TextStyle(color: Colors.blue),
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    Icons.qr_code_scanner,
-                    color: Colors.blue,
-                    size: 100.0,
                   ),
                 ),
                 Flexible(
@@ -99,7 +99,7 @@ class _State extends State<LoginPage> {
                     ),
                     child: ElevatedButton(
                       onPressed:
-                          showAlertDialog(context), //validate,//loginPressed,
+                          _loginPressed, // showAlertDialog(context), //validate,
                       child: Text('Login'),
                     )),
               ],
@@ -110,7 +110,7 @@ class _State extends State<LoginPage> {
     );
   }
 
-  showAlertDialog(BuildContext context) {
+  /* showAlertDialog(BuildContext context) {
     // set up the buttons
     Widget remindButton = TextButton(
       child: Text("While using the App"),
@@ -136,14 +136,14 @@ class _State extends State<LoginPage> {
       ],
     );
     // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+    //showDialog(
+    // context: context,
+    // {
+    //  return alert;
+    //},
+    // );
   }
-
+*/
   void progressIndicator() {
     CircularProgressIndicator();
     Future.delayed(const Duration(seconds: 20));
