@@ -6,7 +6,6 @@ class EventFields{
   static final String eventDateTime = 'eventDateTime';
   static final String hall = 'hall';
   static final String capacity = 'capacity';
-  static final String isPrivate = 'isPrivate';
 }
 
 class Event{
@@ -15,7 +14,6 @@ class Event{
   final DateTime eventDateTime;
   final String hall;
   final int capacity;
-  final bool isPrivate;
 
 
   const Event({
@@ -24,7 +22,6 @@ class Event{
     required this.eventDateTime,
     required this.hall,
     required this.capacity,
-    required this.isPrivate,
   });
 
   Event copy({
@@ -33,7 +30,6 @@ class Event{
     DateTime? eventDateTime,
     String? hall,
     int? capacity,
-    bool? isPrivate,
   }) =>
       Event(
         id: id ?? this.id,
@@ -41,7 +37,6 @@ class Event{
         eventDateTime: eventDateTime ?? this.eventDateTime,
         hall: hall ?? this.hall,
         capacity: capacity ?? this.capacity,
-        isPrivate: isPrivate ?? this.isPrivate,
       );
 
   ///converts JSON to Event object
@@ -51,7 +46,6 @@ class Event{
     eventDateTime: DateTime.parse(json[EventFields.eventDateTime] as String),
     hall: json[EventFields.hall] as String,
     capacity: json[EventFields.capacity] as int,
-    isPrivate: json[EventFields.isPrivate] == 1,
   );
 
   /// Convert a Event into JSON. The keys are the columns in the db table
@@ -62,15 +56,13 @@ class Event{
       EventFields.eventDateTime: eventDateTime.toIso8601String(),
       EventFields.hall: hall,
       EventFields.capacity: capacity,
-      EventFields.isPrivate: isPrivate? 1 : 0,
     };
   }
 
-
   //@override
- // String toString() {
-    //return 'test strinnnnnnng';
-    //return 'Event{id: $id, username: $username, password: $password}';
- // }
+ String toString() {
+    return 'Event{id: $id, organizationId: $organizationId, Event Date: $eventDateTime, '
+        'Hall: $hall, Capacity:$capacity}\n' ;
+ }
 
 }

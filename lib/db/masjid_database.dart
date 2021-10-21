@@ -17,7 +17,7 @@ class MasjidDatabase{
   Future<Database> get database async {
     if (_database != null) return _database!;
 
-    _database = await _initDB('masjid.db');
+    _database = await _initDB('masjidTestData.db');
     return _database!;
 
   }
@@ -44,32 +44,32 @@ class MasjidDatabase{
     CREATE TABLE $tableUsers (
     ${UserFields.id} $idType ,
     ${UserFields.username} $textType,
-    ${UserFields.password} $textType
+    ${UserFields.password} $textType,
+    ${UserFields.organizationId} $integerType
     )
     ''');
 
     await db.execute('''
     CREATE TABLE $tableEvents (
     ${EventFields.id} $idType ,
-    ${EventFields.organizationId} $integerType,
-    ${EventFields.eventDateTime} $textType,
-    ${EventFields.hall} $textType,
-    ${EventFields.capacity} $integerType,
-    ${EventFields.isPrivate} $boolType
+    ${EventFields.organizationId} $integerType ,
+    ${EventFields.eventDateTime} $textType ,
+    ${EventFields.hall} $textType ,
+    ${EventFields.capacity} $integerType
     )
     ''');
 
     await db.execute('''
     CREATE TABLE $tableVisitors (
     ${VisitorFields.id} $idType ,
-    ${VisitorFields.registrationId} $integerType,
-    ${VisitorFields.firstName} $textType
-    ${VisitorFields.lastName} $textType,
-    ${VisitorFields.email} $textType,
-    ${VisitorFields.phoneNumber} $textType,
-    ${VisitorFields.address} $textType,
-    ${VisitorFields.isMale} $boolType,
-    ${VisitorFields.registrationTime} $textType,
+    ${VisitorFields.eventId} $integerType ,
+    ${VisitorFields.firstName} $textType ,
+    ${VisitorFields.lastName} $textType ,
+    ${VisitorFields.email} $textType ,
+    ${VisitorFields.phoneNumber} $textType ,
+    ${VisitorFields.address} $textType ,
+    ${VisitorFields.isMale} $boolType ,
+    ${VisitorFields.registrationTime} $textType
     )
     ''');
   }
@@ -80,7 +80,7 @@ class MasjidDatabase{
     db.close();
   }
 
-  //CRUD FUNCTIONS
+  //USER CRUD FUNCTIONS
 
   /// Creates a user and the ID is auto generated
   Future<User> create(User user) async{
@@ -122,5 +122,89 @@ class MasjidDatabase{
 
   }
 
+  //EVENT CRUD
+
+  /// Creates a event and the ID is auto generated
+  Future<Event> createEvent(Event event) async{
+    final db = await MasjidDatabase.instance.database;
+    final id = await db.insert(tableEvents, event.toJson());
+    return event.copy(id: id);
+  }
+
+  ///Updates a event
+  Future<int> updateEvent (Event event) async {
+    final db = await MasjidDatabase.instance.database;
+    return db.update(
+      tableEvents,
+      event.toJson(),
+      where: '${EventFields.id} = ?',
+      whereArgs: [event.id],
+    );
+  }
+
+  Future<List<Event>> readAllEvents()async{
+    final db = await MasjidDatabase.instance.database;
+    final orderBy = '${EventFields.id} ASC';
+    final result = await db.query(tableEvents, orderBy: orderBy);
+    return result.map((json)=>Event.fromJson(json)).toList();
+  }
+
+  ///Deletes the Event table.
+  Future deleteAllEvents() async{
+    final db = await MasjidDatabase.instance.database;
+    return db.delete(tableEvents);
+
+  }
+
+  Future<int> deleteEvent(int id) async{
+    final db = await MasjidDatabase.instance.database;
+    return db.delete(
+      tableEvents,
+      where: '${EventFields.id} = ?',
+      whereArgs: [id],
+    );
+  }
+
+  //VISITOR CRUD
+
+  /// Creates a visitor and the ID is auto generated
+  Future<Visitor> createVisitor(Visitor visitor) async{
+    final db = await MasjidDatabase.instance.database;
+    final id = await db.insert(tableVisitors, visitor.toJson());
+    return visitor.copy(id: id);
+  }
+
+  ///Selects all events from the table
+  Future<List<Visitor>> readAllVisitors()async{
+    final db = await MasjidDatabase.instance.database;
+    final orderBy = '${VisitorFields.id} ASC';
+    final result = await db.query(tableVisitors, orderBy: orderBy);
+    return result.map((json)=>Visitor.fromJson(json)).toList();
+  }
+  ///Updates a event
+  Future<int> updateVisitor (Visitor visitor) async {
+    final db = await MasjidDatabase.instance.database;
+    return db.update(
+      tableVisitors,
+      visitor.toJson(),
+      where: '${VisitorFields.id} = ?',
+      whereArgs: [visitor.id],
+    );
+  }
+  ///Deletes a specified event.
+  Future<int> deleteVisitor(int id) async{
+    final db = await MasjidDatabase.instance.database;
+    return db.delete(
+      tableVisitors,
+      where: '${VisitorFields.id} = ?',
+      whereArgs: [id],
+    );
+  }
+  ///Deletes the Event table.
+  Future deleteAllVisitors() async{
+    final db = await MasjidDatabase.instance.database;
+    return db.delete(tableEvents);
+
+  }
 
 }

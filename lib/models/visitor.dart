@@ -2,7 +2,7 @@ final String tableVisitors = 'visitors';
 
 class VisitorFields{
   static final String id = '_id';
-  static final String registrationId = 'registrationId';
+  static final String eventId = 'eventId';
   static final String firstName = 'organizationId';
   static final String lastName = 'eventDateTime';
   static final String email = 'hall';
@@ -15,7 +15,7 @@ class VisitorFields{
 
 class Visitor{
   final int? id;
-  final int registrationId;
+  final int eventId;
   final String firstName;
   final String lastName;
   final String email;
@@ -27,7 +27,7 @@ class Visitor{
 
   const Visitor({
     this.id,
-    required this.registrationId,
+    required this.eventId,
     required this.firstName,
     required this.lastName,
     required this.email,
@@ -39,7 +39,7 @@ class Visitor{
 
   Visitor copy({
     int? id,
-    int? registrationId,
+    int? eventId,
     String? firstName,
     String? lastName,
     String? email,
@@ -50,7 +50,7 @@ class Visitor{
   }) =>
       Visitor(
         id: id ?? this.id,
-        registrationId: registrationId ?? this.registrationId,
+        eventId: eventId ?? this.eventId,
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         email: email ?? this.email,
@@ -63,7 +63,7 @@ class Visitor{
   ///converts JSON to Visitor object
   static Visitor fromJson(Map<String, Object?>json)=> Visitor(
     id: json[VisitorFields.id] as int?,
-    registrationId: json[VisitorFields.registrationId] as int,
+    eventId: json[VisitorFields.eventId] as int,
     firstName: json[VisitorFields.firstName] as String,
     lastName: json[VisitorFields.lastName] as String,
     email: json[VisitorFields.email] as String,
@@ -77,7 +77,7 @@ class Visitor{
   Map<String, dynamic> toJson() {
     return {
       VisitorFields.id: id,
-      VisitorFields.registrationId: registrationId,
+      VisitorFields.eventId: eventId,
       VisitorFields.firstName: firstName,
       VisitorFields.lastName: lastName,
       VisitorFields.email: email,
@@ -86,6 +86,12 @@ class Visitor{
       VisitorFields.isMale: isMale? 1 : 0,
       VisitorFields.registrationTime: registrationTime.toIso8601String(),
     };
+  }
+
+  //@override
+  String toString() {
+    return 'Visitor{id: $id, eventId: eventId, First Name: $firstName, Last Name: $lastName, '
+        'email: $email, Phone#:$phoneNumber, Address: $address, Is Male?: $isMale, Registration Time: $registrationTime}\n';
   }
 
 

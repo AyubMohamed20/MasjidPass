@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:masjid_pass/main.dart';
 import 'package:masjid_pass/models/user.dart';
+import 'package:masjid_pass/models/event.dart';
+import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/db/masjid_database.dart';
 
 import 'loginscreen.dart';
@@ -13,19 +16,22 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  //holds the objects from each table
   late List<User> users;
-
-
+  late List<Event> events;
+  late List<Visitor> visitors;
 
 
   @override
   void initState(){
     super.initState();
-   //deleteUser();
-   // addUser();
-    //refreshUsers();
+    //addUser();
+    //addEvent();
     //updateUser();
-   refreshUsers();
+    //refreshUsers();
+    //refreshEvents();
+    //deleteUser();
+    //deleteEvent();
     _navigateToSettings();
   }
 
@@ -39,20 +45,25 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future updateUser() async{
-    final note = User(
-      id: 9,
+    int i=1;
+    int j=12;
+
+    final updateUser = User(
+      id: i,
       username: 'changed username',
       password: 'changed password',
+      organizationId: j
 
     );
 
-    await MasjidDatabase.instance.update(note);
+    await MasjidDatabase.instance.update(updateUser);
   }
 
   Future addUser() async{
     final testUser = User(
       username: 'testname',
       password: 'testpassword',
+      organizationId: 11
     );
 
     await MasjidDatabase.instance.create(testUser);
@@ -64,6 +75,27 @@ class _SplashScreenState extends State<SplashScreen> {
     print(users);
   }
 
+  Future refreshEvents() async{
+
+    events = await MasjidDatabase.instance.readAllEvents();
+    print(events);
+  }
+
+  Future deleteEvent() async{
+    int i =16;
+    await MasjidDatabase.instance.deleteEvent(1);
+  }
+
+  Future addEvent() async{
+    final testEvent = Event(
+      organizationId: 1,
+      eventDateTime: DateTime.now(),
+      hall: 'north',
+      capacity: 100,
+    );
+
+    await MasjidDatabase.instance.createEvent(testEvent);
+  }
 
 
   _navigateToSettings()async{
@@ -139,4 +171,5 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
+
 }
