@@ -23,6 +23,8 @@ class _SettingsPageState extends State<SettingsPage> {
   String switchText = "OUT";
   Color switchTextColor = Colors.red;
   bool isSwitched = false;
+  // 0 - Production Mode, 1 - Testing Mode
+  int scannerMode = 0;
 
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
@@ -33,6 +35,8 @@ class _SettingsPageState extends State<SettingsPage> {
     isSwitched = !UserSharedPreferences.getSwitch();
     toggleSwitch(isSwitched);
     entrance = UserSharedPreferences.getEntrance() ?? 'Mens';
+    scannerMode = UserSharedPreferences.getScannerMode() ?? 0;
+
   }
   @override
   _navigateToScannerPage() async {
