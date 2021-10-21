@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:masjid_pass/db/masjid_database.dart';
 import 'package:masjid_pass/settingspage.dart';
+
+import 'models/user.dart';
 
 //sourced from https://flutterawesome.com/a-simple-login-example-using-only-textfields-and-texteditingcontrollers/
 
@@ -156,9 +159,34 @@ class _LoginPageState extends State<LoginPage> {
 
   // These functions can self contain any user auth logic required, they all have access to _email and _password
 
-  void _loginPressed() {
+  Future<void> _loginPressed() async {
     print('The user wants to login with $_email and $_password');
-    _navigateToSettings();
+    bool? validLogin = await getLogin(_email, _password);
+    if(validLogin == true){
+      //TODO add success message
+      //TODO build function that saves the user data in shared preferences
+      print('its valid');//placeholder for testing
+      _navigateToSettings();
+    }else{
+      //TODO add error message
+      print('its NOT valid');//placeholder for testing
+    }
+  }
+
+  ///simple login functionality with DB using dummy data.
+  Future<bool> getLogin(String user, String password) async {
+
+    final db = await MasjidDatabase.instance.database;
+    final result = await db.query(tableUsers,
+      where: '${UserFields.username} = ? and ${UserFields.password} = ?',
+      whereArgs: [user, password],
+    );
+
+    if (result.length > 0){
+      print('successful query was $result');
+      return true;
+    }
+    return false;
   }
 
   void _createAccountPressed() {

@@ -25,10 +25,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState(){
     super.initState();
-    //addUser();
+   // addUser();
     //addEvent();
     //updateUser();
-    //displayUsers();
+    displayUsers();
     //displayEvents();
     //deleteUser();
     //deleteEvent();
@@ -61,8 +61,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future addUser() async{
     final testUser = User(
-      username: 'testname',
-      password: 'testpassword',
+      username: 'test',
+      password: '1234',
       organizationId: 11
     );
 
