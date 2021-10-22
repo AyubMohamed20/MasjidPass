@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/scannerscreen.dart';
+import 'package:masjid_pass/loginscreen.dart';
 
 //source from https://github.com/iamshaunjp/flutter-beginners-tutorial/blob/lesson-9/myapp/lib/main.dart
 
@@ -256,7 +257,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context, 'Logout'),
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage())),
               child: const Text('Logout'),
             ),
           ],
