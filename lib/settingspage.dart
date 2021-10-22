@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/scannerscreen.dart';
-
+import 'package:masjid_pass/models/event.dart';
 import 'shared_preferences/user_shared_preferences.dart';
 
 //source from https://github.com/iamshaunjp/flutter-beginners-tutorial/blob/lesson-9/myapp/lib/main.dart
@@ -19,11 +19,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
   List<String> OrganizationEntrances = ["Mens", "Womans", "Basement", "Gym"];
   String entrance = 'Mens';
-  String OrganizationName = "Organization Name";
+  String organizationName = "Organization Name";
   String switchText = "OUT";
   Color switchTextColor = Colors.red;
   bool isSwitched = false;
-  // 0 - Production Mode, 1 - Testing Mode
+  bool eventsSelected = false;
+  bool internetAvailability = false;
   int scannerMode = 0;
 
   final ButtonStyle style =
@@ -32,11 +33,13 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
+    // Gets preferences if the were set
     isSwitched = !UserSharedPreferences.getSwitch();
     toggleSwitch(isSwitched);
     entrance = UserSharedPreferences.getEntrance() ?? 'Mens';
     scannerMode = UserSharedPreferences.getScannerMode() ?? 0;
-
+    eventsSelected = UserSharedPreferences.getEventSelected() ?? false;
+    internetAvailability = UserSharedPreferences.getInternetAvailability() ?? false;
   }
   @override
   _navigateToScannerPage() async {
@@ -123,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     margin: const EdgeInsets.only(right: 10, left: 10),
                     child: FittedBox(
                       fit: BoxFit.fitWidth,
-                      child: Text(OrganizationName,
+                      child: Text(organizationName,
                           style: TextStyle(
                               color: Colors.lightBlue,
                               fontSize:
@@ -235,8 +238,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     Expanded(
                         child: ElevatedButton(
                       onPressed: () async {
+                         // Sets Preferences
                          await UserSharedPreferences.setSwitch(isSwitched);
                          await UserSharedPreferences.setEntrance(entrance);
+                         await UserSharedPreferences.setInternetAvailability(internetAvailability);
                         _navigateToScannerPage();
                       },
                       child: Text(

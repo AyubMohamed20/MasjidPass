@@ -6,10 +6,8 @@ class UserSharedPreferences {
   static const _keyEntrance = "Entrance";
   static const _keySwitch = "Switch";
   static const _keyScannerMode = "Scanner Mode";
-
   static const _keyInternetAvailability = "Internet Availability";
   static const _keyEventSelected = "Event Selected";
-
   static const _keyLoggedIn = "Logged In";
 
   static Future init() async =>
