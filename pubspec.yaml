@@ -36,6 +36,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_login: ^2.2.1
   form_field_validator: ^1.1.0
+  bubble: ^1.2.1
+
+  #database
+  sqflite: ^2.0.0+3
 
 dev_dependencies:
   flutter_test:
@@ -50,19 +54,11 @@ dev_dependencies:
   flutter_native_splash: ^0.2.8
 
 flutter_native_splash:
-  color: "#32b3a4"
-  image: assets/splashscreen.png
+  color: "#74b1c4"
   android: true
   ios: true
   android_gravity: fill
   ios_content_mode: scaleAspectFill
-
-  # color: "#ffffff"
-  # image: assets/splash_full.png
-  # color_dark: "#1a1a1a"
-  # image_dark: assets/splash_full.png
-  # android: true
-  # ios: true
 
 flutter:
 
@@ -72,11 +68,6 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  
-
-  assets:
-   - assets/mosqueicon.png
-  
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
