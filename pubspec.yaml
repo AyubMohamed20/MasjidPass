@@ -38,9 +38,13 @@ dependencies:
   flutter_login: ^2.2.1
   qr_code_scanner: ^0.5.2
   url_launcher: ^6.0.12
+  form_field_validator: ^1.1.0
   bubble: ^1.2.1
   permission_handler: ^8.2.5
 
+
+  #database
+  sqflite: ^2.0.0+3
 
 dev_dependencies:
   flutter_test:
@@ -70,8 +74,6 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-     - assets/scanner.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
