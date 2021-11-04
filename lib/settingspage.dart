@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/scannerscreen.dart';
 import 'package:masjid_pass/loginscreen.dart';
+import 'package:masjid_pass/scannerscreen.dart';
 import 'package:masjid_pass/shared_preferences/user_shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -31,18 +31,18 @@ class _SettingsPageState extends State<SettingsPage> {
   int denied_cnt = 0;
 
   final ButtonStyle style =
-  ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
   @override
   void initState() {
     super.initState();
-    // Gets preferences if the were set
     isSwitched = !UserSharedPreferences.getSwitch();
     toggleSwitch(isSwitched);
     entrance = UserSharedPreferences.getEntrance() ?? 'Mens';
     scannerMode = UserSharedPreferences.getScannerMode() ?? 0;
     eventsSelected = UserSharedPreferences.getEventSelected() ?? false;
-    internetAvailability = UserSharedPreferences.getInternetAvailability() ?? false;
+    internetAvailability =
+        UserSharedPreferences.getInternetAvailability() ?? false;
   }
 
   _checkCameraPermission() async {
@@ -50,57 +50,57 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: const Text('Camera Permission'),
-          content: const Text(
-              'Your app needs camera access to take QR scanner.'),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: const Text('Deny'),
-              onPressed: () => showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    if (denied_cnt > 0) {
-                      denied_cnt = 0;
-                      return AlertDialog(
-                        title: const Text("Camera Permission"),
-                        content: const Text(
-                            "You have to go to app's settings and grant permissions manually."),
-                        actions: [
-                          TextButton(
-                            child: const Text("OK"),
-                            onPressed: () {
-                              Navigator.pop(denyContext, true);
-                              Navigator.pop(context, true);
-                            },
-                          )
-                        ],
-                      );
-                    }
-                    return AlertDialog(
-                      title: const Text("Camera Permission"),
-                      content: const Text("You denied camera access."),
-                      actions: [
-                        TextButton(
-                          child: const Text("OK"),
-                          onPressed: () {
-                            denied_cnt++;
-                            Navigator.pop(context, false);
-                          },
-                        )
-                      ],
-                    );
-                  }),
-            ),
-            CupertinoDialogAction(
-                child: const Text('Grant'),
-                onPressed: () async => {
-                  Navigator.pop(denyContext, true),
-                  await Permission.camera.isGranted
-                      ? _grantCamera()
-                      : openAppSettings(),
-                }),
-          ],
-        ));
+              title: const Text('Camera Permission'),
+              content: const Text(
+                  'Your app needs camera access to take QR scanner.'),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: const Text('Deny'),
+                  onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        if (denied_cnt > 0) {
+                          denied_cnt = 0;
+                          return AlertDialog(
+                            title: const Text("Camera Permission"),
+                            content: const Text(
+                                "You have to go to app's settings and grant permissions manually."),
+                            actions: [
+                              TextButton(
+                                child: const Text("OK"),
+                                onPressed: () {
+                                  Navigator.pop(denyContext, true);
+                                  Navigator.pop(context, true);
+                                },
+                              )
+                            ],
+                          );
+                        }
+                        return AlertDialog(
+                          title: const Text("Camera Permission"),
+                          content: const Text("You denied camera access."),
+                          actions: [
+                            TextButton(
+                              child: const Text("OK"),
+                              onPressed: () {
+                                denied_cnt++;
+                                Navigator.pop(context, false);
+                              },
+                            )
+                          ],
+                        );
+                      }),
+                ),
+                CupertinoDialogAction(
+                    child: const Text('Grant'),
+                    onPressed: () async => {
+                          Navigator.pop(denyContext, true),
+                          await Permission.camera.isGranted
+                              ? _grantCamera()
+                              : openAppSettings(),
+                        }),
+              ],
+            ));
   }
 
   _grantCamera() async {
@@ -108,8 +108,8 @@ class _SettingsPageState extends State<SettingsPage> {
         context,
         MaterialPageRoute(
             builder: (context) => const ScannerPage(
-              title: "Scanner Page",
-            )));
+                  title: "Scanner Page",
+                )));
   }
 
   _navigateToScannerPage() async {
@@ -172,10 +172,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       label: Text('Info',
                           style: TextStyle(
                               fontSize:
-                              MediaQuery.of(context).size.height / 50)),
+                                  MediaQuery.of(context).size.height / 50)),
                       style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
+                            MaterialStateProperty.all<Color>(Colors.black),
                       ),
                     ),
                   )
@@ -195,7 +195,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           style: TextStyle(
                               color: Colors.lightBlue,
                               fontSize:
-                              MediaQuery.of(context).size.height / 30)),
+                                  MediaQuery.of(context).size.height / 30)),
                     ),
                   ),
                   Container(
@@ -224,17 +224,17 @@ class _SettingsPageState extends State<SettingsPage> {
                           });
                         },
                         items:
-                        OrganizationEntrances.map<DropdownMenuItem<String>>(
+                            OrganizationEntrances.map<DropdownMenuItem<String>>(
                                 (String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value,
-                                    style: TextStyle(
-                                        fontSize:
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value,
+                                style: TextStyle(
+                                    fontSize:
                                         MediaQuery.of(context).size.height /
                                             45)),
-                              );
-                            }).toList(),
+                          );
+                        }).toList(),
                       )
                     ]),
                   ),
@@ -269,7 +269,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 fontWeight: FontWeight.bold,
                                 color: switchTextColor,
                                 fontSize:
-                                MediaQuery.of(context).size.height / 50),
+                                    MediaQuery.of(context).size.height / 50),
                           ),
                         ],
                       )
@@ -287,7 +287,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
+                            MaterialStateProperty.all<Color>(Colors.blue),
                       ),
                     ),
                   ),
@@ -302,20 +302,24 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            _navigateToScannerPage();
-                          },
-                          child: Text(
-                            'Scan',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: MediaQuery.of(context).size.height / 40),
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor:
+                      onPressed: () async {
+                        await UserSharedPreferences.setSwitch(isSwitched);
+                        await UserSharedPreferences.setEntrance(entrance);
+                        await UserSharedPreferences.setInternetAvailability(
+                            internetAvailability);
+                        _navigateToScannerPage();
+                      },
+                      child: Text(
+                        'Scan',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.height / 40),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.blue),
-                          ),
-                        )),
+                      ),
+                    )),
                   ],
                 ),
               ),
@@ -337,7 +341,16 @@ class _SettingsPageState extends State<SettingsPage> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage())),
+              onPressed: () async {
+                await UserSharedPreferences.setUserLoggedIn(false);
+                await UserSharedPreferences.setSwitch(false);
+                await UserSharedPreferences.setEntrance("Mens");
+                await UserSharedPreferences.setInternetAvailability(false);
+                await UserSharedPreferences.setScannerMode(0);
+                await UserSharedPreferences.setEventSelected(false);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginPage()));
+              },
               child: const Text('Logout'),
             ),
           ],
