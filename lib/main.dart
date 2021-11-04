@@ -10,7 +10,7 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
+  static final String title = 'QR Code Scanner';
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
