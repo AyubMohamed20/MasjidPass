@@ -1,8 +1,11 @@
 import 'package:bubble/bubble.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/settingspage.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'db/masjid_database.dart';
 import 'models/visitor.dart';
@@ -34,6 +37,9 @@ class SizeConfig {
 
 class _ScannerPageState extends State<ScannerPage>
     with SingleTickerProviderStateMixin {
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  late QRViewController controller;
+
   List<Widget> criticalErrorMessagesBubbles = [];
 
   String messageText = "Initial Text";
@@ -62,8 +68,14 @@ class _ScannerPageState extends State<ScannerPage>
         context,
         MaterialPageRoute(
             builder: (context) => const SettingsPage(
-              title: "Settings Page",
-            )));
+                  title: "Settings Page",
+                )));
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -74,7 +86,7 @@ class _ScannerPageState extends State<ScannerPage>
         appBar: null,
         body: Stack(
           children: [
-            qrScanner(),
+            qrScannerView(),
             scanHistory(),
             if (hasIndicator ||
                 hasMessage ||
@@ -116,14 +128,72 @@ class _ScannerPageState extends State<ScannerPage>
         ));
   }
 
-  Widget qrScanner() {
-    return Container(
-      width: SizeConfig.screenWidth,
-      height: SizeConfig.screenHeight,
-      color: Colors.blueGrey,
-      child: const FittedBox(child: Icon(Icons.qr_code_scanner)),
+  Widget qrScannerView() {
+    return Column(
+      children: <Widget>[
+        Expanded(
+          flex: 5,
+          child: Stack(
+            children: [
+              QRView(
+                key: qrKey,
+                onQRViewCreated: onQRViewCreated,
+              ),
+              Center(
+                child: Container(
+                  width: 300,
+                  height: 300,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.red,
+                      width: 4,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
     );
 
+  }
+
+  void onQRViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((scanData) async {
+      controller.pauseCamera();
+      if (await canLaunch(scanData.code)) {
+        await launch(scanData.code);
+        controller.resumeCamera();
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('QR Code Scan Result'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text('Barcode Type: ${describeEnum(scanData.format)}'),
+                    Text('Data: ${scanData.code}'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Ok'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        ).then((value) => controller.resumeCamera());
+      }
+    });
   }
 
   Widget scanHistory() {
@@ -131,9 +201,9 @@ class _ScannerPageState extends State<ScannerPage>
     double drawerHeightMin = SizeConfig.blockSizeVertical * 6;
 
     Widget iconUp =
-    Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
+        Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
     Widget iconDown =
-    Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
+        Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -176,12 +246,12 @@ class _ScannerPageState extends State<ScannerPage>
                   label: Text(
                     'SCAN HISTORY',
                     style:
-                    TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
+                        TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
                   ),
                   icon: scanHistoryFlag ? iconDown : iconUp,
                   style: ButtonStyle(
                     backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.lightBlue),
+                        MaterialStateProperty.all<Color>(Colors.lightBlue),
                     alignment: Alignment.centerLeft,
                   ),
                 ),
@@ -334,7 +404,7 @@ class _ScannerPageState extends State<ScannerPage>
     } else if (successIndicator) {
       indicatorColor = Colors.green;
       indicatorIcon =
-      const Icon(Icons.check_circle_outline, color: Colors.white);
+          const Icon(Icons.check_circle_outline, color: Colors.white);
     } else if (warningIndicator) {
       indicatorColor = Colors.amberAccent;
       indicatorIcon = const Icon(Icons.error_outline, color: Colors.white);
@@ -405,8 +475,7 @@ class _ScannerPageState extends State<ScannerPage>
               _navigateToSettingsPage();
             },
             child: Text('SETTINGS',
-                style: TextStyle(
-                    fontSize: SizeConfig.blockSizeVertical * 2)),
+                style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2)),
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
             ),
@@ -421,19 +490,21 @@ class _ScannerPageState extends State<ScannerPage>
 
     if (criticalErrorMessagesBubbles.isEmpty) {
       criticalErrorMessagesBubbles.add(SizedBox(
-        height:  SizeConfig.blockSizeHorizontal * 6,
+        height: SizeConfig.blockSizeHorizontal * 6,
       ));
     }
     if (criticalErrorMessagesBubbles.length < 10) {
       criticalErrorMessagesBubbles.add(Bubble(
         alignment: Alignment.center,
         color: Colors.red,
-        margin: BubbleEdges.only(top: SizeConfig.blockSizeHorizontal * 2, bottom: SizeConfig.blockSizeHorizontal * 2),
+        margin: BubbleEdges.only(
+            top: SizeConfig.blockSizeHorizontal * 2,
+            bottom: SizeConfig.blockSizeHorizontal * 2),
         child: Text(
           messageText,
           style: TextStyle(
               color: Colors.white,
-              fontSize:  SizeConfig.blockSizeHorizontal * 3.4),
+              fontSize: SizeConfig.blockSizeHorizontal * 3.4),
           textAlign: TextAlign.center,
         ),
       ));
@@ -522,7 +593,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 7:
                 {
                   messageText =
-                  "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
+                      "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
                   trueToFalse();
                   initializeCriticalErrorMessagesBubbles();
                   hasCriticalErrorMessage = true;
