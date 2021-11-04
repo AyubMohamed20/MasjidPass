@@ -15,6 +15,22 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
+class SizeConfig {
+  static MediaQueryData _mediaQueryData = 0 as MediaQueryData;
+  static double screenWidth = 0;
+  static double screenHeight = 0;
+  static double blockSizeHorizontal = 0;
+  static double blockSizeVertical = 0;
+
+  void init(BuildContext context) {
+    _mediaQueryData = MediaQuery.of(context);
+    screenWidth = _mediaQueryData.size.width;
+    screenHeight = _mediaQueryData.size.height;
+    blockSizeHorizontal = screenWidth / 100;
+    blockSizeVertical = screenHeight / 100;
+  }
+}
+
 class _SplashScreenState extends State<SplashScreen> {
   //holds the objects from each table
   late List<User> users;
@@ -25,10 +41,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState(){
     super.initState();
-    //addUser();
+   // addUser();
     //addEvent();
+   // addVisitor();
     //updateUser();
-    //displayUsers();
+    displayUsers();
+    displayVisitors();
     //displayEvents();
     //deleteUser();
     //deleteEvent();
@@ -61,8 +79,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future addUser() async{
     final testUser = User(
-      username: 'testname',
-      password: 'testpassword',
+      username: 'test',
+      password: '1234',
       organizationId: 11
     );
 
@@ -97,6 +115,28 @@ class _SplashScreenState extends State<SplashScreen> {
     await MasjidDatabase.instance.createEvent(testEvent);
   }
 
+  Future addVisitor() async{
+    final testVisitor = Visitor(
+      eventId: 5,
+      firstName: 'Homer',
+      lastName: 'Simpson',
+      email: 'fake@email.com',
+      phoneNumber: '555-5555',
+      address: '123 Fake Street',
+      isMale: true,
+      registrationTime: DateTime.now(),
+    );
+
+    await MasjidDatabase.instance.createVisitor(testVisitor);
+  }
+  Future displayVisitors() async{
+
+    visitors = await MasjidDatabase.instance.readAllVisitors();
+    print(visitors);
+  }
+
+
+
 
   _navigateToSettings()async{
     await Future.delayed(Duration(milliseconds: 4000));
@@ -110,6 +150,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
