@@ -1,7 +1,11 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/settingspage.dart';
+
+import 'db/masjid_database.dart';
+import 'models/visitor.dart';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({Key? key, required this.title}) : super(key: key);
@@ -119,6 +123,7 @@ class _ScannerPageState extends State<ScannerPage>
       color: Colors.blueGrey,
       child: const FittedBox(child: Icon(Icons.qr_code_scanner)),
     );
+
   }
 
   Widget scanHistory() {
@@ -553,5 +558,21 @@ class _ScannerPageState extends State<ScannerPage>
     visitLogUploadTimeoutMessage = false;
     hasProgressIndicator = false;
     hasSavedScansIndicator = false;
+  }
+
+  ///simple login functionality with DB using dummy data.
+  Future<bool> validateQRWithDb(String user, String password) async {
+
+    final db = await MasjidDatabase.instance.database;
+    final result = await db.query(tableVisitors,
+      where: '${VisitorFields} = ? and ${UserFields.password} = ?',
+      whereArgs: [user, password],
+    );
+
+    if (result.length > 0){
+      print('successful query was $result');
+      return true;
+    }
+    return false;
   }
 }
