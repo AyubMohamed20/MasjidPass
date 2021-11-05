@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'db/masjid_database.dart';
 import 'models/visitor.dart';
+import 'dart:convert';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({Key? key, required this.title}) : super(key: key);
@@ -168,6 +169,7 @@ class _ScannerPageState extends State<ScannerPage>
         await launch(scanData.code);
         controller.resumeCamera();
       } else {
+        IncomingScan(scanData.code);
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -178,6 +180,7 @@ class _ScannerPageState extends State<ScannerPage>
                   children: <Widget>[
                     Text('Barcode Type: ${describeEnum(scanData.format)}'),
                     Text('Data: ${scanData.code}'),
+
                   ],
                 ),
               ),
@@ -550,6 +553,7 @@ class _ScannerPageState extends State<ScannerPage>
                 }
                 break;
 
+
               case 3:
                 {
                   messageText = "Visit Log Upload Timeout Message";
@@ -631,19 +635,37 @@ class _ScannerPageState extends State<ScannerPage>
     hasSavedScansIndicator = false;
   }
 
-  ///simple login functionality with DB using dummy data.
-  Future<bool> validateQRWithDb(String user, String password) async {
+  ///Queries the DB using the eventID ,firstName, lastName of the visitor scan to the DB table. Returns true or false.
+  Future<bool> validateQRWithDb(int eventId, String fName, String lName) async {
 
     final db = await MasjidDatabase.instance.database;
     final result = await db.query(tableVisitors,
-      where: '${VisitorFields} = ? and ${UserFields.password} = ?',
-      whereArgs: [user, password],
+      where: '${VisitorFields.eventId} = ? and ${VisitorFields.firstName} = ? and ${VisitorFields.lastName} = ?' ,
+      whereArgs: [eventId, fName, lName],
     );
 
     if (result.length > 0){
       print('successful query was $result');
+
       return true;
     }
     return false;
+  }
+
+  IncomingScan(String scan) async{
+    final visitorScan = jsonDecode(scan);
+    int eventId = visitorScan["eventId"];
+    String firstName= visitorScan["firstName"];
+    String lastName= visitorScan["lastName"];
+
+    bool? validScan = await validateQRWithDb(eventId, firstName, lastName);
+
+    if(validScan) {
+      //TODO success message and indicator toggle indicator
+      //TODO add scan to future offline logs here?
+      //TODO any other things after a scan /before another?
+    }else if (!validScan){
+      //TODO toggle error message/indicator
+    }
   }
 }

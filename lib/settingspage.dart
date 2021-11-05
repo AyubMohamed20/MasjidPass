@@ -4,12 +4,12 @@ import 'package:masjid_pass/scannerscreen.dart';
 import 'package:masjid_pass/loginscreen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-//source from https://github.com/iamshaunjp/flutter-beginners-tutorial/blob/lesson-9/myapp/lib/main.dart
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
+
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -25,6 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Color switchTextColor = Colors.red;
   bool isSwitched = false;
   int denied_cnt = 0;
+  bool _disableButtons = false;
 
   final ButtonStyle style =
   ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
@@ -100,6 +101,10 @@ class _SettingsPageState extends State<SettingsPage> {
     _checkCameraPermission();
   }
 
+  _delayForDisabledButtons()async{
+    await Future.delayed(Duration(milliseconds: 1000));
+    _disableButtons = false;
+  }
   // _navigateToScannerPage() async {
   //   Navigator.push(
   //       context,
@@ -125,14 +130,18 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         appBar: null,
         drawerEnableOpenDragGesture: false,
         drawer: infoSideBanner(),
+
+
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -194,6 +203,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   Container(
                     margin: const EdgeInsets.only(
                         top: 10, left: 20, right: 20, bottom: 10),
+                    child: IgnorePointer(
+                      ignoring: _disableButtons,
+
                     child: Row(children: <Widget>[
                       Expanded(
                           child: Text("Select Door",
@@ -230,13 +242,16 @@ class _SettingsPageState extends State<SettingsPage> {
                             }).toList(),
                       )
                     ]),
-                  ),
+                    )),
                   Container(
+
                     margin: EdgeInsets.only(
                         top: 10,
                         left: 20,
                         right: MediaQuery.of(context).size.height / 20,
                         bottom: 10),
+                      child: IgnorePointer(
+                        ignoring: _disableButtons,
                     child: Row(children: <Widget>[
                       Expanded(
                           child: Text("Select Direction",
@@ -267,9 +282,11 @@ class _SettingsPageState extends State<SettingsPage> {
                         ],
                       )
                     ]),
-                  ),
+                    )),
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 20,
+                    child: IgnorePointer(
+                      ignoring: _disableButtons,
                     child: ElevatedButton(
                       onPressed: () {},
                       child: Text(
@@ -284,6 +301,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
+                  ),
                 ],
               ),
             ),
@@ -291,12 +309,19 @@ class _SettingsPageState extends State<SettingsPage> {
               flex: 1,
               child: Container(
                 margin: const EdgeInsets.all(10),
+                child: IgnorePointer(
+                  ignoring: _disableButtons,
                 child: Row(
                   children: [
                     Expanded(
                         child: ElevatedButton(
                           onPressed: () {
+                            //disables buttons when Scan button is pressed.
+                            _disableButtons = true;
+                            _delayForDisabledButtons();
+                            //TODO add indicator? Maybe
                             _navigateToScannerPage();
+
                           },
                           child: Text(
                             'Scan',
@@ -311,10 +336,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         )),
                   ],
                 ),
+                ),
               ),
             )
           ],
-        ));
+        ),
+    );
+
   }
 
   Widget logoutButton() {

@@ -41,9 +41,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState(){
     super.initState();
-   // addUser();
+   //addUser();
     //addEvent();
-   // addVisitor();
+   //addVisitor();
     //updateUser();
     displayUsers();
     displayVisitors();

@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   String username = '';
   Color backColor = Colors.white;
   String password = '';
-  final message2 = "masjidPass2021";
+  final message2 = "";
   String wrongCreds = "";
 
   _navigateToSettings() async {
