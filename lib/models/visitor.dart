@@ -90,7 +90,7 @@ class Visitor{
 
   //@override
   String toString() {
-    return 'Visitor{id: $id, eventId: eventId, First Name: $firstName, Last Name: $lastName, '
+    return 'Visitor{id: $id, eventId: $eventId, First Name: $firstName, Last Name: $lastName, '
         'email: $email, Phone#:$phoneNumber, Address: $address, Is Male?: $isMale, Registration Time: $registrationTime}\n';
   }
 
