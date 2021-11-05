@@ -36,7 +36,8 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    isSwitched = !UserSharedPreferences.getSwitch();
+    isSwitched = UserSharedPreferences.getSwitch() ?? false;
+    isSwitched = isSwitched ? false : true;
     toggleSwitch(isSwitched);
     entrance = UserSharedPreferences.getEntrance() ?? 'Mens';
     scannerMode = UserSharedPreferences.getScannerMode() ?? 0;
