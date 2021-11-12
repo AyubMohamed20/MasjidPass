@@ -336,7 +336,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             internetAvailability);
                         _disableButtons = true;
                         _delayForDisabledButtons();
-                        //_navigateToScannerPage();
+                        _navigateToScannerPage();
                       },
                       child: Text(
                         'Scan',
