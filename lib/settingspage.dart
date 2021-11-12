@@ -29,6 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool internetAvailability = false;
   int scannerMode = 0;
   int denied_cnt = 0;
+  bool _disableButtons = false;
 
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
@@ -102,6 +103,17 @@ class _SettingsPageState extends State<SettingsPage> {
                         }),
               ],
             ));
+  }
+
+  _delayForDisabledButtons()async{
+    await Future.delayed(Duration(milliseconds: 5000),(){
+
+      setState(() {
+        _disableButtons = false;
+      });
+
+    });
+
   }
 
   _grantCamera() async {
@@ -202,6 +214,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   Container(
                     margin: const EdgeInsets.only(
                         top: 10, left: 20, right: 20, bottom: 10),
+                    child: IgnorePointer(
+                      ignoring: _disableButtons,
+
                     child: Row(children: <Widget>[
                       Expanded(
                           child: Text("Select Door",
@@ -238,13 +253,16 @@ class _SettingsPageState extends State<SettingsPage> {
                         }).toList(),
                       )
                     ]),
-                  ),
+                    )),
                   Container(
                     margin: EdgeInsets.only(
                         top: 10,
                         left: 20,
                         right: MediaQuery.of(context).size.height / 20,
                         bottom: 10),
+                    child: IgnorePointer(
+                      ignoring: _disableButtons,
+
                     child: Row(children: <Widget>[
                       Expanded(
                           child: Text("Select Direction",
@@ -275,9 +293,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         ],
                       )
                     ]),
-                  ),
+                    )),
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 20,
+                    child: IgnorePointer(
+                      ignoring: _disableButtons,
+
                     child: ElevatedButton(
                       onPressed: () {},
                       child: Text(
@@ -292,6 +313,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
+                  ),
                 ],
               ),
             ),
@@ -299,6 +321,10 @@ class _SettingsPageState extends State<SettingsPage> {
               flex: 1,
               child: Container(
                 margin: const EdgeInsets.all(10),
+                child: IgnorePointer(
+                  ignoring: _disableButtons,
+
+
                 child: Row(
                   children: [
                     Expanded(
@@ -308,7 +334,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         await UserSharedPreferences.setEntrance(entrance);
                         await UserSharedPreferences.setInternetAvailability(
                             internetAvailability);
-                        _navigateToScannerPage();
+                        _disableButtons = true;
+                        _delayForDisabledButtons();
+                        //_navigateToScannerPage();
                       },
                       child: Text(
                         'Scan',
@@ -322,6 +350,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     )),
                   ],
+                ),
                 ),
               ),
             )

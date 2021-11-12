@@ -17,7 +17,7 @@ class MasjidDatabase{
   Future<Database> get database async {
     if (_database != null) return _database!;
 
-    _database = await _initDB('masjidTestingData.db');
+    _database = await _initDB('masjidTestingData1.db');
     return _database!;
 
   }
@@ -63,13 +63,15 @@ class MasjidDatabase{
     CREATE TABLE $tableVisitors (
     ${VisitorFields.id} $idType ,
     ${VisitorFields.eventId} $integerType ,
-    ${VisitorFields.firstName} $textType ,
-    ${VisitorFields.lastName} $textType ,
-    ${VisitorFields.email} $textType ,
-    ${VisitorFields.phoneNumber} $textType ,
-    ${VisitorFields.address} $textType ,
-    ${VisitorFields.isMale} $boolType ,
-    ${VisitorFields.registrationTime} $textType
+    ${VisitorFields.visitorId} $integerType ,
+    ${VisitorFields.organization} $textType ,
+    ${VisitorFields.door} $textType ,
+    ${VisitorFields.direction} $textType ,
+    ${VisitorFields.scannerVersion} $textType ,
+    ${VisitorFields.deviceId} $textType ,
+    ${VisitorFields.deviceLocation} $textType ,
+    ${VisitorFields.bookingOverride} $boolType ,
+    ${VisitorFields.capacityOverride} $boolType
     )
     ''');
   }
