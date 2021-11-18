@@ -5,6 +5,9 @@ import 'package:masjid_pass/scannerscreen.dart';
 import 'package:masjid_pass/shared_preferences/user_shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'db/masjid_database.dart';
+import 'models/visitor.dart';
+
 //source from https://github.com/iamshaunjp/flutter-beginners-tutorial/blob/lesson-9/myapp/lib/main.dart
 
 class SettingsPage extends StatefulWidget {
@@ -143,6 +146,20 @@ class _SettingsPageState extends State<SettingsPage> {
         switchTextColor = Colors.red;
       });
     }
+  }
+
+  ///Grabs the info for the Organization's name, the entrance, and direction
+  ///and updates the Visitor entry so the information can be grabbed
+  ///in the scanner page from the DB.
+  addVisitInfoToDb(String switchText, String entrance,String organizationName) async{
+    final db = await MasjidDatabase.instance.database;
+    await db.rawUpdate('''
+    UPDATE $tableVisitors 
+    SET door = ?, direction = ?, organization = ?
+    WHERE _id = ?
+    ''',
+        ['$entrance', '$switchText', '$organizationName', 1]);
+
   }
 
   @override
@@ -335,6 +352,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         await UserSharedPreferences.setInternetAvailability(
                             internetAvailability);
                         _disableButtons = true;
+                        addVisitInfoToDb(switchText, entrance, organizationName);
                         _delayForDisabledButtons();
                         _navigateToScannerPage();
                       },

@@ -1,6 +1,5 @@
 final String tableVisitors = 'visitors';
 
-//visitorId, organization, door, direction, eventId, bookingOverride, capacityOverride, scannerVersion, deviceId, deviceLocation,
 
 class VisitorFields{
   static final String id = '_id';
