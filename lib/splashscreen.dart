@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     // addUser();
     //addEvent();
-    // addVisitor();
+     //addVisitor();
     //updateUser();
     displayUsers();
     displayVisitors();
@@ -112,13 +112,15 @@ class _SplashScreenState extends State<SplashScreen> {
   Future addVisitor() async {
     final testVisitor = Visitor(
       eventId: 5,
-      firstName: 'Homer',
-      lastName: 'Simpson',
-      email: 'fake@email.com',
-      phoneNumber: '555-5555',
-      address: '123 Fake Street',
-      isMale: true,
-      registrationTime: DateTime.now(),
+      visitorId: 1,
+      organization: 'Spiral Forge',
+      door: 'north',
+      direction: 'in',
+      scannerVersion: '1.0',
+      deviceId: '',
+      deviceLocation: '',
+      bookingOverride: true,
+      capacityOverride: false,
     );
 
     await MasjidDatabase.instance.createVisitor(testVisitor);

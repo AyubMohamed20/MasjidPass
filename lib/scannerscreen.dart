@@ -636,12 +636,12 @@ class _ScannerPageState extends State<ScannerPage>
   }
 
   ///Queries the DB using the eventID ,firstName, lastName of the visitor scan to the DB table. Returns true or false.
-  Future<bool> validateQRWithDb(int eventId, String fName, String lName) async {
+  Future<bool> validateQRWithDb(int eventId, int visitorId, String organization) async {
 
     final db = await MasjidDatabase.instance.database;
     final result = await db.query(tableVisitors,
-      where: '${VisitorFields.eventId} = ? and ${VisitorFields.firstName} = ? and ${VisitorFields.lastName} = ?' ,
-      whereArgs: [eventId, fName, lName],
+      where: '${VisitorFields.eventId} = ? and ${VisitorFields.visitorId} = ? and ${VisitorFields.organization} = ?' ,
+      whereArgs: [eventId, visitorId, organization],
     );
 
     if (result.length > 0){
@@ -655,10 +655,10 @@ class _ScannerPageState extends State<ScannerPage>
   IncomingScan(String scan) async{
     final visitorScan = jsonDecode(scan);
     int eventId = visitorScan["eventId"];
-    String firstName= visitorScan["firstName"];
-    String lastName= visitorScan["lastName"];
+    int visitorId= visitorScan["visitorId"];
+    String organization= visitorScan["organization"];
 
-    bool? validScan = await validateQRWithDb(eventId, firstName, lastName);
+    bool? validScan = await validateQRWithDb(eventId, visitorId, organization);
 
     if(validScan) {
       //TODO success message and indicator toggle indicator

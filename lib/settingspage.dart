@@ -5,6 +5,9 @@ import 'package:masjid_pass/scannerscreen.dart';
 import 'package:masjid_pass/shared_preferences/user_shared_preferences.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'db/masjid_database.dart';
+import 'models/visitor.dart';
+
 //source from https://github.com/iamshaunjp/flutter-beginners-tutorial/blob/lesson-9/myapp/lib/main.dart
 
 class SettingsPage extends StatefulWidget {
@@ -29,6 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool internetAvailability = false;
   int scannerMode = 0;
   int denied_cnt = 0;
+  bool _disableButtons = false;
 
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
@@ -104,6 +108,17 @@ class _SettingsPageState extends State<SettingsPage> {
             ));
   }
 
+  _delayForDisabledButtons()async{
+    await Future.delayed(Duration(milliseconds: 5000),(){
+
+      setState(() {
+        _disableButtons = false;
+      });
+
+    });
+
+  }
+
   _grantCamera() async {
     Navigator.push(
         context,
@@ -131,6 +146,20 @@ class _SettingsPageState extends State<SettingsPage> {
         switchTextColor = Colors.red;
       });
     }
+  }
+
+  ///Grabs the info for the Organization's name, the entrance, and direction
+  ///and updates the Visitor entry so the information can be grabbed
+  ///in the scanner page from the DB.
+  addVisitInfoToDb(String switchText, String entrance,String organizationName) async{
+    final db = await MasjidDatabase.instance.database;
+    await db.rawUpdate('''
+    UPDATE $tableVisitors 
+    SET door = ?, direction = ?, organization = ?
+    WHERE _id = ?
+    ''',
+        ['$entrance', '$switchText', '$organizationName', 1]);
+
   }
 
   @override
@@ -202,6 +231,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   Container(
                     margin: const EdgeInsets.only(
                         top: 10, left: 20, right: 20, bottom: 10),
+                    child: IgnorePointer(
+                      ignoring: _disableButtons,
+
                     child: Row(children: <Widget>[
                       Expanded(
                           child: Text("Select Door",
@@ -238,13 +270,16 @@ class _SettingsPageState extends State<SettingsPage> {
                         }).toList(),
                       )
                     ]),
-                  ),
+                    )),
                   Container(
                     margin: EdgeInsets.only(
                         top: 10,
                         left: 20,
                         right: MediaQuery.of(context).size.height / 20,
                         bottom: 10),
+                    child: IgnorePointer(
+                      ignoring: _disableButtons,
+
                     child: Row(children: <Widget>[
                       Expanded(
                           child: Text("Select Direction",
@@ -275,9 +310,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         ],
                       )
                     ]),
-                  ),
+                    )),
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 20,
+                    child: IgnorePointer(
+                      ignoring: _disableButtons,
+
                     child: ElevatedButton(
                       onPressed: () {},
                       child: Text(
@@ -292,6 +330,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
+                  ),
                 ],
               ),
             ),
@@ -299,6 +338,10 @@ class _SettingsPageState extends State<SettingsPage> {
               flex: 1,
               child: Container(
                 margin: const EdgeInsets.all(10),
+                child: IgnorePointer(
+                  ignoring: _disableButtons,
+
+
                 child: Row(
                   children: [
                     Expanded(
@@ -308,6 +351,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         await UserSharedPreferences.setEntrance(entrance);
                         await UserSharedPreferences.setInternetAvailability(
                             internetAvailability);
+                        _disableButtons = true;
+                        addVisitInfoToDb(switchText, entrance, organizationName);
+                        _delayForDisabledButtons();
                         _navigateToScannerPage();
                       },
                       child: Text(
@@ -322,6 +368,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     )),
                   ],
+                ),
                 ),
               ),
             )
