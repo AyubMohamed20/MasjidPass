@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/scannerscreen.dart';
 import 'package:masjid_pass/loginscreen.dart';
+import 'package:masjid_pass/scannerscreen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 //source from https://github.com/iamshaunjp/flutter-beginners-tutorial/blob/lesson-9/myapp/lib/main.dart
 
@@ -25,6 +26,10 @@ class _SettingsPageState extends State<SettingsPage> {
   Color switchTextColor = Colors.red;
   bool isSwitched = false;
   int denied_cnt = 0;
+  String device_id = 'f774690826290hd832';
+  int scanner_clicked = 0;
+  int mode_index = 0;
+  String mode_name = 'TEST';
 
   final ButtonStyle style =
   ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
@@ -100,15 +105,6 @@ class _SettingsPageState extends State<SettingsPage> {
     _checkCameraPermission();
   }
 
-  // _navigateToScannerPage() async {
-  //   Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //           builder: (context) => const ScannerPage(
-  //                 title: "Scanner Page",
-  //               )));
-  // }
-
   void toggleSwitch(bool value) {
     if (isSwitched == false) {
       setState(() {
@@ -157,6 +153,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     child: ElevatedButton.icon(
                       onPressed: () {
                         _scaffoldKey.currentState!.openDrawer();
+                        scanner_clicked = 0;
                       },
                       icon: Icon(
                         Icons.info,
@@ -180,6 +177,18 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Container(
+                    margin:
+                    const EdgeInsets.only(right: 10, left: 10, bottom: 50),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text('This is $mode_name Mode',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize:
+                              MediaQuery.of(context).size.height / 30)),
+                    ),
+                  ),
                   Container(
                     margin: const EdgeInsets.only(right: 10, left: 10),
                     child: FittedBox(
@@ -330,7 +339,8 @@ class _SettingsPageState extends State<SettingsPage> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage())),
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const LoginPage())),
               child: const Text('Logout'),
             ),
           ],
@@ -370,8 +380,33 @@ class _SettingsPageState extends State<SettingsPage> {
               'Device ID',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: Text('f774690826290hd832'),
-            onTap: () => null,
+            subtitle: Text(device_id),
+            onTap: () => {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Copy Result'),
+                    content: SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          Text('Device ID: $device_id'),
+                          const Text('You copied Device ID'),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Ok'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              )
+            },
           ),
           const Divider(
             thickness: 2,
@@ -382,7 +417,7 @@ class _SettingsPageState extends State<SettingsPage> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Text('2.8'),
-            onTap: () => null,
+            onTap: () => {_scannerClick()},
           ),
           const Divider(
             thickness: 2,
@@ -412,5 +447,91 @@ class _SettingsPageState extends State<SettingsPage> {
         ], //children
       ),
     );
+  }
+
+  _scannerClick() {
+    scanner_clicked++;
+    print('scanner clicked $scanner_clicked');
+    if (scanner_clicked == 15)
+        {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Center(child: Text('Scanner Mode')),
+            content: Center(
+              heightFactor: 1,
+              widthFactor: 2,
+              child: ToggleSwitch(
+                initialLabelIndex: 0,
+                totalSwitches: 3,
+                labels: const ['Current', 'Product', 'Test'],
+                onToggle: (index) {
+                  print('switched to: $index');
+                  mode_index = index;
+                  _onLoading();
+                },
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  scanner_clicked = 0;
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  void _onLoading() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const Dialog(
+          child: Center(
+            heightFactor: 7,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pop(context); //pop dialog
+      showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => Container(
+            width: 300,
+            height: 300,
+            child: AlertDialog(
+              title: const Text('Confirmation'),
+              contentPadding: const EdgeInsets.all(40.0),
+              content: const Text('Are you sure you want to logout?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage())),
+                  child: const Text('Logout'),
+                ),
+              ],
+            ),
+          ));
+      setState(() {
+        if (mode_index == 0) mode_name = 'Current';
+        if (mode_index == 1) mode_name = 'Product';
+        if (mode_index == 2) mode_name = 'Testing';
+      });
+    });
   }
 }
