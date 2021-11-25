@@ -64,6 +64,15 @@ class _ScannerPageState extends State<ScannerPage>
   bool hasSavedScansIndicator = false;
   int numCase = 0;
 
+  // Visit Info
+  late String organization;
+  late String door;
+  late bool directionIn;
+  late String scannerVersion;
+
+  // Saved Scan List
+  late List<Visitor> savedScans;
+
   _navigateToSettingsPage() async {
     Navigator.push(
         context,
@@ -71,6 +80,21 @@ class _ScannerPageState extends State<ScannerPage>
             builder: (context) => const SettingsPage(
                   title: "Settings Page",
                 )));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    onLoad();
+  }
+
+  void onLoad() {
+    //Todo: Get visit info from DB
+    organization = "SNMC";
+    door = "Mens";
+    directionIn = true;
+    scannerVersion = "3.0";
+    savedScans = [];
   }
 
   @override
