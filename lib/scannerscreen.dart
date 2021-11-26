@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bubble/bubble.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'db/masjid_database.dart';
 import 'models/visitor.dart';
-import 'dart:convert';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({Key? key, required this.title}) : super(key: key);
@@ -73,28 +74,35 @@ class _ScannerPageState extends State<ScannerPage>
   // Saved Scan List
   late List<Visitor> savedScans;
 
+  @override
+  void initState() {
+    super.initState();
+    // Initializes the list where the saved scans are stored on the Scanner UI
+    savedScans = [];
+    //Get visit info from DB
+    getVisitInfo();
+  }
+
+  Future<void> getVisitInfo() async {
+    final db = await MasjidDatabase.instance.database;
+    final result = await db.query(tableVisitors,where: '${VisitorFields.visitorId} = ?', whereArgs: [1]);
+    Map<String, dynamic> data = json.decode(jsonEncode(result.toList()[0]));
+
+    if(data.isNotEmpty) {
+      organization = data["organization"];
+      door = data["door"];
+      directionIn = (data["direction"] == "IN") ? true : false;
+      scannerVersion = data["scannerVersion"];
+    }
+  }
+
   _navigateToSettingsPage() async {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => const SettingsPage(
-                  title: "Settings Page",
-                )));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    onLoad();
-  }
-
-  void onLoad() {
-    //Todo: Get visit info from DB
-    organization = "SNMC";
-    door = "Mens";
-    directionIn = true;
-    scannerVersion = "3.0";
-    savedScans = [];
+              title: "Settings Page",
+            )));
   }
 
   @override
@@ -182,7 +190,6 @@ class _ScannerPageState extends State<ScannerPage>
         ),
       ],
     );
-
   }
 
   void onQRViewCreated(QRViewController controller) {
@@ -204,7 +211,6 @@ class _ScannerPageState extends State<ScannerPage>
                   children: <Widget>[
                     Text('Barcode Type: ${describeEnum(scanData.format)}'),
                     Text('Data: ${scanData.code}'),
-
                   ],
                 ),
               ),
@@ -577,7 +583,6 @@ class _ScannerPageState extends State<ScannerPage>
                 }
                 break;
 
-
               case 3:
                 {
                   messageText = "Visit Log Upload Timeout Message";
@@ -660,15 +665,17 @@ class _ScannerPageState extends State<ScannerPage>
   }
 
   ///Queries the DB using the eventID ,firstName, lastName of the visitor scan to the DB table. Returns true or false.
-  Future<bool> validateQRWithDb(int eventId, int visitorId, String organization) async {
-
+  Future<bool> validateQRWithDb(
+      int eventId, int visitorId, String organization) async {
     final db = await MasjidDatabase.instance.database;
-    final result = await db.query(tableVisitors,
-      where: '${VisitorFields.eventId} = ? and ${VisitorFields.visitorId} = ? and ${VisitorFields.organization} = ?' ,
+    final result = await db.query(
+      tableVisitors,
+      where:
+          '${VisitorFields.eventId} = ? and ${VisitorFields.visitorId} = ? and ${VisitorFields.organization} = ?',
       whereArgs: [eventId, visitorId, organization],
     );
 
-    if (result.length > 0){
+    if (result.length > 0) {
       print('successful query was $result');
 
       return true;
@@ -676,19 +683,19 @@ class _ScannerPageState extends State<ScannerPage>
     return false;
   }
 
-  IncomingScan(String scan) async{
+  IncomingScan(String scan) async {
     final visitorScan = jsonDecode(scan);
     int eventId = visitorScan["eventId"];
-    int visitorId= visitorScan["visitorId"];
-    String organization= visitorScan["organization"];
+    int visitorId = visitorScan["visitorId"];
+    String organization = visitorScan["organization"];
 
     bool? validScan = await validateQRWithDb(eventId, visitorId, organization);
 
-    if(validScan) {
+    if (validScan) {
       //TODO success message and indicator toggle indicator
       //TODO add scan to future offline logs here?
       //TODO any other things after a scan /before another?
-    }else if (!validScan){
+    } else if (!validScan) {
       //TODO toggle error message/indicator
     }
   }
