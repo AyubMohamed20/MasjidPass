@@ -124,7 +124,7 @@ class _ScannerPageState extends State<ScannerPage>
                   ],
                 ),
               ),
-            showcaseIndicators(),
+            //showcaseIndicators(),
           ],
         ));
   }
@@ -528,7 +528,7 @@ class _ScannerPageState extends State<ScannerPage>
             switch (numCase) {
               case 0:
                 {
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasProgressIndicator = true;
                   numCase++;
                 }
@@ -537,7 +537,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 1:
                 {
                   messageText = "Offline Success Indicator";
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasMessage = true;
                   hasIndicator = true;
                   offlineSuccessIndicator = true;
@@ -547,7 +547,7 @@ class _ScannerPageState extends State<ScannerPage>
 
               case 2:
                 {
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasSavedScansIndicator = true;
                   numCase++;
                 }
@@ -557,7 +557,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 3:
                 {
                   messageText = "Visit Log Upload Timeout Message";
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasMessage = true;
                   visitLogUploadTimeoutMessage = true;
                   numCase++;
@@ -567,7 +567,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 4:
                 {
                   messageText = "Success Indicator";
-                  trueToFalse();
+                  setFlagsToFalse();
                   successIndicator = true;
                   hasIndicator = true;
                   numCase++;
@@ -577,7 +577,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 5:
                 {
                   messageText = "Warning Indicator";
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasMessage = true;
                   hasIndicator = true;
                   warningIndicator = true;
@@ -587,7 +587,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 6:
                 {
                   messageText = "Error Indicator";
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasMessage = true;
                   hasIndicator = true;
                   errorIndicator = true;
@@ -598,7 +598,7 @@ class _ScannerPageState extends State<ScannerPage>
                 {
                   messageText =
                       "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
-                  trueToFalse();
+                  setFlagsToFalse();
                   initializeCriticalErrorMessagesBubbles();
                   hasCriticalErrorMessage = true;
                   numCase++;
@@ -607,7 +607,7 @@ class _ScannerPageState extends State<ScannerPage>
               default:
                 {
                   numCase = 0;
-                  trueToFalse();
+                  setFlagsToFalse();
                 }
                 break;
             }
@@ -622,7 +622,7 @@ class _ScannerPageState extends State<ScannerPage>
     );
   }
 
-  void trueToFalse() {
+  void setFlagsToFalse() {
     hasMessage = false;
     hasCriticalErrorMessage = false;
     hasIndicator = false;
@@ -652,20 +652,32 @@ class _ScannerPageState extends State<ScannerPage>
     return false;
   }
 
-  IncomingScan(String scan) async{
+  IncomingScan(String scan) async {
     final visitorScan = jsonDecode(scan);
     int eventId = visitorScan["eventId"];
     int visitorId= visitorScan["visitorId"];
     String organization= visitorScan["organization"];
 
     bool? validScan = await validateQRWithDb(eventId, visitorId, organization);
+    setFlagsToFalse();
 
     if(validScan) {
-      //TODO success message and indicator toggle indicator
-      //TODO add scan to future offline logs here?
-      //TODO any other things after a scan /before another?
+      messageText = "Success Indicator";
+      successIndicator = true;
+      hasIndicator = true;
     }else if (!validScan){
-      //TODO toggle error message/indicator
+      messageText = "Error Indicator";
+      hasMessage = true;
+      hasIndicator = true;
+      errorIndicator = true;
     }
+
+    setState(() {});
+    await Future.delayed(Duration(seconds: 5));
+    setFlagsToFalse();
+    setState(() {});
   }
 }
+
+
+
