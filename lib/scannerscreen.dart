@@ -1,7 +1,7 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:masjid_pass/indicatorpage.dart';
 import 'package:masjid_pass/settingspage.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -59,6 +59,10 @@ class _ScannerPageState extends State<ScannerPage>
   bool hasProgressIndicator = false;
   bool hasSavedScansIndicator = false;
   int numCase = 0;
+
+  late final AudioCache _audioCache = AudioCache(
+    fixedPlayer: AudioPlayer()..setReleaseMode(ReleaseMode.STOP),
+  );
 
   _navigateToSettingsPage() async {
     Navigator.push(
@@ -575,6 +579,7 @@ class _ScannerPageState extends State<ScannerPage>
                   trueToFalse();
                   successIndicator = true;
                   hasIndicator = true;
+                  _audioCache.play('success_notification.mp3');
                   numCase++;
                 }
                 break;
@@ -596,6 +601,7 @@ class _ScannerPageState extends State<ScannerPage>
                   hasMessage = true;
                   hasIndicator = true;
                   errorIndicator = true;
+                  _audioCache.play('failure_notification.mp3');
                   numCase++;
                 }
                 break;
