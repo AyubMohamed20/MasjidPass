@@ -418,11 +418,8 @@ class _ScannerPageState extends State<ScannerPage>
       indicatorIcon = const Icon(Icons.block_outlined, color: Colors.white);
     } else if (successIndicator) {
       indicatorColor = Colors.green;
-      indicatorIcon = const Icon(
-        Icons.check_circle_outline,
-        color: Colors.white,
-        size: 10,
-      );
+      indicatorIcon =
+      const Icon(Icons.check_circle_outline, color: Colors.white);
     } else if (warningIndicator) {
       indicatorColor = Colors.amberAccent;
       indicatorIcon = const Icon(Icons.error_outline, color: Colors.white);
@@ -434,12 +431,12 @@ class _ScannerPageState extends State<ScannerPage>
       decoration: BoxDecoration(
         color: indicatorColor,
         borderRadius: const BorderRadius.all(
-          Radius.circular(10.0),
+          Radius.circular(40.0),
         ),
         border: Border.all(color: Colors.black),
       ),
-      width: SizeConfig.blockSizeVertical * 10,
-      height: SizeConfig.blockSizeVertical * 10,
+      width: SizeConfig.blockSizeVertical * 33,
+      height: SizeConfig.blockSizeVertical * 33,
       child: FittedBox(child: indicatorIcon),
     );
   }
