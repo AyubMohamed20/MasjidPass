@@ -677,7 +677,7 @@ class _ScannerPageState extends State<ScannerPage>
   IncomingScan(String scan) async {
     final visitorScan = jsonDecode(scan);
     int visitorId = visitorScan["visitorId"];
-    
+
     bool? validScan = await validateQRWithDb(visitorId);
     setFlagsToFalse();
 
@@ -695,11 +695,12 @@ class _ScannerPageState extends State<ScannerPage>
       errorIndicator = true;
       initializeCriticalErrorMessagesBubbles();
 
-      setState(() {});
-      await Future.delayed(Duration(seconds: 5));
-      setFlagsToFalse();
-      setState(() {});
+
     }
+    setState(() {});
+    await Future.delayed(Duration(seconds: 5));
+    setFlagsToFalse();
+    setState(() {});
   }
 
 
