@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -60,10 +59,6 @@ class _ScannerPageState extends State<ScannerPage>
   bool hasSavedScansIndicator = false;
   int numCase = 0;
 
-  late final AudioCache _audioCache = AudioCache(
-    fixedPlayer: AudioPlayer()..setReleaseMode(ReleaseMode.STOP),
-  );
-
   _navigateToSettingsPage() async {
     Navigator.push(
         context,
@@ -81,6 +76,7 @@ class _ScannerPageState extends State<ScannerPage>
               title: "Indicator Page",
             )));
   }
+
 
   @override
   void dispose() {
@@ -579,7 +575,6 @@ class _ScannerPageState extends State<ScannerPage>
                   trueToFalse();
                   successIndicator = true;
                   hasIndicator = true;
-                  _audioCache.play('success_notification.mp3');
                   numCase++;
                 }
                 break;
@@ -601,7 +596,6 @@ class _ScannerPageState extends State<ScannerPage>
                   hasMessage = true;
                   hasIndicator = true;
                   errorIndicator = true;
-                  _audioCache.play('failure_notification.mp3');
                   numCase++;
                 }
                 break;
