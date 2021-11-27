@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +74,10 @@ class _ScannerPageState extends State<ScannerPage>
   // Saved Scan List
   late List<Visitor> savedScans;
 
+  late final AudioCache _audioCache = AudioCache(
+    fixedPlayer: AudioPlayer()..setReleaseMode(ReleaseMode.STOP),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -104,6 +108,8 @@ class _ScannerPageState extends State<ScannerPage>
               title: "Settings Page",
             )));
   }
+
+
 
   @override
   void dispose() {
@@ -692,11 +698,9 @@ class _ScannerPageState extends State<ScannerPage>
     bool? validScan = await validateQRWithDb(eventId, visitorId, organization);
 
     if (validScan) {
-      //TODO success message and indicator toggle indicator
-      //TODO add scan to future offline logs here?
-      //TODO any other things after a scan /before another?
+      _audioCache.play('success_notification.mp3');
     } else if (!validScan) {
-      //TODO toggle error message/indicator
+      _audioCache.play('failure_notification.mp3');
     }
   }
 }

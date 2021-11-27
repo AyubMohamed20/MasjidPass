@@ -46,6 +46,7 @@ dependencies:
 
   #database
   sqflite: ^2.0.0+3
+  audioplayers: any
 
 dev_dependencies:
   flutter_test:
@@ -81,7 +82,14 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-
+  assets:
+    - success_notification.mp3
+    - failure_notification.mp3
+    - infected_notification.mp3
+    - duplicate_scan_notification.mp3
+    - capacity_reached_notification.mp3
+    - not_booked_notification.mp3
+    - unverified_notification.mp3
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
