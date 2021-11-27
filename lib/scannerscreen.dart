@@ -46,6 +46,8 @@ class _ScannerPageState extends State<ScannerPage>
   String messageText = "Initial Text";
   String uploadPercentageText = "100%";
   String savedVisitLogsNumberText = "30/50";
+  String saveScan="";
+
 
   bool hasMessage = false;
   bool hasCriticalErrorMessage = false;
@@ -169,32 +171,7 @@ class _ScannerPageState extends State<ScannerPage>
         await launch(scanData.code);
         controller.resumeCamera();
       } else {
-        IncomingScan(scanData.code);
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('QR Code Scan Result'),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text('Barcode Type: ${describeEnum(scanData.format)}'),
-                    Text('Data: ${scanData.code}'),
-
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Ok'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        ).then((value) => controller.resumeCamera());
+        IncomingScan(scanData.code).then((value) => controller.resumeCamera());
       }
     });
   }
@@ -491,6 +468,18 @@ class _ScannerPageState extends State<ScannerPage>
   void initializeCriticalErrorMessagesBubbles() {
     // This function adds all critical error message bubbles to a list(criticalErrorMessagesBubbles), which will show in the scanner history.
 
+    Color scanHistoryBubbleColor = Colors.black;
+
+    if (errorIndicator || hasCriticalErrorMessage)
+      scanHistoryBubbleColor = Colors.red;
+    else if (successIndicator)
+      scanHistoryBubbleColor = Colors.green;
+    else if (warningIndicator)
+      scanHistoryBubbleColor = Colors.amberAccent;
+    else if (offlineSuccessIndicator)
+      scanHistoryBubbleColor = Colors.lightGreen;
+
+
     if (criticalErrorMessagesBubbles.isEmpty) {
       criticalErrorMessagesBubbles.add(SizedBox(
         height: SizeConfig.blockSizeHorizontal * 6,
@@ -499,7 +488,7 @@ class _ScannerPageState extends State<ScannerPage>
     if (criticalErrorMessagesBubbles.length < 10) {
       criticalErrorMessagesBubbles.add(Bubble(
         alignment: Alignment.center,
-        color: Colors.red,
+        color: scanHistoryBubbleColor,
         margin: BubbleEdges.only(
             top: SizeConfig.blockSizeHorizontal * 2,
             bottom: SizeConfig.blockSizeHorizontal * 2),
@@ -636,12 +625,12 @@ class _ScannerPageState extends State<ScannerPage>
   }
 
   ///Queries the DB using the eventID ,firstName, lastName of the visitor scan to the DB table. Returns true or false.
-  Future<bool> validateQRWithDb(int eventId, int visitorId, String organization) async {
+  Future<bool> validateQRWithDb(int visitorId) async {
 
     final db = await MasjidDatabase.instance.database;
     final result = await db.query(tableVisitors,
-      where: '${VisitorFields.eventId} = ? and ${VisitorFields.visitorId} = ? and ${VisitorFields.organization} = ?' ,
-      whereArgs: [eventId, visitorId, organization],
+      where: '${VisitorFields.visitorId} = ?' ,
+      whereArgs: [visitorId],
     );
 
     if (result.length > 0){
@@ -654,22 +643,27 @@ class _ScannerPageState extends State<ScannerPage>
 
   IncomingScan(String scan) async {
     final visitorScan = jsonDecode(scan);
-    int eventId = visitorScan["eventId"];
+   // int eventId = visitorScan["eventId"];
     int visitorId= visitorScan["visitorId"];
-    String organization= visitorScan["organization"];
+   // String organization= visitorScan["organization"];
 
-    bool? validScan = await validateQRWithDb(eventId, visitorId, organization);
+
+
+    bool? validScan = await validateQRWithDb(visitorId);
     setFlagsToFalse();
 
     if(validScan) {
-      messageText = "Success Indicator";
+      messageText = "Successful Scan: VisitorId: $visitorId";
+     // saveScan = "Successful Scan: VisitorId: $visitorId";
       successIndicator = true;
       hasIndicator = true;
+      initializeCriticalErrorMessagesBubbles();
     }else if (!validScan){
       messageText = "Error Indicator";
       hasMessage = true;
       hasIndicator = true;
       errorIndicator = true;
+      initializeCriticalErrorMessagesBubbles();
     }
 
     setState(() {});
