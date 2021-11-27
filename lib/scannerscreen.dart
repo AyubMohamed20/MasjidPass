@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:masjid_pass/indicatorpage.dart';
 import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/settingspage.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
