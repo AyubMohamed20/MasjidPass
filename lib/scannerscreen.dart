@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -75,6 +75,10 @@ class _ScannerPageState extends State<ScannerPage>
   // Saved Scan List
   late List<Visitor> savedScans;
 
+  late final AudioCache _audioCache = AudioCache(
+    fixedPlayer: AudioPlayer()..setReleaseMode(ReleaseMode.STOP),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -106,6 +110,8 @@ class _ScannerPageState extends State<ScannerPage>
                   title: "Settings Page",
                 )));
   }
+
+
 
   @override
   void dispose() {
@@ -683,12 +689,14 @@ class _ScannerPageState extends State<ScannerPage>
       successIndicator = true;
       hasIndicator = true;
       initializeCriticalErrorMessagesBubbles();
+      _audioCache.play('success_notification.mp3');
     } else if (!validScan) {
       messageText = "Invaild Scan: VisitorId: $visitorId ";
       hasMessage = true;
       hasIndicator = true;
       errorIndicator = true;
       initializeCriticalErrorMessagesBubbles();
+      _audioCache.play('failure_notification.mp3');
     }
     setState(() {});
     await Future.delayed(Duration(seconds: 5));
