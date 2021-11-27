@@ -1,10 +1,17 @@
+import 'dart:convert';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/indicatorpage.dart';
 import 'package:masjid_pass/settingspage.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'db/masjid_database.dart';
+import 'models/visitor.dart';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({Key? key, required this.title}) : super(key: key);
@@ -41,6 +48,7 @@ class _ScannerPageState extends State<ScannerPage>
   String messageText = "Initial Text";
   String uploadPercentageText = "100%";
   String savedVisitLogsNumberText = "30/50";
+  String saveScan = "";
 
   bool hasMessage = false;
   bool hasCriticalErrorMessage = false;
@@ -58,6 +66,42 @@ class _ScannerPageState extends State<ScannerPage>
   bool hasProgressIndicator = false;
   bool hasSavedScansIndicator = false;
   int numCase = 0;
+
+  // Visit Info
+  late String organization;
+  late String door;
+  late bool directionIn;
+  late String scannerVersion;
+
+  // Saved Scan List
+  late List<Visitor> savedScans;
+
+  late final AudioCache _audioCache = AudioCache(
+    fixedPlayer: AudioPlayer()..setReleaseMode(ReleaseMode.STOP),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    // Initializes the list where the saved scans are stored on the Scanner UI
+    savedScans = [];
+    //Get visit info from DB
+    getVisitInfo();
+  }
+
+  Future<void> getVisitInfo() async {
+    final db = await MasjidDatabase.instance.database;
+    final result = await db.query(tableVisitors,
+        where: '${VisitorFields.visitorId} = ?', whereArgs: [1]);
+    Map<String, dynamic> data = json.decode(jsonEncode(result.toList()[0]));
+
+    if (data.isNotEmpty) {
+      organization = data["organization"];
+      door = data["door"];
+      directionIn = (data["direction"] == "IN") ? true : false;
+      scannerVersion = data["scannerVersion"];
+    }
+  }
 
   _navigateToSettingsPage() async {
     Navigator.push(
@@ -129,7 +173,7 @@ class _ScannerPageState extends State<ScannerPage>
                   ],
                 ),
               ),
-            showcaseIndicators(),
+            //showcaseIndicators(),
           ],
         ));
   }
@@ -173,31 +217,7 @@ class _ScannerPageState extends State<ScannerPage>
         await launch(scanData.code);
         controller.resumeCamera();
       } else {
-        // _navigateToIndicatorPage();
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('QR Code Scan Result'),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Text('Barcode Type: ${describeEnum(scanData.format)}'),
-                    Text('Data: ${scanData.code}'),
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Ok'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        ).then((value) => controller.resumeCamera());
+        IncomingScan(scanData.code).then((value) => controller.resumeCamera());
       }
     });
   }
@@ -497,6 +517,17 @@ class _ScannerPageState extends State<ScannerPage>
   void initializeCriticalErrorMessagesBubbles() {
     // This function adds all critical error message bubbles to a list(criticalErrorMessagesBubbles), which will show in the scanner history.
 
+    Color scanHistoryBubbleColor = Colors.black;
+
+    if (errorIndicator || hasCriticalErrorMessage)
+      scanHistoryBubbleColor = Colors.red;
+    else if (successIndicator)
+      scanHistoryBubbleColor = Colors.green;
+    else if (warningIndicator)
+      scanHistoryBubbleColor = Colors.amberAccent;
+    else if (offlineSuccessIndicator)
+      scanHistoryBubbleColor = Colors.lightGreen;
+
     if (criticalErrorMessagesBubbles.isEmpty) {
       criticalErrorMessagesBubbles.add(SizedBox(
         height: SizeConfig.blockSizeHorizontal * 6,
@@ -505,7 +536,7 @@ class _ScannerPageState extends State<ScannerPage>
     if (criticalErrorMessagesBubbles.length < 10) {
       criticalErrorMessagesBubbles.add(Bubble(
         alignment: Alignment.center,
-        color: Colors.red,
+        color: scanHistoryBubbleColor,
         margin: BubbleEdges.only(
             top: SizeConfig.blockSizeHorizontal * 2,
             bottom: SizeConfig.blockSizeHorizontal * 2),
@@ -534,7 +565,7 @@ class _ScannerPageState extends State<ScannerPage>
             switch (numCase) {
               case 0:
                 {
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasProgressIndicator = true;
                   numCase++;
                 }
@@ -543,7 +574,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 1:
                 {
                   messageText = "Offline Success Indicator";
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasMessage = true;
                   hasIndicator = true;
                   offlineSuccessIndicator = true;
@@ -553,7 +584,7 @@ class _ScannerPageState extends State<ScannerPage>
 
               case 2:
                 {
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasSavedScansIndicator = true;
                   numCase++;
                 }
@@ -562,7 +593,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 3:
                 {
                   messageText = "Visit Log Upload Timeout Message";
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasMessage = true;
                   visitLogUploadTimeoutMessage = true;
                   numCase++;
@@ -572,7 +603,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 4:
                 {
                   messageText = "Success Indicator";
-                  trueToFalse();
+                  setFlagsToFalse();
                   successIndicator = true;
                   hasIndicator = true;
                   numCase++;
@@ -582,7 +613,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 5:
                 {
                   messageText = "Warning Indicator";
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasMessage = true;
                   hasIndicator = true;
                   warningIndicator = true;
@@ -592,7 +623,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 6:
                 {
                   messageText = "Error Indicator";
-                  trueToFalse();
+                  setFlagsToFalse();
                   hasMessage = true;
                   hasIndicator = true;
                   errorIndicator = true;
@@ -602,8 +633,8 @@ class _ScannerPageState extends State<ScannerPage>
               case 7:
                 {
                   messageText =
-                  "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
-                  trueToFalse();
+                      "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
+                  setFlagsToFalse();
                   initializeCriticalErrorMessagesBubbles();
                   hasCriticalErrorMessage = true;
                   numCase++;
@@ -612,7 +643,7 @@ class _ScannerPageState extends State<ScannerPage>
               default:
                 {
                   numCase = 0;
-                  trueToFalse();
+                  setFlagsToFalse();
                 }
                 break;
             }
@@ -627,7 +658,7 @@ class _ScannerPageState extends State<ScannerPage>
     );
   }
 
-  void trueToFalse() {
+  void setFlagsToFalse() {
     hasMessage = false;
     hasCriticalErrorMessage = false;
     hasIndicator = false;
@@ -638,5 +669,50 @@ class _ScannerPageState extends State<ScannerPage>
     visitLogUploadTimeoutMessage = false;
     hasProgressIndicator = false;
     hasSavedScansIndicator = false;
+  }
+
+  ///Queries the DB using the eventID ,firstName, lastName of the visitor scan to the DB table. Returns true or false.
+
+  Future<bool> validateQRWithDb(int visitorId) async {
+    final db = await MasjidDatabase.instance.database;
+    final result = await db.query(
+      tableVisitors,
+      where: '${VisitorFields.visitorId} = ?',
+      whereArgs: [visitorId],
+    );
+
+    if (result.length > 0) {
+      print('successful query was $result');
+
+      return true;
+    }
+    return false;
+  }
+
+  IncomingScan(String scan) async {
+    final visitorScan = jsonDecode(scan);
+    int visitorId = visitorScan["visitorId"];
+
+    bool? validScan = await validateQRWithDb(visitorId);
+    setFlagsToFalse();
+
+    if (validScan) {
+      messageText = "Successful Scan: VisitorId: $visitorId";
+      successIndicator = true;
+      hasIndicator = true;
+      initializeCriticalErrorMessagesBubbles();
+      _audioCache.play('success_notification.mp3');
+    } else if (!validScan) {
+      messageText = "Invaild Scan: VisitorId: $visitorId ";
+      hasMessage = true;
+      hasIndicator = true;
+      errorIndicator = true;
+      initializeCriticalErrorMessagesBubbles();
+      _audioCache.play('failure_notification.mp3');
+    }
+    setState(() {});
+    await Future.delayed(Duration(seconds: 5));
+    setFlagsToFalse();
+    setState(() {});
   }
 }

@@ -41,6 +41,7 @@ dependencies:
   form_field_validator: ^1.1.0
   bubble: ^1.2.1
   permission_handler: ^8.2.5
+  shared_preferences: ^2.0.8
 
 
   #database
@@ -83,6 +84,13 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - success_notification.mp3
+    - failure_notification.mp3
+    - infected_notification.mp3
+    - duplicate_scan_notification.mp3
+    - capacity_reached_notification.mp3
+    - not_booked_notification.mp3
+    - unverified_notification.mp3
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

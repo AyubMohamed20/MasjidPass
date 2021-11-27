@@ -1,76 +1,90 @@
 final String tableVisitors = 'visitors';
 
+
 class VisitorFields{
   static final String id = '_id';
   static final String eventId = 'eventId';
-  static final String firstName = 'organizationId';
-  static final String lastName = 'eventDateTime';
-  static final String email = 'hall';
-  static final String phoneNumber = 'capacity';
-  static final String address = 'address';
-  static final String isMale = 'isMale';
-  static final String registrationTime = 'registrationTime';
+  static final String visitorId = 'visitorId';
+  static final String organization = 'organization';
+  static final String door = 'door';
+  static final String direction = 'direction';
+  static final String scannerVersion = 'scannerVersion';
+  static final String deviceId = 'deviceId';
+  static final String deviceLocation = 'deviceLocation';
+  static final String bookingOverride = 'bookingOverride';
+  static final String capacityOverride = 'capacityOverride';
 
 }
 
 class Visitor{
   final int? id;
   final int eventId;
-  final String firstName;
-  final String lastName;
-  final String email;
-  final String phoneNumber;
-  final String address;
-  final bool isMale;
-  final DateTime registrationTime;
+  final int visitorId;
+  final String organization;
+  final String door;
+  final String direction;
+  final String scannerVersion;
+  final String deviceId;
+  final String deviceLocation;
+  final bool bookingOverride;
+  final bool capacityOverride;
+
 
 
   const Visitor({
     this.id,
     required this.eventId,
-    required this.firstName,
-    required this.lastName,
-    required this.email,
-    required this.phoneNumber,
-    required this.address,
-    required this.isMale,
-    required this.registrationTime,
+    required this.visitorId,
+    required this.organization,
+    required this.door,
+    required this.direction,
+    required this.scannerVersion,
+    required this.deviceId,
+    required this.deviceLocation,
+    required this.bookingOverride,
+    required this.capacityOverride,
   });
 
   Visitor copy({
     int? id,
     int? eventId,
-    String? firstName,
-    String? lastName,
-    String? email,
-    String? phoneNumber,
-    String? address,
-    bool? isMale,
-    DateTime? registrationTime,
+    int? visitorId,
+    String? organization,
+    String? door,
+    String? direction,
+    String? scannerVersion,
+    String? deviceId,
+    String? deviceLocation,
+    bool? bookingOverride,
+    bool? capacityOverride,
   }) =>
       Visitor(
         id: id ?? this.id,
         eventId: eventId ?? this.eventId,
-        firstName: firstName ?? this.firstName,
-        lastName: lastName ?? this.lastName,
-        email: email ?? this.email,
-        phoneNumber: phoneNumber ?? this.phoneNumber,
-        address: address ?? this.address,
-        isMale: isMale ?? this.isMale,
-        registrationTime: registrationTime ?? this.registrationTime,
+        visitorId: visitorId ?? this.visitorId,
+        organization: organization ?? this.organization,
+        door: door ?? this.door,
+        direction: direction ?? this.direction,
+        scannerVersion: scannerVersion ?? this.scannerVersion,
+        deviceId: deviceId ?? this.deviceId,
+        deviceLocation: deviceLocation ?? this.deviceLocation,
+        bookingOverride: bookingOverride ?? this.bookingOverride,
+        capacityOverride: capacityOverride ?? this.capacityOverride,
       );
 
   ///converts JSON to Visitor object
   static Visitor fromJson(Map<String, Object?>json)=> Visitor(
     id: json[VisitorFields.id] as int?,
     eventId: json[VisitorFields.eventId] as int,
-    firstName: json[VisitorFields.firstName] as String,
-    lastName: json[VisitorFields.lastName] as String,
-    email: json[VisitorFields.email] as String,
-    phoneNumber: json[VisitorFields.phoneNumber] as String,
-    address: json[VisitorFields.address] as String,
-    isMale: json[VisitorFields.isMale] == 1,
-    registrationTime: DateTime.parse(json[VisitorFields.registrationTime] as String),
+    visitorId: json[VisitorFields.visitorId] as int,
+    organization: json[VisitorFields.organization] as String,
+    door: json[VisitorFields.door] as String,
+    direction: json[VisitorFields.direction] as String,
+    scannerVersion: json[VisitorFields.scannerVersion] as String,
+    deviceId: json[VisitorFields.deviceId] as String,
+    deviceLocation: json[VisitorFields.deviceLocation] as String,
+    bookingOverride: json[VisitorFields.bookingOverride] == 1,
+    capacityOverride: json[VisitorFields.capacityOverride] == 1,
   );
 
   /// Convert a Visitor into JSON. The keys are the columns in the db table
@@ -78,20 +92,24 @@ class Visitor{
     return {
       VisitorFields.id: id,
       VisitorFields.eventId: eventId,
-      VisitorFields.firstName: firstName,
-      VisitorFields.lastName: lastName,
-      VisitorFields.email: email,
-      VisitorFields.phoneNumber: phoneNumber,
-      VisitorFields.address: address,
-      VisitorFields.isMale: isMale? 1 : 0,
-      VisitorFields.registrationTime: registrationTime.toIso8601String(),
+      VisitorFields.visitorId: visitorId,
+      VisitorFields.organization: organization,
+      VisitorFields.door: door,
+      VisitorFields.direction: direction,
+      VisitorFields.scannerVersion: scannerVersion,
+      VisitorFields.deviceId: deviceId,
+      VisitorFields.deviceLocation: deviceLocation,
+      VisitorFields.bookingOverride: bookingOverride? 1 : 0,
+      VisitorFields.capacityOverride: capacityOverride? 1 : 0,
+
     };
   }
 
   //@override
   String toString() {
-    return 'Visitor{id: $id, eventId: eventId, First Name: $firstName, Last Name: $lastName, '
-        'email: $email, Phone#:$phoneNumber, Address: $address, Is Male?: $isMale, Registration Time: $registrationTime}\n';
+    return 'Visitor{id: $id, eventId: $eventId, visitorID: $visitorId, Organization: $organization, '
+        'door: $door, direction:$direction, scannerVersion: $scannerVersion, deviceId: $deviceId,'
+        ' deviceLocation: $deviceLocation, bookingOverride: $bookingOverride, capacityOverride: $capacityOverride }\n';
   }
 
 

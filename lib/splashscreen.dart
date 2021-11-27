@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
-import 'package:masjid_pass/main.dart';
-import 'package:masjid_pass/models/user.dart';
-import 'package:masjid_pass/models/event.dart';
-import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/db/masjid_database.dart';
+import 'package:masjid_pass/models/event.dart';
+import 'package:masjid_pass/models/user.dart';
+import 'package:masjid_pass/models/visitor.dart';
+import 'package:masjid_pass/settingspage.dart';
+import 'package:masjid_pass/shared_preferences/user_shared_preferences.dart';
 
 import 'loginscreen.dart';
 
@@ -36,75 +36,69 @@ class _SplashScreenState extends State<SplashScreen> {
   late List<User> users;
   late List<Event> events;
   late List<Visitor> visitors;
-
+  bool userLoggedIn = false;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-   // addUser();
+    // addUser();
     //addEvent();
-   // addVisitor();
+    // addVisitor();
     //updateUser();
     displayUsers();
     displayVisitors();
     //displayEvents();
     //deleteUser();
     //deleteEvent();
-    _navigateToSettings();
+    userLoggedIn = UserSharedPreferences.getUserLoggedIn() ?? false;
+    _navigateToPage();
   }
 
-  Future deleteUser() async{
-    int i =16;
+  Future deleteUser() async {
+    int i = 16;
     await MasjidDatabase.instance.delete(i);
   }
-  Future deleteAll() async{
 
+  Future deleteAll() async {
     await MasjidDatabase.instance.deleteAll();
   }
 
-  Future updateUser() async{
-    int i=1;
-    int j=12;
+  Future updateUser() async {
+    int i = 1;
+    int j = 12;
 
     final updateUser = User(
-      id: i,
-      username: 'changed username',
-      password: 'changed password',
-      organizationId: j
-
-    );
+        id: i,
+        username: 'changed username',
+        password: 'changed password',
+        organizationId: j);
 
     await MasjidDatabase.instance.update(updateUser);
   }
 
-  Future addUser() async{
-    final testUser = User(
-      username: 'test',
-      password: '1234',
-      organizationId: 11
-    );
+  Future addUser() async {
+    final testUser =
+        User(username: 'test', password: '1234', organizationId: 11);
 
     await MasjidDatabase.instance.create(testUser);
   }
 
-  Future displayUsers() async{
-
+  Future displayUsers() async {
     users = await MasjidDatabase.instance.readAllUsers();
     print(users);
   }
 
-  Future displayEvents() async{
-
+  Future displayEvents() async {
     events = await MasjidDatabase.instance.readAllEvents();
     print(events);
   }
 
-  Future deleteEvent() async{
-    int i =16;
+  Future deleteEvent() async {
+    int i = 16;
     await MasjidDatabase.instance.deleteEvent(1);
   }
 
-  Future addEvent() async{
+  Future addEvent() async {
     final testEvent = Event(
       organizationId: 1,
       eventDateTime: DateTime.now(),
@@ -115,37 +109,42 @@ class _SplashScreenState extends State<SplashScreen> {
     await MasjidDatabase.instance.createEvent(testEvent);
   }
 
-  Future addVisitor() async{
+  Future addVisitor() async {
     final testVisitor = Visitor(
-      eventId: 5,
-      firstName: 'Homer',
-      lastName: 'Simpson',
-      email: 'fake@email.com',
-      phoneNumber: '555-5555',
-      address: '123 Fake Street',
-      isMale: true,
-      registrationTime: DateTime.now(),
+      eventId: 2,
+      visitorId: 1,
+      organization: 'Spiral Forge',
+      door: '',
+      direction: '',
+      scannerVersion: '1.0',
+      deviceId: '',
+      deviceLocation: '',
+      bookingOverride: true,
+      capacityOverride: false,
     );
 
     await MasjidDatabase.instance.createVisitor(testVisitor);
   }
-  Future displayVisitors() async{
 
+  Future displayVisitors() async {
     visitors = await MasjidDatabase.instance.readAllVisitors();
     print(visitors);
   }
 
-
-
-
-  _navigateToSettings()async{
+  _navigateToPage() async {
     await Future.delayed(Duration(milliseconds: 4000));
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context)=> LoginPage(
 
-            )));
+    if (userLoggedIn) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const SettingsPage(
+                    title: "Settings Page",
+                  )));
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    }
   }
 
   @override
@@ -178,7 +177,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
                       Spacer(flex: 1),
                       Text(
-
                         "Masjid Check-in Scanner",
                         style: TextStyle(
                             color: Colors.white,
@@ -189,9 +187,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       Spacer(flex: 1),
                       //CircularProgressIndicator(),
                     ],
-
                   ),
-
                 ),
               ),
               Expanded(
@@ -212,5 +208,4 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
-
 }

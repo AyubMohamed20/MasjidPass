@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:masjid_pass/settingspage.dart';
+import 'package:masjid_pass/shared_preferences/user_shared_preferences.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +25,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   String username = '';
   Color backColor = Colors.white;
   String password = '';
-  final message2 = "masjidPass2021";
+  final message2 = "";
   String wrongCreds = "";
 
   _navigateToSettings() async {
@@ -75,6 +76,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           size: 80.0,
         ),
       );
+
   Widget buildText() => Container(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
         child: const Text(
@@ -85,6 +87,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               color: Colors.blue, fontSize: 10.0, fontFamily: "Arial"),
         ),
       );
+
   Widget buildUsername() => TextFormField(
         inputFormatters: [
           LengthLimitingTextInputFormatter(12),
@@ -127,7 +130,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   Widget buildSubmit() => Builder(
         builder: (context) => ButtonWidget(
             text: 'Login',
-            onClicked: () {
+            onClicked: () async {
               wrongCreds = "Login Succesful";
               final isValid = form.currentState!.validate();
               // FocusScope.of(context).unfocus();
@@ -135,7 +138,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 form.currentState!.save();
                 String message = '$username$password';
                 if (credentials(message) == true) {
-                  _loginPressed();
+                  await UserSharedPreferences.setUserLoggedIn(true);
+                  _navigateToSettings();
                 } else {
                   wrongCreds = "Wrong Credentials";
                 }
@@ -150,9 +154,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
             }),
       );
-  void _loginPressed() {
-    _navigateToSettings();
-  }
 }
 
 class ButtonWidget extends StatelessWidget {
