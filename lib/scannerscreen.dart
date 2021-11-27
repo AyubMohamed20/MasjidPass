@@ -49,7 +49,6 @@ class _ScannerPageState extends State<ScannerPage>
   String savedVisitLogsNumberText = "30/50";
   String saveScan = "";
 
-
   bool hasMessage = false;
   bool hasCriticalErrorMessage = false;
   bool visitLogUploadTimeoutMessage = false;
@@ -87,8 +86,8 @@ class _ScannerPageState extends State<ScannerPage>
 
   Future<void> getVisitInfo() async {
     final db = await MasjidDatabase.instance.database;
-    final result = await db.query(
-        tableVisitors, where: '${VisitorFields.visitorId} = ?', whereArgs: [1]);
+    final result = await db.query(tableVisitors,
+        where: '${VisitorFields.visitorId} = ?', whereArgs: [1]);
     Map<String, dynamic> data = json.decode(jsonEncode(result.toList()[0]));
 
     if (data.isNotEmpty) {
@@ -103,10 +102,9 @@ class _ScannerPageState extends State<ScannerPage>
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-            const SettingsPage(
-              title: "Settings Page",
-            )));
+            builder: (context) => const SettingsPage(
+                  title: "Settings Page",
+                )));
   }
 
   @override
@@ -214,9 +212,9 @@ class _ScannerPageState extends State<ScannerPage>
     double drawerHeightMin = SizeConfig.blockSizeVertical * 6;
 
     Widget iconUp =
-    Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
+        Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
     Widget iconDown =
-    Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
+        Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -259,12 +257,12 @@ class _ScannerPageState extends State<ScannerPage>
                   label: Text(
                     'SCAN HISTORY',
                     style:
-                    TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
+                        TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
                   ),
                   icon: scanHistoryFlag ? iconDown : iconUp,
                   style: ButtonStyle(
                     backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.lightBlue),
+                        MaterialStateProperty.all<Color>(Colors.lightBlue),
                     alignment: Alignment.centerLeft,
                   ),
                 ),
@@ -417,7 +415,7 @@ class _ScannerPageState extends State<ScannerPage>
     } else if (successIndicator) {
       indicatorColor = Colors.green;
       indicatorIcon =
-      const Icon(Icons.check_circle_outline, color: Colors.white);
+          const Icon(Icons.check_circle_outline, color: Colors.white);
     } else if (warningIndicator) {
       indicatorColor = Colors.amberAccent;
       indicatorIcon = const Icon(Icons.error_outline, color: Colors.white);
@@ -511,7 +509,6 @@ class _ScannerPageState extends State<ScannerPage>
       scanHistoryBubbleColor = Colors.amberAccent;
     else if (offlineSuccessIndicator)
       scanHistoryBubbleColor = Colors.lightGreen;
-
 
     if (criticalErrorMessagesBubbles.isEmpty) {
       criticalErrorMessagesBubbles.add(SizedBox(
@@ -618,7 +615,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 7:
                 {
                   messageText =
-                  "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
+                      "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
                   setFlagsToFalse();
                   initializeCriticalErrorMessagesBubbles();
                   hasCriticalErrorMessage = true;
@@ -660,10 +657,10 @@ class _ScannerPageState extends State<ScannerPage>
 
   Future<bool> validateQRWithDb(int visitorId) async {
     final db = await MasjidDatabase.instance.database;
-    final result = await db.query(tableVisitors,
+    final result = await db.query(
+      tableVisitors,
       where: '${VisitorFields.visitorId} = ?',
       whereArgs: [visitorId],
-
     );
 
     if (result.length > 0) {
@@ -681,27 +678,21 @@ class _ScannerPageState extends State<ScannerPage>
     bool? validScan = await validateQRWithDb(visitorId);
     setFlagsToFalse();
 
-
     if (validScan) {
       messageText = "Successful Scan: VisitorId: $visitorId";
-
       successIndicator = true;
       hasIndicator = true;
       initializeCriticalErrorMessagesBubbles();
     } else if (!validScan) {
-      messageText = "Error Indicator";
+      messageText = "Invaild Scan: VisitorId: $visitorId ";
       hasMessage = true;
       hasIndicator = true;
       errorIndicator = true;
       initializeCriticalErrorMessagesBubbles();
-
-
     }
     setState(() {});
     await Future.delayed(Duration(seconds: 5));
     setFlagsToFalse();
     setState(() {});
   }
-
-
 }
