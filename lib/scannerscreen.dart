@@ -1,11 +1,12 @@
 import 'dart:convert';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/indicatorpage.dart';
+import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/settingspage.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -108,19 +109,9 @@ class _ScannerPageState extends State<ScannerPage>
         context,
         MaterialPageRoute(
             builder: (context) => const SettingsPage(
-              title: "Settings Page",
-            )));
+                  title: "Settings Page",
+                )));
   }
-
-  _navigateToIndicatorPage() async {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const IndicatorPage(
-              title: "Indicator Page",
-            )));
-  }
-
 
   @override
   void dispose() {
@@ -227,9 +218,9 @@ class _ScannerPageState extends State<ScannerPage>
     double drawerHeightMin = SizeConfig.blockSizeVertical * 6;
 
     Widget iconUp =
-    Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
+        Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
     Widget iconDown =
-    Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
+        Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -272,12 +263,12 @@ class _ScannerPageState extends State<ScannerPage>
                   label: Text(
                     'SCAN HISTORY',
                     style:
-                    TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
+                        TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
                   ),
                   icon: scanHistoryFlag ? iconDown : iconUp,
                   style: ButtonStyle(
                     backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.lightBlue),
+                        MaterialStateProperty.all<Color>(Colors.lightBlue),
                     alignment: Alignment.centerLeft,
                   ),
                 ),
