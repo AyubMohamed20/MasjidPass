@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:masjid_pass/models/visitor.dart';
+import 'package:masjid_pass/indicatorpage.dart';
 import 'package:masjid_pass/settingspage.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -107,10 +108,18 @@ class _ScannerPageState extends State<ScannerPage>
         context,
         MaterialPageRoute(
             builder: (context) => const SettingsPage(
-                  title: "Settings Page",
-                )));
+              title: "Settings Page",
+            )));
   }
 
+  _navigateToIndicatorPage() async {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const IndicatorPage(
+              title: "Indicator Page",
+            )));
+  }
 
 
   @override
@@ -218,9 +227,9 @@ class _ScannerPageState extends State<ScannerPage>
     double drawerHeightMin = SizeConfig.blockSizeVertical * 6;
 
     Widget iconUp =
-        Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
+    Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
     Widget iconDown =
-        Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
+    Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -263,12 +272,12 @@ class _ScannerPageState extends State<ScannerPage>
                   label: Text(
                     'SCAN HISTORY',
                     style:
-                        TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
+                    TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
                   ),
                   icon: scanHistoryFlag ? iconDown : iconUp,
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.lightBlue),
+                    MaterialStateProperty.all<Color>(Colors.lightBlue),
                     alignment: Alignment.centerLeft,
                   ),
                 ),
@@ -420,8 +429,11 @@ class _ScannerPageState extends State<ScannerPage>
       indicatorIcon = const Icon(Icons.block_outlined, color: Colors.white);
     } else if (successIndicator) {
       indicatorColor = Colors.green;
-      indicatorIcon =
-          const Icon(Icons.check_circle_outline, color: Colors.white);
+      indicatorIcon = const Icon(
+        Icons.check_circle_outline,
+        color: Colors.white,
+        size: 10,
+      );
     } else if (warningIndicator) {
       indicatorColor = Colors.amberAccent;
       indicatorIcon = const Icon(Icons.error_outline, color: Colors.white);
@@ -433,12 +445,12 @@ class _ScannerPageState extends State<ScannerPage>
       decoration: BoxDecoration(
         color: indicatorColor,
         borderRadius: const BorderRadius.all(
-          Radius.circular(40.0),
+          Radius.circular(10.0),
         ),
         border: Border.all(color: Colors.black),
       ),
-      width: SizeConfig.blockSizeVertical * 33,
-      height: SizeConfig.blockSizeVertical * 33,
+      width: SizeConfig.blockSizeVertical * 10,
+      height: SizeConfig.blockSizeVertical * 10,
       child: FittedBox(child: indicatorIcon),
     );
   }
