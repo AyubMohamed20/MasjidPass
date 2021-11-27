@@ -676,19 +676,15 @@ class _ScannerPageState extends State<ScannerPage>
 
   IncomingScan(String scan) async {
     final visitorScan = jsonDecode(scan);
-
-    int eventId = visitorScan["eventId"];
     int visitorId = visitorScan["visitorId"];
-    String organization = visitorScan["organization"];
-
-
+    
     bool? validScan = await validateQRWithDb(visitorId);
     setFlagsToFalse();
 
 
     if (validScan) {
       messageText = "Successful Scan: VisitorId: $visitorId";
-      // saveScan = "Successful Scan: VisitorId: $visitorId";
+
       successIndicator = true;
       hasIndicator = true;
       initializeCriticalErrorMessagesBubbles();
