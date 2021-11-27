@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bubble/bubble.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'db/masjid_database.dart';
 import 'models/visitor.dart';
-import 'dart:convert';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({Key? key, required this.title}) : super(key: key);
@@ -46,7 +47,7 @@ class _ScannerPageState extends State<ScannerPage>
   String messageText = "Initial Text";
   String uploadPercentageText = "100%";
   String savedVisitLogsNumberText = "30/50";
-  String saveScan="";
+  String saveScan = "";
 
 
   bool hasMessage = false;
@@ -66,13 +67,46 @@ class _ScannerPageState extends State<ScannerPage>
   bool hasSavedScansIndicator = false;
   int numCase = 0;
 
+  // Visit Info
+  late String organization;
+  late String door;
+  late bool directionIn;
+  late String scannerVersion;
+
+  // Saved Scan List
+  late List<Visitor> savedScans;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initializes the list where the saved scans are stored on the Scanner UI
+    savedScans = [];
+    //Get visit info from DB
+    getVisitInfo();
+  }
+
+  Future<void> getVisitInfo() async {
+    final db = await MasjidDatabase.instance.database;
+    final result = await db.query(
+        tableVisitors, where: '${VisitorFields.visitorId} = ?', whereArgs: [1]);
+    Map<String, dynamic> data = json.decode(jsonEncode(result.toList()[0]));
+
+    if (data.isNotEmpty) {
+      organization = data["organization"];
+      door = data["door"];
+      directionIn = (data["direction"] == "IN") ? true : false;
+      scannerVersion = data["scannerVersion"];
+    }
+  }
+
   _navigateToSettingsPage() async {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => const SettingsPage(
-                  title: "Settings Page",
-                )));
+            builder: (context) =>
+            const SettingsPage(
+              title: "Settings Page",
+            )));
   }
 
   @override
@@ -160,7 +194,6 @@ class _ScannerPageState extends State<ScannerPage>
         ),
       ],
     );
-
   }
 
   void onQRViewCreated(QRViewController controller) {
@@ -181,9 +214,9 @@ class _ScannerPageState extends State<ScannerPage>
     double drawerHeightMin = SizeConfig.blockSizeVertical * 6;
 
     Widget iconUp =
-        Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
+    Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
     Widget iconDown =
-        Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
+    Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -226,12 +259,12 @@ class _ScannerPageState extends State<ScannerPage>
                   label: Text(
                     'SCAN HISTORY',
                     style:
-                        TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
+                    TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
                   ),
                   icon: scanHistoryFlag ? iconDown : iconUp,
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.lightBlue),
+                    MaterialStateProperty.all<Color>(Colors.lightBlue),
                     alignment: Alignment.centerLeft,
                   ),
                 ),
@@ -384,7 +417,7 @@ class _ScannerPageState extends State<ScannerPage>
     } else if (successIndicator) {
       indicatorColor = Colors.green;
       indicatorIcon =
-          const Icon(Icons.check_circle_outline, color: Colors.white);
+      const Icon(Icons.check_circle_outline, color: Colors.white);
     } else if (warningIndicator) {
       indicatorColor = Colors.amberAccent;
       indicatorIcon = const Icon(Icons.error_outline, color: Colors.white);
@@ -542,7 +575,6 @@ class _ScannerPageState extends State<ScannerPage>
                 }
                 break;
 
-
               case 3:
                 {
                   messageText = "Visit Log Upload Timeout Message";
@@ -586,7 +618,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 7:
                 {
                   messageText =
-                      "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
+                  "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
                   setFlagsToFalse();
                   initializeCriticalErrorMessagesBubbles();
                   hasCriticalErrorMessage = true;
@@ -625,15 +657,16 @@ class _ScannerPageState extends State<ScannerPage>
   }
 
   ///Queries the DB using the eventID ,firstName, lastName of the visitor scan to the DB table. Returns true or false.
-  Future<bool> validateQRWithDb(int visitorId) async {
 
+  Future<bool> validateQRWithDb(int visitorId) async {
     final db = await MasjidDatabase.instance.database;
     final result = await db.query(tableVisitors,
-      where: '${VisitorFields.visitorId} = ?' ,
+      where: '${VisitorFields.visitorId} = ?',
       whereArgs: [visitorId],
+
     );
 
-    if (result.length > 0){
+    if (result.length > 0) {
       print('successful query was $result');
 
       return true;
@@ -643,35 +676,35 @@ class _ScannerPageState extends State<ScannerPage>
 
   IncomingScan(String scan) async {
     final visitorScan = jsonDecode(scan);
-   // int eventId = visitorScan["eventId"];
-    int visitorId= visitorScan["visitorId"];
-   // String organization= visitorScan["organization"];
 
+    int eventId = visitorScan["eventId"];
+    int visitorId = visitorScan["visitorId"];
+    String organization = visitorScan["organization"];
 
 
     bool? validScan = await validateQRWithDb(visitorId);
     setFlagsToFalse();
 
-    if(validScan) {
+
+    if (validScan) {
       messageText = "Successful Scan: VisitorId: $visitorId";
-     // saveScan = "Successful Scan: VisitorId: $visitorId";
+      // saveScan = "Successful Scan: VisitorId: $visitorId";
       successIndicator = true;
       hasIndicator = true;
       initializeCriticalErrorMessagesBubbles();
-    }else if (!validScan){
+    } else if (!validScan) {
       messageText = "Error Indicator";
       hasMessage = true;
       hasIndicator = true;
       errorIndicator = true;
       initializeCriticalErrorMessagesBubbles();
+
+      setState(() {});
+      await Future.delayed(Duration(seconds: 5));
+      setFlagsToFalse();
+      setState(() {});
     }
-
-    setState(() {});
-    await Future.delayed(Duration(seconds: 5));
-    setFlagsToFalse();
-    setState(() {});
   }
+
+
 }
-
-
-
