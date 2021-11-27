@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     // addUser();
     //addEvent();
-     //addVisitor();
+    // addVisitor();
     //updateUser();
     displayUsers();
     displayVisitors();
@@ -111,11 +111,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future addVisitor() async {
     final testVisitor = Visitor(
-      eventId: 5,
+      eventId: 2,
       visitorId: 1,
       organization: 'Spiral Forge',
-      door: 'north',
-      direction: 'in',
+      door: '',
+      direction: '',
       scannerVersion: '1.0',
       deviceId: '',
       deviceLocation: '',
