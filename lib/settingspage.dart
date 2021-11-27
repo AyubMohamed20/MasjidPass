@@ -36,7 +36,6 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _disableButtons = false;
   String device_id = 'f774690826290hd832';
   int scanner_clicked = 0;
-  int mode_index = 0;
   String mode_name = 'TEST';
 
   final ButtonStyle style =
@@ -113,15 +112,12 @@ class _SettingsPageState extends State<SettingsPage> {
             ));
   }
 
-  _delayForDisabledButtons()async{
-    await Future.delayed(Duration(milliseconds: 5000),(){
-
+  _delayForDisabledButtons() async {
+    await Future.delayed(Duration(milliseconds: 5000), () {
       setState(() {
         _disableButtons = false;
       });
-
     });
-
   }
 
   _grantCamera() async {
@@ -156,15 +152,14 @@ class _SettingsPageState extends State<SettingsPage> {
   ///Grabs the info for the Organization's name, the entrance, and direction
   ///and updates the Visitor entry so the information can be grabbed
   ///in the scanner page from the DB.
-  addVisitInfoToDb(String switchText, String entrance,String organizationName) async{
+  addVisitInfoToDb(
+      String switchText, String entrance, String organizationName) async {
     final db = await MasjidDatabase.instance.database;
     await db.rawUpdate('''
     UPDATE $tableVisitors 
     SET door = ?, direction = ?, organization = ?
     WHERE _id = ?
-    ''',
-        ['$entrance', '$switchText', '$organizationName', 1]);
-
+    ''', ['$entrance', '$switchText', '$organizationName', 1]);
   }
 
   @override
@@ -178,6 +173,7 @@ class _SettingsPageState extends State<SettingsPage> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            if (scannerMode == 1) testingModeBanner(),
             Expanded(
               flex: 2,
               child: Row(
@@ -224,18 +220,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    margin:
-                    const EdgeInsets.only(right: 10, left: 10, bottom: 50),
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text('This is $mode_name Mode',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize:
-                              MediaQuery.of(context).size.height / 30)),
-                    ),
-                  ),
-                  Container(
                     margin: const EdgeInsets.only(right: 10, left: 10),
                     child: FittedBox(
                       fit: BoxFit.fitWidth,
@@ -247,107 +231,108 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(
-                        top: 10, left: 20, right: 20, bottom: 10),
-                    child: IgnorePointer(
-                      ignoring: _disableButtons,
-
-                    child: Row(children: <Widget>[
-                      Expanded(
-                          child: Text("Select Door",
-                              style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.height /
-                                      45))),
-                      DropdownButton<String>(
-                        value: entrance,
-                        icon: Icon(Icons.arrow_downward,
-                            size: MediaQuery.of(context).size.height / 30),
-                        iconSize: 24,
-                        elevation: 16,
-                        style: const TextStyle(color: Colors.black),
-                        underline: Container(
-                          height: 2,
-                          color: Colors.black,
-                        ),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            entrance = newValue!;
-                          });
-                        },
-                        items:
-                            OrganizationEntrances.map<DropdownMenuItem<String>>(
-                                (String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value,
+                      margin: const EdgeInsets.only(
+                          top: 10, left: 20, right: 20, bottom: 10),
+                      child: IgnorePointer(
+                        ignoring: _disableButtons,
+                        child: Row(children: <Widget>[
+                          Expanded(
+                              child: Text("Select Door",
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height /
+                                              45))),
+                          DropdownButton<String>(
+                            value: entrance,
+                            icon: Icon(Icons.arrow_downward,
+                                size: MediaQuery.of(context).size.height / 30),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: const TextStyle(color: Colors.black),
+                            underline: Container(
+                              height: 2,
+                              color: Colors.black,
+                            ),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                entrance = newValue!;
+                              });
+                            },
+                            items: OrganizationEntrances.map<
+                                DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value,
+                                    style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.height /
+                                                45)),
+                              );
+                            }).toList(),
+                          )
+                        ]),
+                      )),
+                  Container(
+                      margin: EdgeInsets.only(
+                          top: 10,
+                          left: 20,
+                          right: MediaQuery.of(context).size.height / 20,
+                          bottom: 10),
+                      child: IgnorePointer(
+                        ignoring: _disableButtons,
+                        child: Row(children: <Widget>[
+                          Expanded(
+                              child: Text("Select Direction",
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height /
+                                              45))),
+                          Column(
+                            children: [
+                              SizedBox(
+                                child: Transform.scale(
+                                  scale:
+                                      MediaQuery.of(context).size.height / 500,
+                                  child: Switch(
+                                    onChanged: (toggleSwitch),
+                                    value: isSwitched,
+                                    activeTrackColor: Colors.blue,
+                                    activeColor: Colors.blueAccent,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                switchText,
                                 style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: switchTextColor,
                                     fontSize:
                                         MediaQuery.of(context).size.height /
-                                            45)),
-                          );
-                        }).toList(),
-                      )
-                    ]),
-                    )),
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: 10,
-                        left: 20,
-                        right: MediaQuery.of(context).size.height / 20,
-                        bottom: 10),
-                    child: IgnorePointer(
-                      ignoring: _disableButtons,
-
-                    child: Row(children: <Widget>[
-                      Expanded(
-                          child: Text("Select Direction",
-                              style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.height /
-                                      45))),
-                      Column(
-                        children: [
-                          SizedBox(
-                            child: Transform.scale(
-                              scale: MediaQuery.of(context).size.height / 500,
-                              child: Switch(
-                                onChanged: (toggleSwitch),
-                                value: isSwitched,
-                                activeTrackColor: Colors.blue,
-                                activeColor: Colors.blueAccent,
+                                            50),
                               ),
-                            ),
-                          ),
-                          Text(
-                            switchText,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: switchTextColor,
-                                fontSize:
-                                    MediaQuery.of(context).size.height / 50),
-                          ),
-                        ],
-                      )
-                    ]),
-                    )),
+                            ],
+                          )
+                        ]),
+                      )),
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 20,
                     child: IgnorePointer(
                       ignoring: _disableButtons,
-
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Select Event',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: MediaQuery.of(context).size.height / 40),
-                      ),
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.blue),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Select Event',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                                  MediaQuery.of(context).size.height / 40),
+                        ),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.blue),
+                        ),
                       ),
                     ),
-                  ),
                   ),
                 ],
               ),
@@ -358,40 +343,65 @@ class _SettingsPageState extends State<SettingsPage> {
                 margin: const EdgeInsets.all(10),
                 child: IgnorePointer(
                   ignoring: _disableButtons,
-
-
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: ElevatedButton(
-                      onPressed: () async {
-                        await UserSharedPreferences.setSwitch(isSwitched);
-                        await UserSharedPreferences.setEntrance(entrance);
-                        await UserSharedPreferences.setInternetAvailability(
-                            internetAvailability);
-                        _disableButtons = true;
-                        addVisitInfoToDb(switchText, entrance, organizationName);
-                        _delayForDisabledButtons();
-                        _navigateToScannerPage();
-                      },
-                      child: Text(
-                        'Scan',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: MediaQuery.of(context).size.height / 40),
-                      ),
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.blue),
-                      ),
-                    )),
-                  ],
-                ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: ElevatedButton(
+                        onPressed: () async {
+                          await UserSharedPreferences.setSwitch(isSwitched);
+                          await UserSharedPreferences.setEntrance(entrance);
+                          await UserSharedPreferences.setInternetAvailability(
+                              internetAvailability);
+                          _disableButtons = true;
+                          addVisitInfoToDb(
+                              switchText, entrance, organizationName);
+                          _delayForDisabledButtons();
+                          _navigateToScannerPage();
+                        },
+                        child: Text(
+                          'Scan',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                                  MediaQuery.of(context).size.height / 40),
+                        ),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.blue),
+                        ),
+                      )),
+                    ],
+                  ),
                 ),
               ),
             )
           ],
         ));
+  }
+
+  Widget testingModeBanner() {
+    return FittedBox(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        margin: const EdgeInsets.only(top: 50),
+        color: Colors.red,
+        child: Center(
+          child: Text('Testing Mode',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: MediaQuery.of(context).size.height / 50)),
+        ),
+      ),
+    );
+  }
+
+  Future<void> resetSharedPreferences() async {
+    await UserSharedPreferences.setUserLoggedIn(false);
+    await UserSharedPreferences.setSwitch(false);
+    await UserSharedPreferences.setEntrance("Mens");
+    await UserSharedPreferences.setInternetAvailability(false);
+    await UserSharedPreferences.setEventSelected(false);
   }
 
   Widget logoutButton() {
@@ -408,12 +418,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             TextButton(
               onPressed: () async {
-                await UserSharedPreferences.setUserLoggedIn(false);
-                await UserSharedPreferences.setSwitch(false);
-                await UserSharedPreferences.setEntrance("Mens");
-                await UserSharedPreferences.setInternetAvailability(false);
-                await UserSharedPreferences.setScannerMode(0);
-                await UserSharedPreferences.setEventSelected(false);
+                resetSharedPreferences();
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LoginPage()));
               },
@@ -528,8 +533,8 @@ class _SettingsPageState extends State<SettingsPage> {
   _scannerClick() {
     scanner_clicked++;
     print('scanner clicked $scanner_clicked');
-    if (scanner_clicked == 15)
-        {
+    if (scanner_clicked == 15) {
+      scanner_clicked = 0;
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -539,75 +544,24 @@ class _SettingsPageState extends State<SettingsPage> {
               heightFactor: 1,
               widthFactor: 2,
               child: ToggleSwitch(
-                initialLabelIndex: 0,
-                totalSwitches: 3,
-                labels: const ['Current', 'Product', 'Test'],
-                onToggle: (index) {
+                initialLabelIndex: scannerMode,
+                totalSwitches: 2,
+                labels: const ['Product', 'Test'],
+                onToggle: (index) async {
                   print('switched to: $index');
-                  mode_index = index;
-                  _onLoading();
+                  scannerMode = index;
+                  await UserSharedPreferences.setScannerMode(scannerMode);
+                  resetSharedPreferences();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()));
                 },
               ),
             ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Ok'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  scanner_clicked = 0;
-                },
-              ),
-            ],
           );
         },
       );
     }
-  }
-
-  void _onLoading() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const Dialog(
-          child: Center(
-            heightFactor: 7,
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
-    );
-
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pop(context); //pop dialog
-      showDialog<String>(
-          context: context,
-          builder: (BuildContext context) => Container(
-            width: 300,
-            height: 300,
-            child: AlertDialog(
-              title: const Text('Confirmation'),
-              contentPadding: const EdgeInsets.all(40.0),
-              content: const Text('Are you sure you want to logout?'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'Cancel'),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginPage())),
-                  child: const Text('Logout'),
-                ),
-              ],
-            ),
-          ));
-      setState(() {
-        if (mode_index == 0) mode_name = 'Current';
-        if (mode_index == 1) mode_name = 'Product';
-        if (mode_index == 2) mode_name = 'Testing';
-      });
-    });
   }
 }
