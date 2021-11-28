@@ -42,8 +42,7 @@ dependencies:
   bubble: ^1.2.1
   permission_handler: ^8.2.5
   shared_preferences: ^2.0.8
-  
-
+  geolocator: ^7.7.1
 
   #database
   sqflite: ^2.0.0+3
