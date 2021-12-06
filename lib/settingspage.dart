@@ -1,5 +1,8 @@
+import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:masjid_pass/loginscreen.dart';
 import 'package:masjid_pass/scannerscreen.dart';
 import 'package:masjid_pass/shared_preferences/user_shared_preferences.dart';
@@ -34,9 +37,11 @@ class _SettingsPageState extends State<SettingsPage> {
   int scannerMode = 0;
   int denied_cnt = 0;
   bool _disableButtons = false;
-  String device_id = 'f774690826290hd832';
   int scanner_clicked = 0;
   String mode_name = 'TEST';
+  String deviceName = "";
+  String deviceVersion = "";
+  String identifier = "";
 
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
@@ -52,6 +57,22 @@ class _SettingsPageState extends State<SettingsPage> {
     eventsSelected = UserSharedPreferences.getEventSelected() ?? false;
     internetAvailability =
         UserSharedPreferences.getInternetAvailability() ?? false;
+  }
+
+  Future<void> _getDeviceDetails() async {
+    final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
+    try {
+      if (Platform.isAndroid) {
+        var build = await deviceInfoPlugin.androidInfo;
+        setState(() {
+          deviceName = build.device.toString();
+          deviceVersion = build.version.toString();
+          identifier = build.androidId.toString();
+        });
+      }
+    } on PlatformException {
+      print("Failed to get platform version");
+    }
   }
 
   _checkCameraPermission() async {
@@ -194,6 +215,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     height: MediaQuery.of(context).size.height / 18,
                     child: ElevatedButton.icon(
                       onPressed: () {
+                        _getDeviceDetails();
                         _scaffoldKey.currentState!.openDrawer();
                         scanner_clicked = 0;
                       },
@@ -461,7 +483,7 @@ class _SettingsPageState extends State<SettingsPage> {
               'Device ID',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: Text(device_id),
+            subtitle: Text(identifier),
             onTap: () => {
               showDialog(
                 context: context,
@@ -471,7 +493,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     content: SingleChildScrollView(
                       child: ListBody(
                         children: <Widget>[
-                          Text('Device ID: $device_id'),
+                          Text('Device ID:' + identifier),
                           const Text('You copied Device ID'),
                         ],
                       ),
