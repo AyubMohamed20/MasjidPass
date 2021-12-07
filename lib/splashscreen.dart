@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/db/masjid_database.dart';
-import 'package:masjid_pass/models/event.dart';
-import 'package:masjid_pass/models/user.dart';
-import 'package:masjid_pass/models/visitor.dart';
+import 'package:masjid_pass/screen_size_config.dart';
 import 'package:masjid_pass/settingspage.dart';
 import 'package:masjid_pass/shared_preferences/user_shared_preferences.dart';
-
 import 'loginscreen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,136 +11,11 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class SizeConfig {
-  static MediaQueryData _mediaQueryData = 0 as MediaQueryData;
-  static double screenWidth = 0;
-  static double screenHeight = 0;
-  static double blockSizeHorizontal = 0;
-  static double blockSizeVertical = 0;
-
-  void init(BuildContext context) {
-    _mediaQueryData = MediaQuery.of(context);
-    screenWidth = _mediaQueryData.size.width;
-    screenHeight = _mediaQueryData.size.height;
-    blockSizeHorizontal = screenWidth / 100;
-    blockSizeVertical = screenHeight / 100;
-  }
-}
-
 class _SplashScreenState extends State<SplashScreen> {
-  //holds the objects from each table
-  late List<User> users;
-  late List<Event> events;
-  late List<Visitor> visitors;
-  bool userLoggedIn = false;
-
   @override
   void initState() {
     super.initState();
-    // addUser();
-    //addEvent();
-    // addVisitor();
-    //updateUser();
-    displayUsers();
-    displayVisitors();
-    //displayEvents();
-    //deleteUser();
-    //deleteEvent();
-    userLoggedIn = UserSharedPreferences.getUserLoggedIn() ?? false;
     _navigateToPage();
-  }
-
-  Future deleteUser() async {
-    int i = 16;
-    await MasjidDatabase.instance.delete(i);
-  }
-
-  Future deleteAll() async {
-    await MasjidDatabase.instance.deleteAll();
-  }
-
-  Future updateUser() async {
-    int i = 1;
-    int j = 12;
-
-    final updateUser = User(
-        id: i,
-        username: 'changed username',
-        password: 'changed password',
-        organizationId: j);
-
-    await MasjidDatabase.instance.update(updateUser);
-  }
-
-  Future addUser() async {
-    final testUser =
-        User(username: 'test', password: '1234', organizationId: 11);
-
-    await MasjidDatabase.instance.create(testUser);
-  }
-
-  Future displayUsers() async {
-    users = await MasjidDatabase.instance.readAllUsers();
-    print(users);
-  }
-
-  Future displayEvents() async {
-    events = await MasjidDatabase.instance.readAllEvents();
-    print(events);
-  }
-
-  Future deleteEvent() async {
-    int i = 16;
-    await MasjidDatabase.instance.deleteEvent(1);
-  }
-
-  Future addEvent() async {
-    final testEvent = Event(
-      organizationId: 1,
-      eventDateTime: DateTime.now(),
-      hall: 'north',
-      capacity: 100,
-    );
-
-    await MasjidDatabase.instance.createEvent(testEvent);
-  }
-
-  Future addVisitor() async {
-    final testVisitor = Visitor(
-      eventId: 2,
-      visitorId: 1,
-      organization: 'Spiral Forge',
-      door: '',
-      direction: '',
-      scannerVersion: '1.0',
-      deviceId: '',
-      deviceLocation: '',
-      bookingOverride: true,
-      capacityOverride: false,
-    );
-
-    await MasjidDatabase.instance.createVisitor(testVisitor);
-  }
-
-  Future displayVisitors() async {
-    visitors = await MasjidDatabase.instance.readAllVisitors();
-    print(visitors);
-  }
-
-  _navigateToPage() async {
-    await Future.delayed(Duration(milliseconds: 4000));
-
-    if (userLoggedIn) {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const SettingsPage(
-                    title: "Settings Page",
-                  )));
-    } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
-    }
   }
 
   @override
@@ -207,5 +78,21 @@ class _SplashScreenState extends State<SplashScreen> {
         ],
       ),
     );
+  }
+
+  _navigateToPage() async {
+    await Future.delayed(Duration(milliseconds: 4000));
+
+    if (UserSharedPreferences.getUserLoggedIn() ?? false) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const SettingsPage(
+                    title: "Settings Page",
+                  )));
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -484,32 +485,7 @@ class _SettingsPageState extends State<SettingsPage> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Text(identifier),
-            onTap: () => {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('Copy Result'),
-                    content: SingleChildScrollView(
-                      child: ListBody(
-                        children: <Widget>[
-                          Text('Device ID:' + identifier),
-                          const Text('You copied Device ID'),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text('Ok'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                },
-              )
-            },
+            onTap: () => {},
           ),
           const Divider(
             thickness: 2,
@@ -519,7 +495,7 @@ class _SettingsPageState extends State<SettingsPage> {
               'Scanner Version',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: Text('2.8'),
+            subtitle: Text('3.0'),
             onTap: () => {_scannerClick()},
           ),
           const Divider(
