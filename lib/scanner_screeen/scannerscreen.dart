@@ -1,16 +1,18 @@
- import 'dart:convert';
+import 'dart:convert';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:masjid_pass/models/visitor.dart';
-import 'package:masjid_pass/settingspage.dart';
+import 'package:masjid_pass/utilities/screen_size_config.dart';
+import 'package:masjid_pass/setting_page/settings_page_controller.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'db/masjid_database.dart';
-import 'models/visitor.dart';
+import '../db/masjid_database.dart';
+import '../models/visitor.dart';
 
 class ScannerPage extends StatefulWidget {
   const ScannerPage({Key? key, required this.title}) : super(key: key);
@@ -19,22 +21,6 @@ class ScannerPage extends StatefulWidget {
 
   @override
   State<ScannerPage> createState() => _ScannerPageState();
-}
-
-class SizeConfig {
-  static MediaQueryData _mediaQueryData = 0 as MediaQueryData;
-  static double screenWidth = 0;
-  static double screenHeight = 0;
-  static double blockSizeHorizontal = 0;
-  static double blockSizeVertical = 0;
-
-  void init(BuildContext context) {
-    _mediaQueryData = MediaQuery.of(context);
-    screenWidth = _mediaQueryData.size.width;
-    screenHeight = _mediaQueryData.size.height;
-    blockSizeHorizontal = screenWidth / 100;
-    blockSizeVertical = screenHeight / 100;
-  }
 }
 
 class _ScannerPageState extends State<ScannerPage>
@@ -419,7 +405,7 @@ class _ScannerPageState extends State<ScannerPage>
     } else if (successIndicator) {
       indicatorColor = Colors.green;
       indicatorIcon =
-      const Icon(Icons.check_circle_outline, color: Colors.white);
+          const Icon(Icons.check_circle_outline, color: Colors.white);
     } else if (warningIndicator) {
       indicatorColor = Colors.amberAccent;
       indicatorIcon = const Icon(Icons.error_outline, color: Colors.white);

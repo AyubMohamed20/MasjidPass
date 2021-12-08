@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/splashscreen.dart';
-import 'shared_preferences/user_shared_preferences.dart';
+import 'package:masjid_pass/splash_screen/splashscreen.dart';
+import 'package:masjid_pass/utilities/shared_preferences/user_shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

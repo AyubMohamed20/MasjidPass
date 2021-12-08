@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/screen_size_config.dart';
-import 'package:masjid_pass/settingspage.dart';
-import 'package:masjid_pass/shared_preferences/user_shared_preferences.dart';
-import 'loginscreen.dart';
+import 'package:masjid_pass/setting_page/settings_page_controller.dart';
+import 'package:masjid_pass/utilities/shared_preferences/user_shared_preferences.dart';
+import '../auth/loginscreen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -20,7 +19,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -80,6 +78,7 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
+  /// If the user is already logged in, it navigates to the Settings page; otherwise, it navigates to the login screen.
   _navigateToPage() async {
     await Future.delayed(Duration(milliseconds: 4000));
 

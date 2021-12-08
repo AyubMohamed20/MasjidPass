@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:masjid_pass/settingspage.dart';
-import 'package:masjid_pass/shared_preferences/user_shared_preferences.dart';
+import 'package:masjid_pass/setting_page/settings_page_controller.dart';
+import 'package:masjid_pass/utilities/shared_preferences/user_shared_preferences.dart';
 
-import 'db/masjid_database.dart';
-import 'models/user.dart';
+import '../db/masjid_database.dart';
+import '../models/user.dart';
 
 ///Main fuction to set the preferred orientation of the screen
 Future main() async {

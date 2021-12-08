@@ -49,4 +49,12 @@ class UserSharedPreferences {
       await preferences!.setBool(_keyEventSelected, eventSelected);
 
   static getEventSelected() => preferences!.getBool(_keyEventSelected);
+
+  static resetSharedPreferences () async {
+    await UserSharedPreferences.setUserLoggedIn(false);
+    await UserSharedPreferences.setSwitch(false);
+    await UserSharedPreferences.setEntrance("Mens");
+    await UserSharedPreferences.setInternetAvailability(false);
+    await UserSharedPreferences.setEventSelected(false);
+  }
 }
