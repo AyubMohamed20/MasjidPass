@@ -30,10 +30,10 @@ class _ScannerPageState extends State<ScannerPage>
 
   List<Widget> criticalErrorMessagesBubbles = [];
 
-  String messageText = "Initial Text";
-  String uploadPercentageText = "100%";
-  String savedVisitLogsNumberText = "30/50";
-  String saveScan = "";
+  String messageText = 'Initial Text';
+  String uploadPercentageText = '100%';
+  String savedVisitLogsNumberText = '30/50';
+  String saveScan = '';
 
   bool hasMessage = false;
   bool hasCriticalErrorMessage = false;
@@ -81,10 +81,10 @@ class _ScannerPageState extends State<ScannerPage>
     Map<String, dynamic> data = json.decode(jsonEncode(result.toList()[0]));
 
     if (data.isNotEmpty) {
-      organization = data["organization"];
-      door = data["door"];
-      directionIn = (data["direction"] == "IN") ? true : false;
-      scannerVersion = data["scannerVersion"];
+      organization = data['organization'];
+      door = data['door'];
+      directionIn = (data['direction'] == 'IN') ? true : false;
+      scannerVersion = data['scannerVersion'];
     }
   }
 
@@ -93,7 +93,7 @@ class _ScannerPageState extends State<ScannerPage>
         context,
         MaterialPageRoute(
             builder: (context) => const SettingsPage(
-                  title: "Settings Page",
+                  title: 'Settings Page',
                 )));
   }
 
@@ -545,7 +545,7 @@ class _ScannerPageState extends State<ScannerPage>
 
               case 1:
                 {
-                  messageText = "Offline Success Indicator";
+                  messageText = 'Offline Success Indicator';
                   setFlagsToFalse();
                   hasMessage = true;
                   hasIndicator = true;
@@ -564,7 +564,7 @@ class _ScannerPageState extends State<ScannerPage>
 
               case 3:
                 {
-                  messageText = "Visit Log Upload Timeout Message";
+                  messageText = 'Visit Log Upload Timeout Message';
                   setFlagsToFalse();
                   hasMessage = true;
                   visitLogUploadTimeoutMessage = true;
@@ -574,7 +574,7 @@ class _ScannerPageState extends State<ScannerPage>
 
               case 4:
                 {
-                  messageText = "Success Indicator";
+                  messageText = 'Success Indicator';
                   setFlagsToFalse();
                   successIndicator = true;
                   hasIndicator = true;
@@ -584,7 +584,7 @@ class _ScannerPageState extends State<ScannerPage>
 
               case 5:
                 {
-                  messageText = "Warning Indicator";
+                  messageText = 'Warning Indicator';
                   setFlagsToFalse();
                   hasMessage = true;
                   hasIndicator = true;
@@ -594,7 +594,7 @@ class _ScannerPageState extends State<ScannerPage>
                 break;
               case 6:
                 {
-                  messageText = "Error Indicator";
+                  messageText = 'Error Indicator';
                   setFlagsToFalse();
                   hasMessage = true;
                   hasIndicator = true;
@@ -605,7 +605,7 @@ class _ScannerPageState extends State<ScannerPage>
               case 7:
                 {
                   messageText =
-                      "This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002";
+                      'This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002';
                   setFlagsToFalse();
                   initializeCriticalErrorMessagesBubbles();
                   hasCriticalErrorMessage = true;
@@ -622,7 +622,7 @@ class _ScannerPageState extends State<ScannerPage>
             setState(() {});
           },
           child: const Text(
-            "Indicators",
+            'Indicators',
             style: TextStyle(fontSize: 10),
           ),
         ),
@@ -663,19 +663,19 @@ class _ScannerPageState extends State<ScannerPage>
 
   IncomingScan(String scan) async {
     final visitorScan = jsonDecode(scan);
-    int visitorId = visitorScan["visitorId"];
+    int visitorId = visitorScan['visitorId'];
 
     bool? validScan = await validateQRWithDb(visitorId);
     setFlagsToFalse();
 
     if (validScan) {
-      messageText = "Successful Scan: VisitorId: $visitorId";
+      messageText = 'Successful Scan: VisitorId: $visitorId';
       successIndicator = true;
       hasIndicator = true;
       initializeCriticalErrorMessagesBubbles();
       _audioCache.play('success_notification.mp3');
     } else if (!validScan) {
-      messageText = "Invaild Scan: VisitorId: $visitorId ";
+      messageText = 'Invaild Scan: VisitorId: $visitorId ';
       hasMessage = true;
       hasIndicator = true;
       errorIndicator = true;
@@ -683,7 +683,7 @@ class _ScannerPageState extends State<ScannerPage>
       _audioCache.play('failure_notification.mp3');
     }
     setState(() {});
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 5));
     setFlagsToFalse();
     setState(() {});
   }

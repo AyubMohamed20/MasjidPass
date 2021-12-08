@@ -23,8 +23,10 @@ class SettingsPageController extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) => SettingsPageView(this);
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   /// List of the organization entrances
-  List<String> _organizationEntrances = ["Mens", "Womans", "Basement", "Gym"];
+  List<String> _organizationEntrances = ['Mens', 'Womans', 'Basement', 'Gym'];
 
   /// The entrances currently selected
   String _entrance = 'Mens';
@@ -34,7 +36,7 @@ class SettingsPageController extends State<SettingsPage> {
 
   /// The setting screen IN/OUT switch
   bool _isSwitched = false;
-  String _switchText = "OUT";
+  String _switchText = 'OUT';
   Color _switchTextColor = Colors.red;
 
   /// The scanner version click counter
@@ -46,11 +48,31 @@ class SettingsPageController extends State<SettingsPage> {
   /// The internet availability flag
   bool _internetAvailability = false;
 
-  String deviceName = "";
-  String deviceVersion = "";
-  String identifier = "";
+  String _deviceName = '';
+  String _deviceVersion = '';
+  String _identifier = '';
 
   List<String> get organizationEntrances => _organizationEntrances;
+
+  GlobalKey<ScaffoldState> get scaffoldKey => _scaffoldKey;
+
+  String get deviceVersion => _deviceVersion;
+
+  set deviceVersion(String value) {
+    _deviceVersion = value;
+  }
+
+  String get identifier => _identifier;
+
+  set identifier(String value) {
+    _identifier = value;
+  }
+
+  String get deviceName => _deviceName;
+
+  set deviceName(String value) {
+    _deviceName = value;
+  }
 
   bool get internetAvailability => _internetAvailability;
 
@@ -113,7 +135,7 @@ class SettingsPageController extends State<SettingsPage> {
         context,
         MaterialPageRoute(
             builder: (context) => const ScannerPage(
-                  title: "Scanner Page",
+                  title: 'Scanner Page',
                 )));
   }
 
@@ -139,7 +161,7 @@ class SettingsPageController extends State<SettingsPage> {
     }
   }
 
-  Future<void> ScanButtonOnPressed() async {
+  Future<void> scanButtonOnPressed() async {
     await UserSharedPreferences.setSwitch(isSwitched);
     await UserSharedPreferences.setEntrance(entrance);
     await UserSharedPreferences.setInternetAvailability(internetAvailability);
@@ -150,10 +172,12 @@ class SettingsPageController extends State<SettingsPage> {
     });
     // TODO: Add Camera Permission
 
-    // TODO: addVisitInfoToDb(switchText, entrance, organizationName) & _delayForDisabledButtons();
     _navigateToScannerPage();
+
+    // TODO: addVisitInfoToDb(switchText, entrance, organizationName) & _delayForDisabledButtons();
   }
 
+  /// Get the Device Information
   Future<void> _getDeviceDetails() async {
     final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
     try {
@@ -166,11 +190,12 @@ class SettingsPageController extends State<SettingsPage> {
         });
       }
     } on PlatformException {
-      print("Failed to get platform version");
+      print('Failed to get platform version');
     }
   }
 
-  void scannerVersionOnTap() {
+  /// Scan Version on Tap
+  scannerVersionOnTap() {
     scanner_clicked++;
     if (scanner_clicked == 15) {
       showDialog(
@@ -207,9 +232,18 @@ class SettingsPageController extends State<SettingsPage> {
         context, MaterialPageRoute(builder: (context) => const LoginPage()));
   }
 
-  void DeviceIdOnTap() {
+  deviceIdOnTap() {
     // TODO: Copy device ID to clip board
   }
 
-  void selectEventsOnPressed() {}
+  void logoutButtonOnPressed() {
+    UserSharedPreferences.resetSharedPreferences();
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const LoginPage()));
+  }
+
+  void infoButtonOnPressed() {
+    scaffoldKey.currentState!.openDrawer();
+    scanner_clicked = 0;
+  }
 }
