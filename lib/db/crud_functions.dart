@@ -4,7 +4,7 @@ import 'package:masjid_pass/models/visitor.dart';
 
 import 'masjid_database.dart';
 
-class CrudDatabase {
+class CrudFunction {
   late List<User> users;
   late List<Event> events;
   late List<Visitor> visitors;
