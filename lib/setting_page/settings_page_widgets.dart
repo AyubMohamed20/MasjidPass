@@ -8,46 +8,54 @@ class InfoSideBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Drawer(
-      child: ListView(
-        children: [
-          const ListTile(
-            title: const Center(
-              child: Text(
-                'MasjidPass',
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        child: ListView(
+          children: [
+            const ListTile(
+              title: const Center(
+                child: Text(
+                  'MasjidPass',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 24),
+                ),
               ),
             ),
-          ),
-          const ListTile(
-            title: Center(
-              child: Text(
-                'System Information',
+            const ListTile(
+              title: Center(
+                child: Text(
+                  'System Information',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            InfoBannerListTile(
+                'Device ID', controller.identifier, controller.deviceIdOnTap()),
+            const Divider(
+              thickness: 2,
+            ),
+            ListTile(
+              title: const Text(
+                'Scanner Version',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
+              subtitle: const Text('3.0'),
+              onTap: () => {
+                controller.scannerVersionOnTap(),
+              },
             ),
-          ),
-          InfoBannerListTile(
-              'Device ID', controller.identifier, controller.deviceIdOnTap()),
-          const Divider(
-            thickness: 2,
-          ),
-          InfoBannerListTile(
-              'Scanner Version', '3.0', controller.scannerVersionOnTap()),
-          const Divider(
-            thickness: 2,
-          ),
-          const InfoBannerListTile('Authentication API Version', '1.0', null),
-          const Divider(
-            thickness: 2,
-          ),
-          const InfoBannerListTile('Backend API Version', '1.0', null),
-          const Divider(
-            thickness: 2,
-          ),
-        ], //children
-      ),
-    );
+            const Divider(
+              thickness: 2,
+            ),
+            const InfoBannerListTile('Authentication API Version', '1.0', null),
+            const Divider(
+              thickness: 2,
+            ),
+            const InfoBannerListTile('Backend API Version', '1.0', null),
+            const Divider(
+              thickness: 2,
+            ),
+          ], //children
+        ),
+      );
 }
 
 class InfoBannerListTile extends StatelessWidget {
@@ -59,15 +67,15 @@ class InfoBannerListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-      title: Text(
-        text,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
-      subtitle: Text(subtitle),
-      onTap: () => {
-        func,
-      },
-    );
+        title: Text(
+          text,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(subtitle),
+        onTap: () => {
+          func,
+        },
+      );
 }
 
 class LogoutButton extends StatelessWidget {
@@ -76,10 +84,10 @@ class LogoutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ElevatedButton(
-      onPressed: () {
-        showDialog<String>(
-          context: controller.context,
-          builder: (BuildContext context) => AlertDialog(
+        onPressed: () {
+          showDialog<String>(
+            context: controller.context,
+            builder: (BuildContext context) => AlertDialog(
               title: const Text('Confirmation'),
               content: const Text('Are you sure you want to logout?'),
               actions: <Widget>[
@@ -95,14 +103,14 @@ class LogoutButton extends StatelessWidget {
                 ),
               ],
             ),
-        );
-      },
-      child: Text('Logout',
-          style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2)),
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-      ),
-    );
+          );
+        },
+        child: Text('Logout',
+            style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2)),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+        ),
+      );
 }
 
 class TestingModeBanner extends StatelessWidget {
@@ -110,19 +118,19 @@ class TestingModeBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => FittedBox(
-      child: Container(
-        width: SizeConfig.screenWidth,
-        margin: const EdgeInsets.only(top: 50),
-        color: Colors.red,
-        child: Center(
-          child: Text('Testing Mode',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: SizeConfig.blockSizeVertical * 2)),
+        child: Container(
+          width: SizeConfig.screenWidth,
+          margin: const EdgeInsets.only(top: 50),
+          color: Colors.red,
+          child: Center(
+            child: Text('Testing Mode',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: SizeConfig.blockSizeVertical * 2)),
+          ),
         ),
-      ),
-    );
+      );
 }
 
 class OrganizationName extends StatelessWidget {
@@ -133,15 +141,15 @@ class OrganizationName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      margin: const EdgeInsets.only(right: 10, left: 10),
-      child: FittedBox(
-        fit: BoxFit.fitWidth,
-        child: Text(organizationName,
-            style: TextStyle(
-                color: Colors.lightBlue,
-                fontSize: SizeConfig.blockSizeVertical * 3.33)),
-      ),
-    );
+        margin: const EdgeInsets.only(right: 10, left: 10),
+        child: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(organizationName,
+              style: TextStyle(
+                  color: Colors.lightBlue,
+                  fontSize: SizeConfig.blockSizeVertical * 3.33)),
+        ),
+      );
 }
 
 class SelectDoorText extends StatelessWidget {
@@ -150,8 +158,8 @@ class SelectDoorText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Expanded(
-        child: Text(text,
-            style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2.22)));
+      child: Text(text,
+          style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2.22)));
 }
 
 class SelectDoorDropDown extends StatelessWidget {
@@ -161,26 +169,29 @@ class SelectDoorDropDown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DropdownButton<String>(
-      value: controller.entrance,
-      icon:
-          Icon(Icons.arrow_downward, size: SizeConfig.blockSizeVertical * 3.33),
-      iconSize: 24,
-      elevation: 16,
-      style: const TextStyle(color: Colors.black),
-      underline: Container(
-        height: 2,
-        color: Colors.black,
-      ),
-      onChanged: (String? newValue) {
-        controller.entrancesDropDownOnChanged(newValue);
-      },
-      items: controller.organizationEntrances
-          .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem<String>(
-          value: value,
-          child: Text(value,
-              style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2.22)),
-        )).toList(),
-    );
+        value: controller.entrance,
+        icon: Icon(Icons.arrow_downward,
+            size: SizeConfig.blockSizeVertical * 3.33),
+        iconSize: 24,
+        elevation: 16,
+        style: const TextStyle(color: Colors.black),
+        underline: Container(
+          height: 2,
+          color: Colors.black,
+        ),
+        onChanged: (String? newValue) {
+          controller.entrancesDropDownOnChanged(newValue);
+        },
+        items: controller.organizationEntrances
+            .map<DropdownMenuItem<String>>(
+                (String value) => DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value,
+                          style: TextStyle(
+                              fontSize: SizeConfig.blockSizeVertical * 2.22)),
+                    ))
+            .toList(),
+      );
 }
 
 class DirectionSwitch extends StatelessWidget {
@@ -189,27 +200,27 @@ class DirectionSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-      children: [
-        SizedBox(
-          child: Transform.scale(
-            scale: SizeConfig.blockSizeVertical * 0.2,
-            child: Switch(
-              onChanged: (controller.toggleSwitch),
-              value: controller.isSwitched,
-              activeTrackColor: Colors.blue,
-              activeColor: Colors.blueAccent,
+        children: [
+          SizedBox(
+            child: Transform.scale(
+              scale: SizeConfig.blockSizeVertical * 0.2,
+              child: Switch(
+                onChanged: (controller.toggleSwitch),
+                value: controller.isSwitched,
+                activeTrackColor: Colors.blue,
+                activeColor: Colors.blueAccent,
+              ),
             ),
           ),
-        ),
-        Text(
-          controller.switchText,
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: controller.switchTextColor,
-              fontSize: SizeConfig.blockSizeVertical * 2),
-        ),
-      ],
-    );
+          Text(
+            controller.switchText,
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: controller.switchTextColor,
+                fontSize: SizeConfig.blockSizeVertical * 2),
+          ),
+        ],
+      );
 }
 
 class SelectEventButton extends StatelessWidget {
@@ -217,17 +228,17 @@ class SelectEventButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ElevatedButton(
-      onPressed: () {},
-      child: Text(
-        'Select Event',
-        style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: SizeConfig.blockSizeVertical * 2.5),
-      ),
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-      ),
-    );
+        onPressed: () {},
+        child: Text(
+          'Select Event',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: SizeConfig.blockSizeVertical * 2.5),
+        ),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+        ),
+      );
 }
 
 class ScanButton extends StatelessWidget {
@@ -236,20 +247,20 @@ class ScanButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Expanded(
-        child: ElevatedButton(
-      onPressed: () {
-        controller.scanButtonOnPressed();
-      },
-      child: Text(
-        'Scan',
-        style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: SizeConfig.blockSizeVertical * 2.5),
-      ),
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-      ),
-    ));
+          child: ElevatedButton(
+        onPressed: () {
+          controller.scanButtonOnPressed();
+        },
+        child: Text(
+          'Scan',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: SizeConfig.blockSizeVertical * 2.5),
+        ),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+        ),
+      ));
 }
 
 class InfoButton extends StatelessWidget {
@@ -258,17 +269,17 @@ class InfoButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ElevatedButton.icon(
-      onPressed: () {
-        controller.infoButtonOnPressed();
-      },
-      icon: Icon(
-        Icons.info,
-        size: SizeConfig.blockSizeVertical * 2,
-      ),
-      label: Text('Info',
-          style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2)),
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-      ),
-    );
+        onPressed: () {
+          controller.infoButtonOnPressed();
+        },
+        icon: Icon(
+          Icons.info,
+          size: SizeConfig.blockSizeVertical * 2,
+        ),
+        label: Text('Info',
+            style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2)),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+        ),
+      );
 }

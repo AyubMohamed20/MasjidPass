@@ -197,10 +197,12 @@ class SettingsPageController extends State<SettingsPage> {
   scannerVersionOnTap() {
     scanner_clicked++;
     if (scanner_clicked == 15) {
+      scanner_clicked = 0;
       showDialog(
           context: context,
           builder: (BuildContext context) => scannerModeSwitch());
     }
+    return;
   }
 
   Widget scannerModeSwitch() => AlertDialog(
