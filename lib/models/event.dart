@@ -49,20 +49,16 @@ class Event{
   );
 
   /// Convert a Event into JSON. The keys are the columns in the db table
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       EventFields.id: id,
       EventFields.organizationId: organizationId,
       EventFields.eventDateTime: eventDateTime.toIso8601String(),
       EventFields.hall: hall,
       EventFields.capacity: capacity,
     };
-  }
 
   //@override
- String toString() {
-    return 'Event{id: $id, organizationId: $organizationId, Event Date: $eventDateTime, '
-        'Hall: $hall, Capacity:$capacity}\n' ;
- }
+ String toString() => 'Event{id: $id, organizationId: $organizationId, Event Date: $eventDateTime, '
+        'Hall: $hall, Capacity:$capacity}\n';
 
 }

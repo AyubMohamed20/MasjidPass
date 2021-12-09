@@ -50,6 +50,7 @@ dependencies:
   audioplayers: any
   device_info: ^2.0.3
   device_info_plus: ^3.1.1
+  widget_view: ^0.2.0-nullsafety.0
 
 dev_dependencies:
   flutter_test:
@@ -59,7 +60,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/logo.png"
+  image_path: "assets/images/logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -86,13 +87,13 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - success_notification.mp3
-    - failure_notification.mp3
-    - infected_notification.mp3
-    - duplicate_scan_notification.mp3
-    - capacity_reached_notification.mp3
-    - not_booked_notification.mp3
-    - unverified_notification.mp3
+    - assets/sounds/success_notification.mp3
+    - assets/sounds/failure_notification.mp3
+    - assets/sounds/infected_notification.mp3
+    - assets/sounds/duplicate_scan_notification.mp3
+    - assets/sounds/capacity_reached_notification.mp3
+    - assets/sounds/not_booked_notification.mp3
+    - assets/sounds/unverified_notification.mp3
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
