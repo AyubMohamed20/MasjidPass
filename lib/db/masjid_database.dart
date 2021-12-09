@@ -1,15 +1,15 @@
-import 'dart:convert';
+import 'package:masjid_pass/models/event.dart';
+import 'package:masjid_pass/models/user.dart';
+import 'package:masjid_pass/models/visitor.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
-import 'package:masjid_pass/models/user.dart';
-import 'package:masjid_pass/models/event.dart';
-import 'package:masjid_pass/models/visitor.dart';
 
 class MasjidDatabase {
   static final MasjidDatabase instance = MasjidDatabase._init();
 
   static Database? _database;
+
   MasjidDatabase._init();
 
   ///Creates a DB if there isn't one. Else returns current DB.

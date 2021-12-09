@@ -88,8 +88,7 @@ class Visitor{
   );
 
   /// Convert a Visitor into JSON. The keys are the columns in the db table
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       VisitorFields.id: id,
       VisitorFields.eventId: eventId,
       VisitorFields.visitorId: visitorId,
@@ -103,14 +102,11 @@ class Visitor{
       VisitorFields.capacityOverride: capacityOverride? 1 : 0,
 
     };
-  }
 
   //@override
-  String toString() {
-    return 'Visitor{id: $id, eventId: $eventId, visitorID: $visitorId, Organization: $organization, '
+  String toString() => 'Visitor{id: $id, eventId: $eventId, visitorID: $visitorId, Organization: $organization, '
         'door: $door, direction:$direction, scannerVersion: $scannerVersion, deviceId: $deviceId,'
         ' deviceLocation: $deviceLocation, bookingOverride: $bookingOverride, capacityOverride: $capacityOverride }\n';
-  }
 
 
 }

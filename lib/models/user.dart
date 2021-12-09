@@ -42,22 +42,18 @@ class User{
   );
 
   /// Convert a User into JSON. The keys are the columns in the db table
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       UserFields.id: id,
       UserFields.username: username,
       UserFields.password: password,
       UserFields.organizationId: organizationId,
     };
-  }
 
 
 
   // Implement toString to make it easier to see information about
   // each user when using the print statement.
   @override
-  String toString() {
-    return 'User{id: $id, username: $username, password: $password, organizationId: $organizationId}\n';
-  }
+  String toString() => 'User{id: $id, username: $username, password: $password, organizationId: $organizationId}\n';
 
 }
