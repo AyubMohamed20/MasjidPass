@@ -383,3 +383,30 @@ class OverrideButton extends StatelessWidget {
       ),
     );
 }
+
+class CriticalErrorMessagesBubbles extends StatelessWidget {
+  const CriticalErrorMessagesBubbles(
+      {Key? key,
+        required this.scanHistoryBubbleColor,
+        required this.messageText})
+      : super(key: key);
+
+  final Color scanHistoryBubbleColor;
+  final String messageText;
+
+  @override
+  Widget build(BuildContext context) => Bubble(
+    alignment: Alignment.center,
+    color: scanHistoryBubbleColor,
+    margin: BubbleEdges.only(
+        top: SizeConfig.blockSizeHorizontal * 2,
+        bottom: SizeConfig.blockSizeHorizontal * 2),
+    child: Text(
+      messageText,
+      style: TextStyle(
+          color: Colors.white,
+          fontSize: SizeConfig.blockSizeHorizontal * 3.4),
+      textAlign: TextAlign.center,
+    ),
+  );
+}

@@ -1,15 +1,13 @@
-import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:bubble/bubble.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/scanner_screeen/scanner_screen_view.dart';
+import 'package:masjid_pass/scanner_screeen/scanner_screen_widget.dart';
 import 'package:masjid_pass/setting_page/settings_page_controller.dart';
 import 'package:masjid_pass/utilities/screen_size_config.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../db/masjid_database.dart';
 import '../models/visitor.dart';
@@ -139,12 +137,7 @@ class ScannerPageController extends State<ScannerPage> {
     this.QrController = controller;
     controller.scannedDataStream.listen((scanData) async {
       controller.pauseCamera();
-      if (await canLaunch(scanData.code)) {
-        await launch(scanData.code);
-        controller.resumeCamera();
-      } else {
-        IncomingScan(scanData.code).then((value) => controller.resumeCamera());
-      }
+      IncomingScan(scanData.code).then((value) => controller.resumeCamera());
     });
   }
 
@@ -158,25 +151,22 @@ class ScannerPageController extends State<ScannerPage> {
   }
 
   IncomingScan(String scan) async {
-    final visitorScan = jsonDecode(scan);
-    int visitorId = visitorScan['visitorId'];
-
-    bool? validScan = await validateQRWithDb(visitorId);
-    setFlagsToFalse();
+    bool validScan = false;
+    String visitorId = '8e170c8a-58aa-11ec-bf63-0242ac130002';
 
     if (validScan) {
       messageText = 'Successful Scan: VisitorId: $visitorId';
       successIndicator = true;
       hasIndicator = true;
       initializeCriticalErrorMessagesBubbles();
-      _audioCache.play('success_notification.mp3');
+      _audioCache.play('sounds/success_notification.mp3');
     } else if (!validScan) {
       messageText = 'Invaild Scan: VisitorId: $visitorId ';
       hasMessage = true;
       hasIndicator = true;
       errorIndicator = true;
       initializeCriticalErrorMessagesBubbles();
-      _audioCache.play('failure_notification.mp3');
+      _audioCache.play('sounds/failure_notification.mp3');
     }
     setState(() {});
     await Future.delayed(const Duration(seconds: 5));
@@ -236,20 +226,9 @@ class ScannerPageController extends State<ScannerPage> {
       ));
     }
     if (criticalErrorMessagesBubbles.length < 10) {
-      criticalErrorMessagesBubbles.add(Bubble(
-        alignment: Alignment.center,
-        color: scanHistoryBubbleColor,
-        margin: BubbleEdges.only(
-            top: SizeConfig.blockSizeHorizontal * 2,
-            bottom: SizeConfig.blockSizeHorizontal * 2),
-        child: Text(
-          messageText,
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: SizeConfig.blockSizeHorizontal * 3.4),
-          textAlign: TextAlign.center,
-        ),
-      ));
+      criticalErrorMessagesBubbles.add(CriticalErrorMessagesBubbles(
+          scanHistoryBubbleColor: scanHistoryBubbleColor,
+          messageText: messageText));
     }
   }
 

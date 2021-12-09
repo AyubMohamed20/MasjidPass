@@ -4,8 +4,11 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:masjid_pass/auth/login_screen_controller.dart';
+import 'package:masjid_pass/db/masjid_database.dart';
+import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/scanner_screeen/scanner_screen_controller.dart';
 import 'package:masjid_pass/setting_page/settings_page_view.dart';
+import 'package:masjid_pass/setting_page/settings_page_widgets.dart';
 import 'package:masjid_pass/utilities/shared_preferences/user_shared_preferences.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -200,26 +203,10 @@ class SettingsPageController extends State<SettingsPage> {
       scanner_clicked = 0;
       showDialog(
           context: context,
-          builder: (BuildContext context) => scannerModeSwitch());
+          builder: (BuildContext context) => ScannerModeSwitch(scannerMode: scannerMode, scannerModeSwitchOnToggle: scannerModeSwitchOnToggle,));
     }
     return;
   }
-
-  Widget scannerModeSwitch() => AlertDialog(
-        title: const Center(child: Text('Scanner Mode')),
-        content: Center(
-          heightFactor: 1,
-          widthFactor: 2,
-          child: ToggleSwitch(
-            initialLabelIndex: scannerMode,
-            totalSwitches: 2,
-            labels: const ['Product', 'Test'],
-            onToggle: (index) {
-              scannerModeSwitchOnToggle(index);
-            },
-          ),
-        ),
-      );
 
   Future<void> scannerModeSwitchOnToggle(int scannerModeIndex) async {
     scannerMode = scannerModeIndex;
@@ -242,5 +229,27 @@ class SettingsPageController extends State<SettingsPage> {
   void infoButtonOnPressed() {
     scaffoldKey.currentState!.openDrawer();
     scanner_clicked = 0;
+  }
+
+  ///Grabs the info for the Organization's name, the entrance, and direction
+  ///and updates the Visitor entry so the information can be grabbed
+  ///in the scanner page from the DB.
+  addVisitInfoToDb(
+      String switchText, String entrance, String organizationName) async {
+    final db = await MasjidDatabase.instance.database;
+    await db.rawUpdate('''
+    UPDATE $tableVisitors 
+    SET door = ?, direction = ?, organization = ?
+    WHERE _id = ?
+    ''', ['$entrance', '$switchText', '$organizationName', 1]);
+  }
+
+  // _delayForDisabledButton
+  _delayForDisabledButtons() async {
+    await Future.delayed(const Duration(milliseconds: 5000), () {
+      setState(() {
+        _disableButtons = false;
+      });
+    });
   }
 }

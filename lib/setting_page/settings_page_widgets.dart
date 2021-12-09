@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/setting_page/settings_page_controller.dart';
 import 'package:masjid_pass/utilities/screen_size_config.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class InfoSideBanner extends StatelessWidget {
   const InfoSideBanner({Key? key, required this.controller}) : super(key: key);
@@ -282,4 +283,32 @@ class InfoButton extends StatelessWidget {
           backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
         ),
       );
+}
+
+class ScannerModeSwitch extends StatelessWidget {
+  const ScannerModeSwitch(
+      {Key? key,
+        required this.scannerMode,
+        required this.scannerModeSwitchOnToggle})
+      : super(key: key);
+
+  final int scannerMode;
+  final Function scannerModeSwitchOnToggle;
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: const Center(child: Text('Scanner Mode')),
+    content: Center(
+      heightFactor: 1,
+      widthFactor: 2,
+      child: ToggleSwitch(
+        initialLabelIndex: scannerMode,
+        totalSwitches: 2,
+        labels: const ['Product', 'Test'],
+        onToggle: (index) {
+          scannerModeSwitchOnToggle(index);
+        },
+      ),
+    ),
+  );
 }
