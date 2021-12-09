@@ -22,6 +22,7 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
+   prefer_expression_function_bodies: true
    prefer_const_constructors: true
    prefer_const_constructors_in_immutables: true
    avoid_print: true  # Uncomment to disable the `avoid_print` rule

@@ -106,26 +106,3 @@ class SettingsPageView
         ));
   }
 }
-
-class InfoButton extends StatelessWidget {
-  const InfoButton({Key? key, required this.controller}) : super(key: key);
-  final SettingsPageController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () {
-        controller.infoButtonOnPressed();
-      },
-      icon: Icon(
-        Icons.info,
-        size: SizeConfig.blockSizeVertical * 2,
-      ),
-      label: Text('Info',
-          style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2)),
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
-      ),
-    );
-  }
-}

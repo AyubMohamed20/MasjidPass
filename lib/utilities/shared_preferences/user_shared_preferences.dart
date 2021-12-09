@@ -3,12 +3,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserSharedPreferences {
   static SharedPreferences? preferences;
 
-  static const _keyEntrance = "Entrance";
-  static const _keySwitch = "Switch";
-  static const _keyScannerMode = "Scanner Mode";
-  static const _keyInternetAvailability = "Internet Availability";
-  static const _keyEventSelected = "Event Selected";
-  static const _keyLoggedIn = "Logged In";
+  static const _keyEntrance = 'Entrance';
+  static const _keySwitch = 'Switch';
+  static const _keyScannerMode = 'Scanner Mode';
+  static const _keyInternetAvailability = 'Internet Availability';
+  static const _keyEventSelected = 'Event Selected';
+  static const _keyLoggedIn = 'Logged In';
 
   static Future init() async =>
       preferences = await SharedPreferences.getInstance();
@@ -53,7 +53,7 @@ class UserSharedPreferences {
   static resetSharedPreferences () async {
     await UserSharedPreferences.setUserLoggedIn(false);
     await UserSharedPreferences.setSwitch(false);
-    await UserSharedPreferences.setEntrance("Mens");
+    await UserSharedPreferences.setEntrance('Mens');
     await UserSharedPreferences.setInternetAvailability(false);
     await UserSharedPreferences.setEventSelected(false);
   }

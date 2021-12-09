@@ -7,8 +7,7 @@ class InfoSideBanner extends StatelessWidget {
   final SettingsPageController controller;
 
   @override
-  Widget build(BuildContext context) {
-    return Drawer(
+  Widget build(BuildContext context) => Drawer(
       child: ListView(
         children: [
           const ListTile(
@@ -49,7 +48,6 @@ class InfoSideBanner extends StatelessWidget {
         ], //children
       ),
     );
-  }
 }
 
 class InfoBannerListTile extends StatelessWidget {
@@ -60,8 +58,7 @@ class InfoBannerListTile extends StatelessWidget {
   const InfoBannerListTile(this.text, this.subtitle, this.func);
 
   @override
-  Widget build(BuildContext context) {
-    return ListTile(
+  Widget build(BuildContext context) => ListTile(
       title: Text(
         text,
         style: const TextStyle(fontWeight: FontWeight.bold),
@@ -71,7 +68,6 @@ class InfoBannerListTile extends StatelessWidget {
         func,
       },
     );
-  }
 }
 
 class LogoutButton extends StatelessWidget {
@@ -79,13 +75,11 @@ class LogoutButton extends StatelessWidget {
   final SettingsPageController controller;
 
   @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
+  Widget build(BuildContext context) => ElevatedButton(
       onPressed: () {
         showDialog<String>(
           context: controller.context,
-          builder: (BuildContext context) {
-            return AlertDialog(
+          builder: (BuildContext context) => AlertDialog(
               title: const Text('Confirmation'),
               content: const Text('Are you sure you want to logout?'),
               actions: <Widget>[
@@ -100,8 +94,7 @@ class LogoutButton extends StatelessWidget {
                   child: const Text('Logout'),
                 ),
               ],
-            );
-          },
+            ),
         );
       },
       child: Text('Logout',
@@ -110,15 +103,13 @@ class LogoutButton extends StatelessWidget {
         backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
       ),
     );
-  }
 }
 
 class TestingModeBanner extends StatelessWidget {
   const TestingModeBanner({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return FittedBox(
+  Widget build(BuildContext context) => FittedBox(
       child: Container(
         width: SizeConfig.screenWidth,
         margin: const EdgeInsets.only(top: 50),
@@ -132,7 +123,6 @@ class TestingModeBanner extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class OrganizationName extends StatelessWidget {
@@ -142,8 +132,7 @@ class OrganizationName extends StatelessWidget {
   final String organizationName = 'SNMC Mosque';
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       margin: const EdgeInsets.only(right: 10, left: 10),
       child: FittedBox(
         fit: BoxFit.fitWidth,
@@ -153,7 +142,6 @@ class OrganizationName extends StatelessWidget {
                 fontSize: SizeConfig.blockSizeVertical * 3.33)),
       ),
     );
-  }
 }
 
 class SelectDoorText extends StatelessWidget {
@@ -161,11 +149,9 @@ class SelectDoorText extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) {
-    return Expanded(
+  Widget build(BuildContext context) => Expanded(
         child: Text(text,
             style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2.22)));
-  }
 }
 
 class SelectDoorDropDown extends StatelessWidget {
@@ -174,8 +160,7 @@ class SelectDoorDropDown extends StatelessWidget {
   final SettingsPageController controller;
 
   @override
-  Widget build(BuildContext context) {
-    return DropdownButton<String>(
+  Widget build(BuildContext context) => DropdownButton<String>(
       value: controller.entrance,
       icon:
           Icon(Icons.arrow_downward, size: SizeConfig.blockSizeVertical * 3.33),
@@ -190,15 +175,12 @@ class SelectDoorDropDown extends StatelessWidget {
         controller.entrancesDropDownOnChanged(newValue);
       },
       items: controller.organizationEntrances
-          .map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
+          .map<DropdownMenuItem<String>>((String value) => DropdownMenuItem<String>(
           value: value,
           child: Text(value,
               style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2.22)),
-        );
-      }).toList(),
+        )).toList(),
     );
-  }
 }
 
 class DirectionSwitch extends StatelessWidget {
@@ -206,8 +188,7 @@ class DirectionSwitch extends StatelessWidget {
   final SettingsPageController controller;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: [
         SizedBox(
           child: Transform.scale(
@@ -229,15 +210,13 @@ class DirectionSwitch extends StatelessWidget {
         ),
       ],
     );
-  }
 }
 
 class SelectEventButton extends StatelessWidget {
   const SelectEventButton({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
+  Widget build(BuildContext context) => ElevatedButton(
       onPressed: () {},
       child: Text(
         'Select Event',
@@ -249,7 +228,6 @@ class SelectEventButton extends StatelessWidget {
         backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
       ),
     );
-  }
 }
 
 class ScanButton extends StatelessWidget {
@@ -257,8 +235,7 @@ class ScanButton extends StatelessWidget {
   final SettingsPageController controller;
 
   @override
-  Widget build(BuildContext context) {
-    return Expanded(
+  Widget build(BuildContext context) => Expanded(
         child: ElevatedButton(
       onPressed: () {
         controller.scanButtonOnPressed();
@@ -273,5 +250,25 @@ class ScanButton extends StatelessWidget {
         backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
       ),
     ));
-  }
+}
+
+class InfoButton extends StatelessWidget {
+  const InfoButton({Key? key, required this.controller}) : super(key: key);
+  final SettingsPageController controller;
+
+  @override
+  Widget build(BuildContext context) => ElevatedButton.icon(
+      onPressed: () {
+        controller.infoButtonOnPressed();
+      },
+      icon: Icon(
+        Icons.info,
+        size: SizeConfig.blockSizeVertical * 2,
+      ),
+      label: Text('Info',
+          style: TextStyle(fontSize: SizeConfig.blockSizeVertical * 2)),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.black),
+      ),
+    );
 }

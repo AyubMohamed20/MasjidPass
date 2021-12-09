@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:masjid_pass/auth/login_screen_controller.dart';
 import 'package:masjid_pass/setting_page/settings_page_controller.dart';
 import 'package:masjid_pass/utilities/shared_preferences/user_shared_preferences.dart';
-import '../auth/loginscreen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -18,13 +18,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(color: Color.fromRGBO(116, 178, 196, 1)),
+            decoration: const BoxDecoration(color: Color.fromRGBO(116, 178, 196, 1)),
           ),
           Column(
             children: <Widget>[
@@ -33,8 +32,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Spacer(flex: 6),
-                      CircleAvatar(
+                      const Spacer(flex: 6),
+                      const CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: 50.0,
                         child: Icon(
@@ -44,16 +43,16 @@ class _SplashScreenState extends State<SplashScreen> {
                         ),
                       ),
 
-                      Spacer(flex: 1),
-                      Text(
-                        "Masjid Check-in Scanner",
+                      const Spacer(flex: 1),
+                      const Text(
+                        'Masjid Check-in Scanner',
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 24.0),
                       ),
 
-                      Spacer(flex: 1),
+                      const Spacer(flex: 1),
                       //CircularProgressIndicator(),
                     ],
                   ),
@@ -64,8 +63,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    CircularProgressIndicator(),
-                    Padding(
+                    const CircularProgressIndicator(),
+                    const Padding(
                       padding: EdgeInsets.only(top: 20.0),
                     ),
                   ],
@@ -76,22 +75,21 @@ class _SplashScreenState extends State<SplashScreen> {
         ],
       ),
     );
-  }
 
   /// If the user is already logged in, it navigates to the Settings page; otherwise, it navigates to the login screen.
   _navigateToPage() async {
-    await Future.delayed(Duration(milliseconds: 4000));
+    await Future.delayed(const Duration(milliseconds: 4000));
 
     if (UserSharedPreferences.getUserLoggedIn() ?? false) {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => const SettingsPage(
-                    title: "Settings Page",
+                    title: 'Settings Page',
                   )));
     } else {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+          context, MaterialPageRoute(builder: (context) => const LoginPage()));
     }
   }
 }

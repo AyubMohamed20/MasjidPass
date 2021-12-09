@@ -3,12 +3,11 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:masjid_pass/auth/loginscreen.dart';
+import 'package:masjid_pass/auth/login_screen_controller.dart';
+import 'package:masjid_pass/scanner_screeen/scanner_screen_controller.dart';
 import 'package:masjid_pass/setting_page/settings_page_view.dart';
 import 'package:masjid_pass/utilities/shared_preferences/user_shared_preferences.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-
-import '../scanner_screeen/scannerscreen.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key, required this.title}) : super(key: key);
@@ -200,29 +199,25 @@ class SettingsPageController extends State<SettingsPage> {
     if (scanner_clicked == 15) {
       showDialog(
           context: context,
-          builder: (BuildContext context) {
-            return scannerModeSwitch();
-          });
+          builder: (BuildContext context) => scannerModeSwitch());
     }
   }
 
-  Widget scannerModeSwitch() {
-    return AlertDialog(
-      title: const Center(child: Text('Scanner Mode')),
-      content: Center(
-        heightFactor: 1,
-        widthFactor: 2,
-        child: ToggleSwitch(
-          initialLabelIndex: scannerMode,
-          totalSwitches: 2,
-          labels: const ['Product', 'Test'],
-          onToggle: (index) {
-            scannerModeSwitchOnToggle(index);
-          },
+  Widget scannerModeSwitch() => AlertDialog(
+        title: const Center(child: Text('Scanner Mode')),
+        content: Center(
+          heightFactor: 1,
+          widthFactor: 2,
+          child: ToggleSwitch(
+            initialLabelIndex: scannerMode,
+            totalSwitches: 2,
+            labels: const ['Product', 'Test'],
+            onToggle: (index) {
+              scannerModeSwitchOnToggle(index);
+            },
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   Future<void> scannerModeSwitchOnToggle(int scannerModeIndex) async {
     scannerMode = scannerModeIndex;
