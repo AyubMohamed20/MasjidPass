@@ -98,29 +98,8 @@ class BuildSubmit extends StatelessWidget {
   Widget build(BuildContext context) => Builder(
         builder: (context) => ButtonWidget(
             text: 'Login',
-            onClicked: () async {
-              controller.getCurrentPosition();
-              //wrongCreds = "Login Succesful";
-              final isValid = controller.form.currentState!.validate();
-              if (isValid) {
-                controller.addUser();
-                controller.form.currentState!.save();
-                // String message = '$username$password';
-              }
-              bool? loginGood = await controller.loginPressed();
-              if (loginGood == true) {
-                controller.wrongCreds = 'Login Successful';
-              } else if (loginGood == false) {
-                controller.wrongCreds = 'Invalid Username or Password';
-              }
-              final snackBar = SnackBar(
-                content: Text(
-                  controller.wrongCreds,
-                  style: const TextStyle(fontSize: 12),
-                ),
-                backgroundColor: Colors.green,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            onClicked: () {
+              controller.loginOnClicked();
             }),
       );
 }

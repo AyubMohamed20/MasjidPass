@@ -9,6 +9,7 @@ import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/scanner_screeen/scanner_screen_controller.dart';
 import 'package:masjid_pass/setting_page/settings_page_view.dart';
 import 'package:masjid_pass/setting_page/settings_page_widgets.dart';
+import 'package:masjid_pass/utilities/constants.dart';
 import 'package:masjid_pass/utilities/shared_preferences/user_shared_preferences.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -125,7 +126,7 @@ class SettingsPageController extends State<SettingsPage> {
     isSwitched = isSwitched ? false : true;
     toggleSwitch(isSwitched);
     entrance = UserSharedPreferences.getEntrance() ?? 'Mens';
-    scannerMode = UserSharedPreferences.getScannerMode() ?? 0;
+    scannerMode = UserSharedPreferences.getScannerMode() ?? PRODUCTION_MODE;
     //eventsSelected = UserSharedPreferences.getEventSelected() ?? false;
     internetAvailability =
         UserSharedPreferences.getInternetAvailability() ?? false;

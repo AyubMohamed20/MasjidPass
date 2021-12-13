@@ -1,7 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/scanner_screeen/scanner_screen_view.dart';
 import 'package:masjid_pass/scanner_screeen/scanner_screen_widget.dart';

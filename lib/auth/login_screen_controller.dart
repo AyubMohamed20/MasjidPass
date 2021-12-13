@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:masjid_pass/models/login_info.dart';
 import 'package:masjid_pass/setting_page/settings_page_controller.dart';
 import 'package:masjid_pass/utilities/shared_preferences/user_shared_preferences.dart';
 
@@ -162,9 +163,7 @@ class LoginPageController extends State<LoginPage>
 
   ///Function to add user using dummy data in order to validate it
   Future addUser() async {
-    final testUser =
-        const User(username: 'test', password: '1234', organizationId: 11);
-
+    final testUser = const User(username: '', password: '', organizationId: 11);
     await MasjidDatabase.instance.create(testUser);
   }
 
@@ -190,5 +189,39 @@ class LoginPageController extends State<LoginPage>
 
   void buildPasswordOnSaved(String value) {
     setState(() => password = value);
+  }
+
+  Future<void> loginOnClicked() async {
+    Color snackBarColor = Colors.green;
+
+    getCurrentPosition();
+    //wrongCreds = "Login Succesful";
+    final isValid = form.currentState!.validate();
+
+    if (isValid) {
+      addUser();
+      form.currentState!.save();
+      // String message = '$username$password';
+    }
+    bool? loginGood = await loginPressed();
+    if (loginGood == true) {
+      wrongCreds = 'Login Successful';
+    } else if (loginGood == false) {
+      wrongCreds = 'Invalid Username or Password';
+      snackBarColor = Colors.red;
+    }
+    final snackBar = SnackBar(
+      content: Text(
+        wrongCreds,
+        style: const TextStyle(fontSize: 12),
+      ),
+      backgroundColor: snackBarColor,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void scannerLoginAndAuthenticate() {
+    int scannerMode = UserSharedPreferences.getScannerMode();
+    var loginInfo = LoginInfo(username: username, password: password);
   }
 }

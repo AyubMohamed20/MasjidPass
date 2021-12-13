@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/setting_page/settings_page_controller.dart';
 import 'package:masjid_pass/setting_page/settings_page_widgets.dart';
+import 'package:masjid_pass/utilities/constants.dart';
 import 'package:masjid_pass/utilities/screen_size_config.dart';
 import 'package:widget_view/widget_view.dart';
 
@@ -23,7 +24,7 @@ class SettingsPageView
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            if (controller.scannerMode == 1) const TestingModeBanner(),
+            if (controller.scannerMode == TESTING_MODE) const TestingModeBanner(),
             Expanded(
               flex: 2,
               child: Row(

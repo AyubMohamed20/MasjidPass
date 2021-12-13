@@ -1,0 +1,2 @@
+const TESTING_MODE = 0;
+const PRODUCTION_MODE = 1;
