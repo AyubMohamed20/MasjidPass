@@ -20,6 +20,11 @@ class InfoSideBanner extends StatelessWidget {
                 ),
               ),
             ),
+            Icon(
+              Icons.qr_code_scanner,
+              color: Colors.black87,
+              size: SizeConfig.blockSizeVertical * 11,
+            ),
             const ListTile(
               title: Center(
                 child: Text(
