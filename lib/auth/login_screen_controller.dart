@@ -81,7 +81,6 @@ class LoginPageController extends State<LoginPage>
   }
 
   ///Function to get the current position of the device using geoLocator
-  ///Function to handle the permissions for the geolocator
   Future<bool> locationPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -96,14 +95,13 @@ class LoginPageController extends State<LoginPage>
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        snackBarMessage = 'Permission denied.';
+        snackBarMessage = 'Location permission denied';
         return false;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      snackBarMessage = 'Location permissions are permanently denied - Please enable permission in your phones settings.';
+      snackBarMessage = 'Location permissions are permanently denied - Please enable permission in your phones settings';
       return false;
     }
 
@@ -127,10 +125,8 @@ class LoginPageController extends State<LoginPage>
       whereArgs: [user, password],
     );
 
-    if (result.length > 0) {
-      print('successful query was $result');
-      return true;
-    }
+    if (result.length > 0) return true;
+
     return false;
   }
 

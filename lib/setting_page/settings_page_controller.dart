@@ -172,7 +172,6 @@ class SettingsPageController extends State<SettingsPage> {
     setState(() {
       disableButtons = true;
     });
-    // TODO: Add Camera Permission
 
     _navigateToScannerPage();
 
