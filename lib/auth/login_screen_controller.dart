@@ -31,31 +31,19 @@ class LoginPageController extends State<LoginPage>
   String _password = '';
 
   ///Sets the wrong credential string
-  String _wrongCreds = 'Invalid Username or Password';
-
-  ///Sets the message for Permission Granted
-  static const String _kPermissionGrantedMessage = 'Permission granted.';
+  String _snackBarMessage = '';
 
   ///Sets the message for Location Service Disabled
   static const String _kLocationServicesDisabledMessage =
       'Location services are disabled.';
 
   ///Sets the message for Permission Denied Message
-  static const String _kPermissionDeniedMessage = 'Permission denied.';
-
-  ///Sets the message for PermissioN Denied Forever
-  static const String _kPermissionDeniedForeverMessage =
-      'Permission denied forever.';
-
-  static String get kPermissionGrantedMessage => _kPermissionGrantedMessage;
+  static const String _locationPermissionMessage = 'Permission denied.';
 
   static String get kLocationServicesDisabledMessage =>
       _kLocationServicesDisabledMessage;
 
-  static String get kPermissionDeniedMessage => _kPermissionDeniedMessage;
-
-  static String get kPermissionDeniedForeverMessage =>
-      _kPermissionDeniedForeverMessage;
+  static String get kPermissionDeniedMessage => _locationPermissionMessage;
 
   String get username => _username;
 
@@ -75,10 +63,10 @@ class LoginPageController extends State<LoginPage>
     _password = value;
   }
 
-  String get wrongCreds => _wrongCreds;
+  String get snackBarMessage => _snackBarMessage;
 
-  set wrongCreds(String value) {
-    _wrongCreds = value;
+  set snackBarMessage(String value) {
+    _snackBarMessage = value;
   }
 
   ///function navigates to the setting's page
@@ -93,43 +81,13 @@ class LoginPageController extends State<LoginPage>
   }
 
   ///Function to get the current position of the device using geoLocator
-  Future<void> getCurrentPosition() async {
-    try {
-      final position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      final hasPermission = await _handlePermission();
-      if (!hasPermission) {
-        return;
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  ///Function to get the login when the submit button is pressed
-  Future<bool> loginPressed() async {
-    bool? validLogin = await getLogin(username, password);
-    if (validLogin == true) {
-      await UserSharedPreferences.setUserLoggedIn(true);
-      _navigateToSettings();
-      return true;
-    }
-
-    return false;
-  }
-
-  ///Function to handle the permissions for the geolocator
-  Future<bool> _handlePermission() async {
+  Future<bool> locationPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      wrongCreds = _kLocationServicesDisabledMessage;
+      snackBarMessage = 'Location services are disabled';
       return false;
     }
 
@@ -137,26 +95,16 @@ class LoginPageController extends State<LoginPage>
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        wrongCreds = _kPermissionDeniedMessage;
+        snackBarMessage = 'Location permission denied';
         return false;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      wrongCreds = _kPermissionDeniedForeverMessage;
+      snackBarMessage = 'Location permissions are permanently denied - Please enable permission in your phones settings';
       return false;
     }
 
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
-
-    wrongCreds = _kPermissionGrantedMessage;
     return true;
   }
 
@@ -177,10 +125,8 @@ class LoginPageController extends State<LoginPage>
       whereArgs: [user, password],
     );
 
-    if (result.length > 0) {
-      print('successful query was $result');
-      return true;
-    }
+    if (result.length > 0) return true;
+
     return false;
   }
 
@@ -190,5 +136,46 @@ class LoginPageController extends State<LoginPage>
 
   void buildPasswordOnSaved(String value) {
     setState(() => password = value);
+  }
+
+  Future<void> buildSubmitOnClicked() async {
+    Color snackBarColor = Colors.red;
+    bool? requestLocation = false;
+
+    final isValid = form.currentState!.validate();
+    if (isValid) {
+      addUser();
+      form.currentState!.save();
+    }
+
+    bool? validLogin = await getLogin(username, password);
+
+    if (validLogin) {
+      requestLocation = await locationPermission();
+      if (requestLocation) {
+        snackBarMessage = 'Login Successful';
+        snackBarColor = Colors.green;
+      }
+    } else {
+      snackBarMessage = 'Invalid Username or Password';
+    }
+
+    showSnackBar(snackBarColor);
+
+    if (validLogin && requestLocation) {
+      await UserSharedPreferences.setUserLoggedIn(true);
+      _navigateToSettings();
+    }
+  }
+
+  void showSnackBar(Color snackBarColor) {
+    final snackBar = SnackBar(
+      content: Text(
+        snackBarMessage,
+        style: const TextStyle(fontSize: 12),
+      ),
+      backgroundColor: snackBarColor,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

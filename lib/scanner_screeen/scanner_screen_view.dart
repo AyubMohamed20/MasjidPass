@@ -12,12 +12,14 @@ class ScannerPageView
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    controller.permissions();
     return Scaffold(
-        backgroundColor: const Color.fromRGBO(116, 178, 196, 1),
+        backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
         appBar: null,
         body: Stack(
           children: [
-            QrScannerView(controller: controller),
+            if (!controller.hasCriticalErrorMessage)
+              QrScannerView(controller: controller),
             ScanHistory(controller: controller),
             if (controller.hasIndicator ||
                 controller.hasMessage ||
@@ -59,7 +61,7 @@ class ScannerPageView
                   ],
                 ),
               ),
-            //showcaseIndicators(),
+            ShowcaseIndicators(controller: controller),
           ],
         ));
   }
