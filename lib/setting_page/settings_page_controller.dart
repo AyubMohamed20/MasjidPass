@@ -216,7 +216,7 @@ class SettingsPageController extends State<SettingsPage> {
   }
 
   deviceIdOnTap() {
-    // TODO: Copy device ID to clip board
+    Clipboard.setData(ClipboardData(text: identifier));
   }
 
   void logoutButtonOnPressed() {

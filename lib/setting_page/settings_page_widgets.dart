@@ -33,8 +33,16 @@ class InfoSideBanner extends StatelessWidget {
                 ),
               ),
             ),
-            InfoBannerListTile(
-                'Device ID', controller.identifier, controller.deviceIdOnTap()),
+            ListTile(
+              title: const Text(
+                'Device ID',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(controller.identifier),
+              onTap: () => {
+                controller.deviceIdOnTap(),
+              },
+            ),
             const Divider(
               thickness: 2,
             ),
@@ -51,11 +59,11 @@ class InfoSideBanner extends StatelessWidget {
             const Divider(
               thickness: 2,
             ),
-            const InfoBannerListTile('Authentication API Version', '1.0', null),
+            const InfoBannerListTile('Authentication API Version', '1.0'),
             const Divider(
               thickness: 2,
             ),
-            const InfoBannerListTile('Backend API Version', '1.0', null),
+            const InfoBannerListTile('Backend API Version', '1.0'),
             const Divider(
               thickness: 2,
             ),
@@ -67,9 +75,8 @@ class InfoSideBanner extends StatelessWidget {
 class InfoBannerListTile extends StatelessWidget {
   final String text;
   final String subtitle;
-  final Function? func;
 
-  const InfoBannerListTile(this.text, this.subtitle, this.func);
+  const InfoBannerListTile(this.text, this.subtitle);
 
   @override
   Widget build(BuildContext context) => ListTile(
@@ -78,9 +85,7 @@ class InfoBannerListTile extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(subtitle),
-        onTap: () => {
-          func,
-        },
+        onTap: () => {},
       );
 }
 
@@ -293,8 +298,8 @@ class InfoButton extends StatelessWidget {
 class ScannerModeSwitch extends StatelessWidget {
   const ScannerModeSwitch(
       {Key? key,
-        required this.scannerMode,
-        required this.scannerModeSwitchOnToggle})
+      required this.scannerMode,
+      required this.scannerModeSwitchOnToggle})
       : super(key: key);
 
   final int scannerMode;
@@ -302,18 +307,18 @@ class ScannerModeSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-    title: const Center(child: Text('Scanner Mode')),
-    content: Center(
-      heightFactor: 1,
-      widthFactor: 2,
-      child: ToggleSwitch(
-        initialLabelIndex: scannerMode,
-        totalSwitches: 2,
-        labels: const ['Product', 'Test'],
-        onToggle: (index) {
-          scannerModeSwitchOnToggle(index);
-        },
-      ),
-    ),
-  );
+        title: const Center(child: Text('Scanner Mode')),
+        content: Center(
+          heightFactor: 1,
+          widthFactor: 2,
+          child: ToggleSwitch(
+            initialLabelIndex: scannerMode,
+            totalSwitches: 2,
+            labels: const ['Product', 'Test'],
+            onToggle: (index) {
+              scannerModeSwitchOnToggle(index);
+            },
+          ),
+        ),
+      );
 }
