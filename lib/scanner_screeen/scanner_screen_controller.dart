@@ -219,7 +219,7 @@ class ScannerPageController extends State<ScannerPage> {
     // This function adds all critical error message bubbles to a list(criticalErrorMessagesBubbles), which will show in the scanner history.
 
     // TODO: Add - When there is 10 bubbles remove the the last one
-    Color scanHistoryBubbleColor = Colors.black;
+    Color scanHistoryBubbleColor;
 
     if (errorIndicator || hasScanErrorMessage)
       scanHistoryBubbleColor = Colors.red;
@@ -229,13 +229,21 @@ class ScannerPageController extends State<ScannerPage> {
       scanHistoryBubbleColor = Colors.amberAccent;
     else if (offlineSuccessIndicator)
       scanHistoryBubbleColor = Colors.lightGreen;
+    else {
+      scanHistoryBubbleColor = Colors.black;
+    }
 
     if (ScanHistoryBubbles.isEmpty) {
       ScanHistoryBubbles.add(SizedBox(
         height: SizeConfig.blockSizeHorizontal * 6,
       ));
     }
-    if (ScanHistoryBubbles.length < 10) {
+    if (ScanHistoryBubbles.length < 11) {
+      ScanHistoryBubbles.add(CriticalErrorMessagesBubbles(
+          scanHistoryBubbleColor: scanHistoryBubbleColor,
+          messageText: messageText));
+    } else {
+      ScanHistoryBubbles.removeAt(1);
       ScanHistoryBubbles.add(CriticalErrorMessagesBubbles(
           scanHistoryBubbleColor: scanHistoryBubbleColor,
           messageText: messageText));
@@ -253,9 +261,10 @@ class ScannerPageController extends State<ScannerPage> {
   }
 
   Future<void> showcaseIndicatorsOnPressed() async {
-    messageText = 'This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002';
-    initializeMessageBubbles();
+    messageText = 'This visitor has already been scanned.\nVisitor ID:';
+
     hasScanErrorMessage = true;
+    initializeMessageBubbles();
 
     setState(() {});
     await Future.delayed(const Duration(seconds: 5));
@@ -267,13 +276,16 @@ class ScannerPageController extends State<ScannerPage> {
     var cameraStatus = await Permission.camera.status;
 
     if (cameraStatus.isDenied) {
-      messageText = 'ERROR: Camera permissions was denied - Please enable to continue';
+      messageText =
+          'ERROR: Camera permissions was denied - Please enable to continue';
       hasCriticalErrorMessage = true;
     } else if (await Permission.locationWhenInUse.serviceStatus.isDisabled) {
-      messageText = 'ERROR: Location services are disabled - Please enable location services ';
+      messageText =
+          'ERROR: Location services are disabled - Please enable location services ';
       hasCriticalErrorMessage = true;
     } else if (await Permission.locationWhenInUse.isDenied) {
-      messageText = 'ERROR: Location permissions are denied - Please enable *PRECISE LOCATION* permissions';
+      messageText =
+          'ERROR: Location permissions are denied - Please enable *PRECISE LOCATION* permissions';
       hasCriticalErrorMessage = true;
     } else {
       hasCriticalErrorMessage = false;

@@ -64,7 +64,7 @@ class ScanHistory extends StatelessWidget {
           height: SizeConfig.blockSizeVertical * 37,
           child: Stack(
             children: <Widget>[
-              if (controller.hasCriticalErrorMessage)
+              if (controller.hasCriticalErrorMessage || controller.hasScanErrorMessage)
                 CriticalErrorMessage(controller: controller),
               AnimatedPositioned(
                 width: SizeConfig.screenWidth,
