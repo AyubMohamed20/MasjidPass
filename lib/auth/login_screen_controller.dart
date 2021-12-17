@@ -174,6 +174,11 @@ class LoginPageController extends State<LoginPage>
         snackBarMessage,
         style: const TextStyle(fontSize: 12),
       ),
+      action: SnackBarAction(
+        label: 'Close',
+          textColor: Colors.black,
+        onPressed: () {},
+      ),
       backgroundColor: snackBarColor,
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
