@@ -174,7 +174,7 @@ class ScannerPageController extends State<ScannerPage> {
   }
 
   _navigateToSettingsPage() async {
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => const SettingsPage(
