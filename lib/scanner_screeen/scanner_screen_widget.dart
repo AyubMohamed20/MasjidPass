@@ -1,4 +1,4 @@
-import 'package:bubble/bubble.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:masjid_pass/scanner_screeen/scanner_screen_controller.dart';
 import 'package:masjid_pass/utilities/screen_size_config.dart';
@@ -22,8 +22,8 @@ class QrScannerView extends StatelessWidget {
                 ),
                 Center(
                   child: Container(
-                    width: 200,
-                    height: 200,
+                    width: 250,
+                    height: 250,
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: Colors.red,
@@ -64,7 +64,8 @@ class ScanHistory extends StatelessWidget {
           height: SizeConfig.blockSizeVertical * 37,
           child: Stack(
             children: <Widget>[
-              if (controller.hasCriticalErrorMessage || controller.hasScanErrorMessage)
+              if (controller.hasCriticalErrorMessage ||
+                  controller.hasScanErrorMessage)
                 CriticalErrorMessage(controller: controller),
               AnimatedPositioned(
                 width: SizeConfig.screenWidth,
@@ -134,16 +135,23 @@ class CriticalErrorMessage extends StatelessWidget {
           SizedBox(
             height: SizeConfig.blockSizeVertical * 20,
           ),
-          Bubble(
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              border: Border.all(
+                color: Colors.red,
+              ),
+            ),
             alignment: Alignment.center,
-            color: Colors.red,
-            margin: const BubbleEdges.all(10),
-            child: Text(
+            margin: const EdgeInsets.all(20),
+            child: AutoSizeText(
               controller.messageText,
               style: TextStyle(
                   color: Colors.white,
                   fontSize: SizeConfig.blockSizeHorizontal * 3.5),
               textAlign: TextAlign.center,
+              maxLines: 2,
             ),
           ),
         ],
@@ -384,8 +392,8 @@ class OverrideButton extends StatelessWidget {
       );
 }
 
-class CriticalErrorMessagesBubbles extends StatelessWidget {
-  const CriticalErrorMessagesBubbles(
+class ScanHistoryMessagesBubbles extends StatelessWidget {
+  const ScanHistoryMessagesBubbles(
       {Key? key,
       required this.scanHistoryBubbleColor,
       required this.messageText})
@@ -395,18 +403,24 @@ class CriticalErrorMessagesBubbles extends StatelessWidget {
   final String messageText;
 
   @override
-  Widget build(BuildContext context) => Bubble(
-        alignment: Alignment.center,
-        color: scanHistoryBubbleColor,
-        margin: BubbleEdges.only(
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          color: scanHistoryBubbleColor,
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          border: Border.all(
+            color: Colors.red,
+          ),
+        ),
+        margin: EdgeInsets.only(
+            left: SizeConfig.blockSizeHorizontal * 5,
+            right: SizeConfig.blockSizeHorizontal * 5,
             top: SizeConfig.blockSizeHorizontal * 2,
             bottom: SizeConfig.blockSizeHorizontal * 2),
-        child: Text(
+        child: AutoSizeText(
           messageText,
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: SizeConfig.blockSizeHorizontal * 3.4),
+          style: const TextStyle(color: Colors.white),
           textAlign: TextAlign.center,
+          maxLines: 2,
         ),
       );
 }

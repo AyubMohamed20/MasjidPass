@@ -164,8 +164,12 @@ class ScannerPageController extends State<ScannerPage> {
     this.QrController = controller;
     controller.scannedDataStream.listen((scanData) {
       controller.pauseCamera();
-      IncomingScan(scanData.code.toString())
-          .then((value) => controller.resumeCamera());
+      IncomingScan(scanData.code.toString()).then((value) async {
+        await Future.delayed(const Duration(seconds: 5));
+        setFlagsToFalse();
+        setState(() {});
+        return controller.resumeCamera();
+      });
     });
   }
 
@@ -189,16 +193,13 @@ class ScannerPageController extends State<ScannerPage> {
       initializeMessageBubbles();
       _audioCache.play('sounds/success_notification.mp3');
     } else if (!validScan) {
-      messageText = 'Invalid Scan: VisitorId: $visitorId ';
+      messageText = 'ERROR: Invalid Scan \n VisitorId: $visitorId ';
       hasMessage = true;
       hasIndicator = true;
       errorIndicator = true;
       initializeMessageBubbles();
       _audioCache.play('sounds/failure_notification.mp3');
     }
-    setState(() {});
-    await Future.delayed(const Duration(seconds: 5));
-    setFlagsToFalse();
     setState(() {});
   }
 
@@ -257,12 +258,12 @@ class ScannerPageController extends State<ScannerPage> {
       ));
     }
     if (ScanHistoryBubbles.length < 11) {
-      ScanHistoryBubbles.add(CriticalErrorMessagesBubbles(
+      ScanHistoryBubbles.add(ScanHistoryMessagesBubbles(
           scanHistoryBubbleColor: scanHistoryBubbleColor,
           messageText: messageText));
     } else {
       ScanHistoryBubbles.removeAt(1);
-      ScanHistoryBubbles.add(CriticalErrorMessagesBubbles(
+      ScanHistoryBubbles.add(ScanHistoryMessagesBubbles(
           scanHistoryBubbleColor: scanHistoryBubbleColor,
           messageText: messageText));
     }
@@ -279,7 +280,7 @@ class ScannerPageController extends State<ScannerPage> {
   }
 
   Future<void> showcaseIndicatorsOnPressed() async {
-    messageText = 'This visitor has already been scanned.\nVisitor ID:';
+    messageText = 'ERROR: This visitor has already been scanned.\n Visitor ID: 8e170c8a-58aa-11ec-bf63-0242ac130002';
 
     hasScanErrorMessage = true;
     initializeMessageBubbles();
