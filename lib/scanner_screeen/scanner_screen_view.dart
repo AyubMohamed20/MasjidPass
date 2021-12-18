@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:masjid_pass/scanner_screeen/scanner_screen_controller.dart';
 import 'package:masjid_pass/scanner_screeen/scanner_screen_widget.dart';
 import 'package:masjid_pass/setting_page/settings_page_widgets.dart';

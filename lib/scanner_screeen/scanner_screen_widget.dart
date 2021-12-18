@@ -22,8 +22,8 @@ class QrScannerView extends StatelessWidget {
                 ),
                 Center(
                   child: Container(
-                    width: 300,
-                    height: 300,
+                    width: 200,
+                    height: 200,
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: Colors.red,

@@ -28,16 +28,12 @@ class ScannerPageController extends State<ScannerPage> {
 
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
   late QRViewController QrController;
-
-  GlobalKey get qrKey => _qrKey;
-  List<Widget> ScanHistoryBubbles = [];
+  late List<Widget> ScanHistoryBubbles;
   String _messageText = 'Initial Text';
   String _uploadPercentageText = '100%';
   String _savedVisitLogsNumberText = '30/50';
   bool _hasMessage = false;
-
   bool _hasScanErrorMessage = false;
-
   bool _visitLogUploadTimeoutMessage = false;
   bool _hasIndicator = false;
   bool _errorIndicator = false;
@@ -48,6 +44,27 @@ class ScannerPageController extends State<ScannerPage> {
   bool _hasProgressIndicator = false;
   bool _hasSavedScansIndicator = false;
   bool _hasCriticalErrorMessage = false;
+
+  // Visit Info
+  late String organization;
+  late String door;
+  late bool directionIn;
+  int scannerMode = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initializes the list where the saved scans are stored on the Scanner UI
+    ScanHistoryBubbles = [];
+  }
+
+  @override
+  void dispose() {
+    QrController.dispose();
+    super.dispose();
+  }
+
+  GlobalKey get qrKey => _qrKey;
 
   bool get hasCriticalErrorMessage => _hasCriticalErrorMessage;
 
@@ -145,9 +162,10 @@ class ScannerPageController extends State<ScannerPage> {
 
   void onQRViewCreated(QRViewController controller) {
     this.QrController = controller;
-    controller.scannedDataStream.listen((scanData) async {
+    controller.scannedDataStream.listen((scanData) {
       controller.pauseCamera();
-      IncomingScan(scanData.code).then((value) => controller.resumeCamera());
+      IncomingScan(scanData.code.toString())
+          .then((value) => controller.resumeCamera());
     });
   }
 
@@ -171,7 +189,7 @@ class ScannerPageController extends State<ScannerPage> {
       initializeMessageBubbles();
       _audioCache.play('sounds/success_notification.mp3');
     } else if (!validScan) {
-      messageText = 'Invaild Scan: VisitorId: $visitorId ';
+      messageText = 'Invalid Scan: VisitorId: $visitorId ';
       hasMessage = true;
       hasIndicator = true;
       errorIndicator = true;
