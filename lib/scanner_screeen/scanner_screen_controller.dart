@@ -9,6 +9,7 @@ import 'package:masjid_pass/setting_page/settings_page_controller.dart';
 import 'package:masjid_pass/utilities/screen_size_config.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:uuid/uuid.dart';
 
 import '../db/masjid_database.dart';
 import '../models/visitor.dart';
@@ -160,6 +161,15 @@ class ScannerPageController extends State<ScannerPage> {
     fixedPlayer: AudioPlayer()..setReleaseMode(ReleaseMode.STOP),
   );
 
+  _navigateToSettingsPage() async {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const SettingsPage(
+                  title: 'Settings Page',
+                )));
+  }
+
   void onQRViewCreated(QRViewController controller) {
     this.QrController = controller;
     controller.scannedDataStream.listen((scanData) {
@@ -173,36 +183,30 @@ class ScannerPageController extends State<ScannerPage> {
     });
   }
 
-  _navigateToSettingsPage() async {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const SettingsPage(
-                  title: 'Settings Page',
-                )));
-  }
-
   IncomingScan(String scan) async {
     bool validScan = false;
     String visitorId = '8e170c8a-58aa-11ec-bf63-0242ac130002';
+    bool validUuid = Uuid.isValidUUID(fromString: scan);
 
-    if (validScan) {
-      messageText = 'Successful Scan: VisitorId: $visitorId';
-      successIndicator = true;
-      hasIndicator = true;
-      initializeMessageBubbles();
-      _audioCache.play('sounds/success_notification.mp3');
-    } else if (!validScan) {
-      messageText = 'ERROR: Invalid Scan \n VisitorId: $visitorId ';
+    if (!validScan || !validUuid) {
+      messageText = !validUuid
+          ? 'ERROR: Invalid QR code - No valid UUID \n VisitorId: N/A'
+          : 'ERROR: Invalid Scan \n VisitorId: $visitorId';
       hasMessage = true;
       hasIndicator = true;
       errorIndicator = true;
       initializeMessageBubbles();
       _audioCache.play('sounds/failure_notification.mp3');
+    } else if (validScan) {
+      messageText = 'Successful Scan: VisitorId: $visitorId';
+      successIndicator = true;
+      hasIndicator = true;
+      initializeMessageBubbles();
+      _audioCache.play('sounds/success_notification.mp3');
     }
     setState(() {});
   }
-
+  
   void setFlagsToFalse() {
     hasMessage = false;
     hasScanErrorMessage = false;
@@ -280,7 +284,8 @@ class ScannerPageController extends State<ScannerPage> {
   }
 
   Future<void> showcaseIndicatorsOnPressed() async {
-    messageText = 'ERROR: This visitor has already been scanned.\n Visitor ID: 8e170c8a-58aa-11ec-bf63-0242ac130002';
+    messageText =
+        'ERROR: This visitor has already been scanned.\n Visitor ID: 8e170c8a-58aa-11ec-bf63-0242ac130002';
 
     hasScanErrorMessage = true;
     initializeMessageBubbles();
