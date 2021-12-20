@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:masjid_pass/scanner_screeen/scanner_screen_controller.dart';
-import 'package:masjid_pass/scanner_screeen/scanner_screen_widget.dart';
+import 'package:masjid_pass/scanner_screen/scanner_screen_controller.dart';
+import 'package:masjid_pass/scanner_screen/scanner_screen_widget.dart';
+import 'package:masjid_pass/setting_page/settings_page_widgets.dart';
 import 'package:masjid_pass/utilities/screen_size_config.dart';
 import 'package:widget_view/widget_view.dart';
 
@@ -20,7 +20,34 @@ class ScannerPageView
           children: [
             if (!controller.hasCriticalErrorMessage)
               QrScannerView(controller: controller),
-            ScanHistory(controller: controller),
+            if (controller.scannerMode == 1) const TestingModeBanner(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Stack(
+                  children: [
+                    Column(
+                      children: [
+                         SizedBox(
+                          height: SizeConfig.blockSizeVertical * 21,
+                        ),
+                        if (controller.hasCriticalErrorMessage ||
+                            controller.hasScanErrorMessage)
+                          CriticalErrorMessage(controller: controller),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        ScanHistory(controller: controller),
+                      ],
+                    ),
+                  ],
+                ),
+                SettingPageNavigationButton(controller: controller)
+              ],
+            ),
             if (controller.hasIndicator ||
                 controller.hasMessage ||
                 controller.hasProgressIndicator ||

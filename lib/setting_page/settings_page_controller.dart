@@ -1,16 +1,15 @@
 import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:masjid_pass/auth/login_screen_controller.dart';
 import 'package:masjid_pass/db/masjid_database.dart';
 import 'package:masjid_pass/models/visitor.dart';
-import 'package:masjid_pass/scanner_screeen/scanner_screen_controller.dart';
+import 'package:masjid_pass/scanner_screen/scanner_screen_controller.dart';
 import 'package:masjid_pass/setting_page/settings_page_view.dart';
 import 'package:masjid_pass/setting_page/settings_page_widgets.dart';
 import 'package:masjid_pass/utilities/shared_preferences/user_shared_preferences.dart';
-import 'package:toggle_switch/toggle_switch.dart';
+
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key, required this.title}) : super(key: key);
@@ -45,7 +44,7 @@ class SettingsPageController extends State<SettingsPage> {
   int scanner_clicked = 0;
 
   /// The scanner mode flag
-  int _scannerMode = 0;
+  int _scannerMode = 1;
 
   /// The internet availability flag
   bool _internetAvailability = false;
@@ -125,7 +124,7 @@ class SettingsPageController extends State<SettingsPage> {
     isSwitched = isSwitched ? false : true;
     toggleSwitch(isSwitched);
     entrance = UserSharedPreferences.getEntrance() ?? 'Mens';
-    scannerMode = UserSharedPreferences.getScannerMode() ?? 0;
+    scannerMode = UserSharedPreferences.getScannerMode() ?? 1;
     //eventsSelected = UserSharedPreferences.getEventSelected() ?? false;
     internetAvailability =
         UserSharedPreferences.getInternetAvailability() ?? false;
@@ -133,7 +132,7 @@ class SettingsPageController extends State<SettingsPage> {
   }
 
   _navigateToScannerPage() async {
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => const ScannerPage(
@@ -216,7 +215,7 @@ class SettingsPageController extends State<SettingsPage> {
   }
 
   deviceIdOnTap() {
-    // TODO: Copy device ID to clip board
+    Clipboard.setData(ClipboardData(text: identifier));
   }
 
   void logoutButtonOnPressed() {

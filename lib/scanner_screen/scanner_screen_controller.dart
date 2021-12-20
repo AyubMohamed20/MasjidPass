@@ -3,12 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:masjid_pass/models/visitor.dart';
-import 'package:masjid_pass/scanner_screeen/scanner_screen_view.dart';
-import 'package:masjid_pass/scanner_screeen/scanner_screen_widget.dart';
+import 'package:masjid_pass/scanner_screen/scanner_screen_view.dart';
+import 'package:masjid_pass/scanner_screen/scanner_screen_widget.dart';
 import 'package:masjid_pass/setting_page/settings_page_controller.dart';
 import 'package:masjid_pass/utilities/screen_size_config.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:uuid/uuid.dart';
 
 import '../db/masjid_database.dart';
 import '../models/visitor.dart';
@@ -28,16 +29,12 @@ class ScannerPageController extends State<ScannerPage> {
 
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
   late QRViewController QrController;
-
-  GlobalKey get qrKey => _qrKey;
-  List<Widget> ScanHistoryBubbles = [];
+  late List<Widget> ScanHistoryBubbles;
   String _messageText = 'Initial Text';
   String _uploadPercentageText = '100%';
   String _savedVisitLogsNumberText = '30/50';
   bool _hasMessage = false;
-
   bool _hasScanErrorMessage = false;
-
   bool _visitLogUploadTimeoutMessage = false;
   bool _hasIndicator = false;
   bool _errorIndicator = false;
@@ -48,6 +45,27 @@ class ScannerPageController extends State<ScannerPage> {
   bool _hasProgressIndicator = false;
   bool _hasSavedScansIndicator = false;
   bool _hasCriticalErrorMessage = false;
+
+  // Visit Info
+  late String organization;
+  late String door;
+  late bool directionIn;
+  int scannerMode = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initializes the list where the saved scans are stored on the Scanner UI
+    ScanHistoryBubbles = [];
+  }
+
+  @override
+  void dispose() {
+    QrController.dispose();
+    super.dispose();
+  }
+
+  GlobalKey get qrKey => _qrKey;
 
   bool get hasCriticalErrorMessage => _hasCriticalErrorMessage;
 
@@ -143,16 +161,8 @@ class ScannerPageController extends State<ScannerPage> {
     fixedPlayer: AudioPlayer()..setReleaseMode(ReleaseMode.STOP),
   );
 
-  void onQRViewCreated(QRViewController controller) {
-    this.QrController = controller;
-    controller.scannedDataStream.listen((scanData) async {
-      controller.pauseCamera();
-      IncomingScan(scanData.code).then((value) => controller.resumeCamera());
-    });
-  }
-
   _navigateToSettingsPage() async {
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => const SettingsPage(
@@ -160,30 +170,43 @@ class ScannerPageController extends State<ScannerPage> {
                 )));
   }
 
+  void onQRViewCreated(QRViewController controller) {
+    this.QrController = controller;
+    controller.scannedDataStream.listen((scanData) {
+      controller.pauseCamera();
+      IncomingScan(scanData.code.toString()).then((value) async {
+        await Future.delayed(const Duration(seconds: 5));
+        setFlagsToFalse();
+        setState(() {});
+        return controller.resumeCamera();
+      });
+    });
+  }
+
   IncomingScan(String scan) async {
     bool validScan = false;
     String visitorId = '8e170c8a-58aa-11ec-bf63-0242ac130002';
+    bool validUuid = Uuid.isValidUUID(fromString: scan);
 
-    if (validScan) {
-      messageText = 'Successful Scan: VisitorId: $visitorId';
-      successIndicator = true;
-      hasIndicator = true;
-      initializeMessageBubbles();
-      _audioCache.play('sounds/success_notification.mp3');
-    } else if (!validScan) {
-      messageText = 'Invaild Scan: VisitorId: $visitorId ';
+    if (!validScan || !validUuid) {
+      messageText = !validUuid
+          ? 'ERROR: Invalid QR code - No valid UUID \n VisitorId: N/A'
+          : 'ERROR: Invalid Scan \n VisitorId: $visitorId';
       hasMessage = true;
       hasIndicator = true;
       errorIndicator = true;
       initializeMessageBubbles();
       _audioCache.play('sounds/failure_notification.mp3');
+    } else if (validScan) {
+      messageText = 'Successful Scan: VisitorId: $visitorId';
+      successIndicator = true;
+      hasIndicator = true;
+      initializeMessageBubbles();
+      _audioCache.play('sounds/success_notification.mp3');
     }
     setState(() {});
-    await Future.delayed(const Duration(seconds: 5));
-    setFlagsToFalse();
-    setState(() {});
   }
-
+  
   void setFlagsToFalse() {
     hasMessage = false;
     hasScanErrorMessage = false;
@@ -219,7 +242,7 @@ class ScannerPageController extends State<ScannerPage> {
     // This function adds all critical error message bubbles to a list(criticalErrorMessagesBubbles), which will show in the scanner history.
 
     // TODO: Add - When there is 10 bubbles remove the the last one
-    Color scanHistoryBubbleColor = Colors.black;
+    Color scanHistoryBubbleColor;
 
     if (errorIndicator || hasScanErrorMessage)
       scanHistoryBubbleColor = Colors.red;
@@ -229,14 +252,22 @@ class ScannerPageController extends State<ScannerPage> {
       scanHistoryBubbleColor = Colors.amberAccent;
     else if (offlineSuccessIndicator)
       scanHistoryBubbleColor = Colors.lightGreen;
+    else {
+      scanHistoryBubbleColor = Colors.black;
+    }
 
     if (ScanHistoryBubbles.isEmpty) {
       ScanHistoryBubbles.add(SizedBox(
         height: SizeConfig.blockSizeHorizontal * 6,
       ));
     }
-    if (ScanHistoryBubbles.length < 10) {
-      ScanHistoryBubbles.add(CriticalErrorMessagesBubbles(
+    if (ScanHistoryBubbles.length < 11) {
+      ScanHistoryBubbles.add(ScanHistoryMessagesBubbles(
+          scanHistoryBubbleColor: scanHistoryBubbleColor,
+          messageText: messageText));
+    } else {
+      ScanHistoryBubbles.removeAt(1);
+      ScanHistoryBubbles.add(ScanHistoryMessagesBubbles(
           scanHistoryBubbleColor: scanHistoryBubbleColor,
           messageText: messageText));
     }
@@ -253,9 +284,11 @@ class ScannerPageController extends State<ScannerPage> {
   }
 
   Future<void> showcaseIndicatorsOnPressed() async {
-    messageText = 'This visitor has already been scanned.\nVisitor ID: 89f4ffe4-26dd-11ec-9621-0242ac130002';
-    initializeMessageBubbles();
+    messageText =
+        'ERROR: This visitor has already been scanned.\n Visitor ID: 8e170c8a-58aa-11ec-bf63-0242ac130002';
+
     hasScanErrorMessage = true;
+    initializeMessageBubbles();
 
     setState(() {});
     await Future.delayed(const Duration(seconds: 5));
@@ -267,13 +300,16 @@ class ScannerPageController extends State<ScannerPage> {
     var cameraStatus = await Permission.camera.status;
 
     if (cameraStatus.isDenied) {
-      messageText = 'ERROR: Camera permissions was denied - Please enable to continue';
+      messageText =
+          'ERROR: Camera permissions was denied - Please enable to continue';
       hasCriticalErrorMessage = true;
     } else if (await Permission.locationWhenInUse.serviceStatus.isDisabled) {
-      messageText = 'ERROR: Location services are disabled - Please enable location services ';
+      messageText =
+          'ERROR: Location services are disabled - Please enable location services ';
       hasCriticalErrorMessage = true;
     } else if (await Permission.locationWhenInUse.isDenied) {
-      messageText = 'ERROR: Location permissions are denied - Please enable *PRECISE LOCATION* permissions';
+      messageText =
+          'ERROR: Location permissions are denied - Please enable *PRECISE LOCATION* permissions';
       hasCriticalErrorMessage = true;
     } else {
       hasCriticalErrorMessage = false;
