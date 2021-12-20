@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:masjid_pass/scanner_screeen/scanner_screen_controller.dart';
+import 'package:masjid_pass/scanner_screen/scanner_screen_controller.dart';
 import 'package:masjid_pass/utilities/screen_size_config.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -47,78 +47,62 @@ class ScanHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     double drawerHeightMax = SizeConfig.blockSizeVertical * 31;
     double drawerHeightMin = SizeConfig.blockSizeVertical * 6;
+    Widget iconUp = Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
+    Widget iconDown = Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
 
-    Widget iconUp =
-        Icon(Icons.keyboard_arrow_up, size: SizeConfig.blockSizeVertical * 3);
-    Widget iconDown =
-        Icon(Icons.keyboard_arrow_down, size: SizeConfig.blockSizeVertical * 3);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        SizedBox(
-          height: SizeConfig.blockSizeVertical * 37,
-          child: Stack(
-            children: <Widget>[
-              if (controller.hasCriticalErrorMessage ||
-                  controller.hasScanErrorMessage)
-                CriticalErrorMessage(controller: controller),
-              AnimatedPositioned(
-                width: SizeConfig.screenWidth,
-                height: controller.scanHistoryFlag
-                    ? drawerHeightMax
-                    : drawerHeightMin,
-                top: controller.scanHistoryFlag
-                    ? drawerHeightMin
-                    : drawerHeightMax,
-                duration: const Duration(seconds: 1),
-                curve: Curves.fastOutSlowIn,
-                child: Container(
-                  color: Colors.white,
-                  child: ListView.builder(
-                    itemCount: controller.ScanHistoryBubbles.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        controller.ScanHistoryBubbles[index],
-                  ),
-                ),
+    return SizedBox(
+      height: SizeConfig.blockSizeVertical * 37,
+      child: Stack(
+        children: <Widget>[
+          AnimatedPositioned(
+            width: SizeConfig.screenWidth,
+            height: controller.scanHistoryFlag
+                ? drawerHeightMax
+                : drawerHeightMin,
+            top: controller.scanHistoryFlag
+                ? drawerHeightMin
+                : drawerHeightMax,
+            duration: const Duration(seconds: 1),
+            curve: Curves.fastOutSlowIn,
+            child: Container(
+              color: Colors.white,
+              child: ListView.builder(
+                itemCount: controller.ScanHistoryBubbles.length,
+                itemBuilder: (BuildContext context, int index) =>
+                    controller.ScanHistoryBubbles[index],
               ),
-              AnimatedPositioned(
-                width: SizeConfig.screenWidth,
-                height: SizeConfig.blockSizeVertical * 6,
-                top: controller.scanHistoryFlag
-                    ? drawerHeightMin
-                    : drawerHeightMax,
-                duration: const Duration(seconds: 1),
-                curve: Curves.fastOutSlowIn,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    controller.scanHistoryDrawerOnPressed();
-                  },
-                  label: Text(
-                    'SCAN HISTORY',
-                    style:
-                        TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
-                  ),
-                  icon: controller.scanHistoryFlag ? iconDown : iconUp,
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.lightBlue),
-                    alignment: Alignment.centerLeft,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-        // TODO: Move this into the main widget tree
-        SettingPageNavigationButton(
-          controller: controller,
-        ),
-      ],
+          AnimatedPositioned(
+            width: SizeConfig.screenWidth,
+            height: SizeConfig.blockSizeVertical * 6,
+            top: controller.scanHistoryFlag
+                ? drawerHeightMin
+                : drawerHeightMax,
+            duration: const Duration(seconds: 1),
+            curve: Curves.fastOutSlowIn,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                controller.scanHistoryDrawerOnPressed();
+              },
+              label: Text(
+                'SCAN HISTORY',
+                style:
+                    TextStyle(fontSize: SizeConfig.blockSizeVertical * 2),
+              ),
+              icon: controller.scanHistoryFlag ? iconDown : iconUp,
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.lightBlue),
+                alignment: Alignment.centerLeft,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -130,32 +114,25 @@ class CriticalErrorMessage extends StatelessWidget {
   final ScannerPageController controller;
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: [
-          SizedBox(
-            height: SizeConfig.blockSizeVertical * 20,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              border: Border.all(
-                color: Colors.red,
-              ),
-            ),
-            alignment: Alignment.center,
-            margin: const EdgeInsets.all(20),
-            child: AutoSizeText(
-              controller.messageText,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: SizeConfig.blockSizeHorizontal * 3.5),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-            ),
-          ),
-        ],
-      );
+  Widget build(BuildContext context) => Container(
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        border: Border.all(
+          color: Colors.red,
+        ),
+      ),
+      alignment: Alignment.center,
+      margin: const EdgeInsets.all(20),
+      child: AutoSizeText(
+        controller.messageText,
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: SizeConfig.blockSizeHorizontal * 3.5),
+        textAlign: TextAlign.center,
+        maxLines: 2,
+      ),
+    );
 }
 
 class SettingPageNavigationButton extends StatelessWidget {
