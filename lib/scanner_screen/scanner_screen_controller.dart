@@ -206,7 +206,7 @@ class ScannerPageController extends State<ScannerPage> {
     }
     setState(() {});
   }
-  
+
   void setFlagsToFalse() {
     hasMessage = false;
     hasScanErrorMessage = false;

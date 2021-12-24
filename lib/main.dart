@@ -22,13 +22,14 @@ Future preferredOrientations() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   static final String title = 'QR Code Scanner';
+
   @override
   Widget build(BuildContext context) => MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const SplashScreen(),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const SplashScreen(),
+      );
 }

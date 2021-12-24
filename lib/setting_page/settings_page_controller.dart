@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,7 @@ import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/scanner_screen/scanner_screen_controller.dart';
 import 'package:masjid_pass/setting_page/settings_page_view.dart';
 import 'package:masjid_pass/setting_page/settings_page_widgets.dart';
+import 'package:masjid_pass/utilities/logging.dart';
 import 'package:masjid_pass/utilities/shared_preferences/user_shared_preferences.dart';
 
 
@@ -25,6 +27,8 @@ class SettingsPageController extends State<SettingsPage> {
   Widget build(BuildContext context) => SettingsPageView(this);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  var log = logger(SettingsPage);
 
   /// List of the organization entrances
   List<String> _organizationEntrances = ['Mens', 'Womans', 'Basement', 'Gym'];
@@ -126,12 +130,12 @@ class SettingsPageController extends State<SettingsPage> {
     entrance = UserSharedPreferences.getEntrance() ?? 'Mens';
     scannerMode = UserSharedPreferences.getScannerMode() ?? 1;
     //eventsSelected = UserSharedPreferences.getEventSelected() ?? false;
-    internetAvailability =
-        UserSharedPreferences.getInternetAvailability() ?? false;
+    internetAvailability = UserSharedPreferences.getInternetAvailability() ?? false;
     _getDeviceDetails();
   }
 
   _navigateToScannerPage() async {
+    log.i('Navigating to ScannerPage');
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -141,12 +145,14 @@ class SettingsPageController extends State<SettingsPage> {
   }
 
   void entrancesDropDownOnChanged(String? newValue) {
+    log.i('entrancesDropDownOnChanged() - change settings entrance');
     setState(() {
       entrance = newValue!;
     });
   }
 
   void toggleSwitch(bool value) {
+    log.i('toggleSwitch() - IN/OUT Switch Toggled');
     if (isSwitched == false) {
       setState(() {
         isSwitched = true;
@@ -163,12 +169,14 @@ class SettingsPageController extends State<SettingsPage> {
   }
 
   Future<void> scanButtonOnPressed() async {
+    log.i('scanButtonOnPressed() - Scan Button Pressed ');
     await UserSharedPreferences.setSwitch(isSwitched);
     await UserSharedPreferences.setEntrance(entrance);
     await UserSharedPreferences.setInternetAvailability(internetAvailability);
 
     // TODO: Check if the set state here is necessary
     setState(() {
+      log.i('Disable Buttons');
       disableButtons = true;
     });
 
@@ -179,6 +187,7 @@ class SettingsPageController extends State<SettingsPage> {
 
   /// Get the Device Information
   Future<void> _getDeviceDetails() async {
+    log.i('getDeviceDetails() - Obtaining Device Specifications');
     final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
     try {
       if (Platform.isAndroid) {
@@ -187,27 +196,31 @@ class SettingsPageController extends State<SettingsPage> {
           deviceName = build.device.toString();
           deviceVersion = build.version.toString();
           identifier = build.androidId.toString();
+          log.v('Setting Variables - deviceName , identifier, deviceVersion ');
         });
       }
     } on PlatformException {
-      print('Failed to get platform version');
+      log.w('Failed to get platform version');
     }
   }
 
   /// Scan Version on Tap
   scannerVersionOnTap() {
     scanner_clicked++;
+    log.i('Scanner Version List Tile tap #' + scanner_clicked.toString());
     if (scanner_clicked == 15) {
+      log.i('Scanner Mode Switch');
       scanner_clicked = 0;
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => ScannerModeSwitch(scannerMode: scannerMode, scannerModeSwitchOnToggle: scannerModeSwitchOnToggle,));
+      log.v('scanner_clicked flag set to 0');
+      showDialog(context: context, builder: (BuildContext context) => ScannerModeSwitch(scannerMode: scannerMode, scannerModeSwitchOnToggle: scannerModeSwitchOnToggle,));
     }
     return;
   }
 
   Future<void> scannerModeSwitchOnToggle(int scannerModeIndex) async {
+    log.i('scannerModeSwitchOnToggle() - Scanner Mode Switch Toggled');
     scannerMode = scannerModeIndex;
+    log.v('Scanner Mode:' + scannerModeIndex.toString());
     await UserSharedPreferences.setScannerMode(scannerMode);
     UserSharedPreferences.resetSharedPreferences();
     Navigator.push(
@@ -215,16 +228,20 @@ class SettingsPageController extends State<SettingsPage> {
   }
 
   deviceIdOnTap() {
+    log.i('deviceIdOnTap() - Device Id Copied to Clipboard');
     Clipboard.setData(ClipboardData(text: identifier));
   }
 
   void logoutButtonOnPressed() {
+    log.i('logoutButtonOnPressed() - Logout Button Pressed');
     UserSharedPreferences.resetSharedPreferences();
+    log.i('Navigating to LoginPage');
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const LoginPage()));
   }
 
   void infoButtonOnPressed() {
+    log.i('infoButtonOnPressed() - Info Button Pressed');
     scaffoldKey.currentState!.openDrawer();
     scanner_clicked = 0;
   }
