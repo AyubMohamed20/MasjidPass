@@ -6,6 +6,7 @@ import 'package:masjid_pass/models/visitor.dart';
 import 'package:masjid_pass/scanner_screen/scanner_screen_view.dart';
 import 'package:masjid_pass/scanner_screen/scanner_screen_widget.dart';
 import 'package:masjid_pass/setting_page/settings_page_controller.dart';
+import 'package:masjid_pass/utilities/logging.dart';
 import 'package:masjid_pass/utilities/screen_size_config.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -26,6 +27,8 @@ class ScannerPage extends StatefulWidget {
 class ScannerPageController extends State<ScannerPage> {
   @override
   Widget build(BuildContext context) => ScannerPageView(this);
+
+  var log = logger(SettingsPage);
 
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
   late QRViewController QrController;
@@ -56,11 +59,13 @@ class ScannerPageController extends State<ScannerPage> {
   void initState() {
     super.initState();
     // Initializes the list where the saved scans are stored on the Scanner UI
+    log.i('initState() - Initialize ScanHistoryBubbles List');
     ScanHistoryBubbles = [];
   }
 
   @override
   void dispose() {
+    log.i('dispose() - dispose QrController');
     QrController.dispose();
     super.dispose();
   }
@@ -162,6 +167,7 @@ class ScannerPageController extends State<ScannerPage> {
   );
 
   _navigateToSettingsPage() async {
+    log.i('Navigating to SettingsPage');
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -171,6 +177,7 @@ class ScannerPageController extends State<ScannerPage> {
   }
 
   void onQRViewCreated(QRViewController controller) {
+    log.i('onQRViewCreated() - Created QR View');
     this.QrController = controller;
     controller.scannedDataStream.listen((scanData) {
       controller.pauseCamera();
@@ -184,6 +191,7 @@ class ScannerPageController extends State<ScannerPage> {
   }
 
   IncomingScan(String scan) async {
+    log.i('IncomingScan() - Process Incoming Scan');
     bool validScan = false;
     String visitorId = '8e170c8a-58aa-11ec-bf63-0242ac130002';
     bool validUuid = Uuid.isValidUUID(fromString: scan);
@@ -208,6 +216,7 @@ class ScannerPageController extends State<ScannerPage> {
   }
 
   void setFlagsToFalse() {
+    log.i('setFlagsToFalse() - Reset all flags to false');
     hasMessage = false;
     hasScanErrorMessage = false;
     hasIndicator = false;
@@ -223,24 +232,21 @@ class ScannerPageController extends State<ScannerPage> {
   ///Queries the DB using the eventID ,firstName, lastName of the visitor scan to the DB table. Returns true or false.
 
   Future<bool> validateQRWithDb(int visitorId) async {
+    log.i('validateQRWithDb() - validate QR scan with database');
     final db = await MasjidDatabase.instance.database;
     final result = await db.query(
       tableVisitors,
       where: '${VisitorFields.visitorId} = ?',
       whereArgs: [visitorId],
     );
-
-    if (result.length > 0) {
-      print('successful query was $result');
-
-      return true;
-    }
+    if (result.length > 0) return true;
     return false;
   }
 
   void initializeMessageBubbles() {
     // This function adds all critical error message bubbles to a list(criticalErrorMessagesBubbles), which will show in the scanner history.
-
+    log.i(
+        'initializeMessageBubbles() - Initialize and Add messages to ScanHistoryMessagesBubbles List ');
     // TODO: Add - When there is 10 bubbles remove the the last one
     Color scanHistoryBubbleColor;
 
@@ -274,16 +280,19 @@ class ScannerPageController extends State<ScannerPage> {
   }
 
   void scanHistoryDrawerOnPressed() {
+    log.i('scanHistoryDrawerOnPressed() - Scan History Drawer Pressed');
     setState(() {
       scanHistoryFlag = !scanHistoryFlag;
     });
   }
 
   void settingPageButtonOnPressed() {
+    log.i('settingPageButtonOnPressed() - Setting Page Button Pressed');
     _navigateToSettingsPage();
   }
 
   Future<void> showcaseIndicatorsOnPressed() async {
+    log.i('showcaseIndicatorsOnPressed() - Showcase Indicators Pressed');
     messageText =
         'ERROR: This visitor has already been scanned.\n Visitor ID: 8e170c8a-58aa-11ec-bf63-0242ac130002';
 
@@ -297,17 +306,22 @@ class ScannerPageController extends State<ScannerPage> {
   }
 
   Future<void> permissions() async {
+    log.i('permissions() - App permissions');
+
     var cameraStatus = await Permission.camera.status;
 
     if (cameraStatus.isDenied) {
+      log.w('Camera permission was Denied');
       messageText =
           'ERROR: Camera permissions was denied - Please enable to continue';
       hasCriticalErrorMessage = true;
     } else if (await Permission.locationWhenInUse.serviceStatus.isDisabled) {
+      log.w('Location services is Disabled');
       messageText =
           'ERROR: Location services are disabled - Please enable location services ';
       hasCriticalErrorMessage = true;
     } else if (await Permission.locationWhenInUse.isDenied) {
+      log.w('Location permission was Denied');
       messageText =
           'ERROR: Location permissions are denied - Please enable *PRECISE LOCATION* permissions';
       hasCriticalErrorMessage = true;

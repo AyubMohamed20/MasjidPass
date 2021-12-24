@@ -87,12 +87,11 @@ class UserSharedPreferences {
   }
 
   static resetSharedPreferences() async {
+    log.i('Resetting Shared Preference');
     await UserSharedPreferences.setUserLoggedIn(false);
     await UserSharedPreferences.setSwitch(false);
     await UserSharedPreferences.setEntrance('Mens');
     await UserSharedPreferences.setInternetAvailability(false);
     await UserSharedPreferences.setEventSelected(false);
-    log.i(
-        'Resetting Shared Preference - UserLoggedIn,Switch,Entrance,InternetAvailability,EventSelected');
   }
 }
