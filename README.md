@@ -18,9 +18,9 @@ MasjidPass is an open source project to facilitate Covid tracing and pre-booking
 * Android Studio
 
 <p align="center">
-  <h3 align="center">Simon Memory Game</h3>
+  <h3 align="center">Login & Setting Page</h3>
   <img src="screenshots/Setting.png" />
-   <h3 align="center">Simon Memory Game</h3>
+   <h3 align="center">Scan Page</h3>
   <img src="screenshots/Scan.png" />
 </p>
 
