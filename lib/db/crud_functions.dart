@@ -32,9 +32,7 @@ class CrudFunction {
   }
 
   Future addUser() async {
-    final testUser =
-        const User(username: 'test', password: '1234', organizationId: 11);
-
+    final testUser = const User(username: 'test', password: '1234', organizationId: 11);
     await MasjidDatabase.instance.create(testUser);
   }
 

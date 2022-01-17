@@ -107,18 +107,6 @@ class LoginPageController extends State<LoginPage>
     }
   }
 
-  ///Function to get the login when the submit button is pressed
-  Future<bool> loginPressed() async {
-    bool? validLogin = await getLogin(username, password);
-    if (validLogin == true) {
-      await UserSharedPreferences.setUserLoggedIn(true);
-      _navigateToSettings();
-      return true;
-    }
-
-    return false;
-  }
-
   ///Function to handle the permissions for the geolocator
   Future<bool> _handlePermission() async {
     bool serviceEnabled;
@@ -161,19 +149,13 @@ class LoginPageController extends State<LoginPage>
     return true;
   }
 
-  ///Function to add user using dummy data in order to validate it
-  Future addUser() async {
-    final testUser = const User(username: '', password: '', organizationId: 11);
-    await MasjidDatabase.instance.create(testUser);
-  }
-
   ///simple login functionality with DB using dummy data.
   Future<bool> getLogin(String user, String password) async {
     final db = await MasjidDatabase.instance.database;
     final result = await db.query(
       tableUsers,
       where: '${UserFields.username} = ? and ${UserFields.password} = ?',
-      whereArgs: [user, password],
+      whereArgs: [user,password],
     );
 
     if (result.length > 0) {
@@ -193,23 +175,23 @@ class LoginPageController extends State<LoginPage>
 
   Future<void> loginOnClicked() async {
     Color snackBarColor = Colors.green;
-
     getCurrentPosition();
-    //wrongCreds = "Login Succesful";
-    final isValid = form.currentState!.validate();
 
-    if (isValid) {
-      addUser();
+    // validates & saves the current values in the form
+    if (form.currentState!.validate()) {
       form.currentState!.save();
-      // String message = '$username$password';
     }
-    bool? loginGood = await loginPressed();
-    if (loginGood == true) {
+
+    bool? validLogin = await getLogin(username, password);
+
+
+    if (validLogin == true) {
       wrongCreds = 'Login Successful';
-    } else if (loginGood == false) {
+    } else if (validLogin == false) {
       wrongCreds = 'Invalid Username or Password';
       snackBarColor = Colors.red;
     }
+
     final snackBar = SnackBar(
       content: Text(
         wrongCreds,
@@ -217,6 +199,14 @@ class LoginPageController extends State<LoginPage>
       ),
       backgroundColor: snackBarColor,
     );
+
+
+    if (validLogin) {
+      await UserSharedPreferences.setUserLoggedIn(true);
+      _navigateToSettings();
+    }
+
+
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 

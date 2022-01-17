@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:masjid_pass/apis/responses/login_response.dart';
 import 'package:masjid_pass/utilities/base_url.dart';
 import 'package:http/http.dart' as http;
 import 'package:masjid_pass/models/user.dart';
@@ -50,25 +51,4 @@ class ApiError {
     data['error'] = this._error;
     return data;
   }
-}
-
-class LoginResponse {
-  LoginResponse({
-    this.id,
-    this.name,
-    this.clientId,
-    this.clientSecret,
-  });
-
-  int? id;
-  String? name;
-  String? clientId;
-  String? clientSecret;
-
-  factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
-    id: json["id"],
-    name: json["name"],
-    clientId: json["clientId"],
-    clientSecret: json["clientSecret"],
-  );
 }
